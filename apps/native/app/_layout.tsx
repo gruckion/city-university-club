@@ -13,7 +13,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
 
 export const unstable_settings = {
-	initialRouteName: "(drawer)",
+	initialRouteName: "(tabs)",
 };
 
 const convex = new ConvexReactClient(env.EXPO_PUBLIC_CONVEX_URL, {
@@ -23,7 +23,7 @@ const convex = new ConvexReactClient(env.EXPO_PUBLIC_CONVEX_URL, {
 function StackLayout() {
 	return (
 		<Stack screenOptions={{}}>
-			<Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 			<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 			<Stack.Screen
 				name="modal"

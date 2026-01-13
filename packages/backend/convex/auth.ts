@@ -15,7 +15,13 @@ export const authComponent = createClient<DataModel>(components.betterAuth);
 function createAuth(ctx: GenericCtx<DataModel>) {
   return betterAuth({
     baseURL: siteUrl,
-    trustedOrigins: [siteUrl, nativeAppUrl],
+    trustedOrigins: [
+      siteUrl,
+      nativeAppUrl,
+      // Expo Go development URLs
+      /^exp:\/\/192\.168\.\d+\.\d+:\d+$/,
+      /^exp:\/\/localhost:\d+$/,
+    ],
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,

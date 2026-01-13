@@ -51,6 +51,8 @@ export function SignIn() {
             placeholder="email@example.com"
             keyboardType="email-address"
             autoCapitalize="none"
+            autoCorrect={false}
+            textContentType="emailAddress"
           />
         </TextField>
 

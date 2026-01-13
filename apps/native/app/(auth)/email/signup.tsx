@@ -84,6 +84,8 @@ export default function SignUpRoute() {
 					placeholder="Enter your email"
 					keyboardType="email-address"
 					autoCapitalize="none"
+					autoCorrect={false}
+					textContentType="emailAddress"
 					value={email}
 					onChangeText={setEmail}
 				/>

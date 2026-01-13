@@ -61,6 +61,8 @@ export default function SignInRoute() {
 					placeholder="Enter your email"
 					keyboardType="email-address"
 					autoCapitalize="none"
+					autoCorrect={false}
+					textContentType="emailAddress"
 					value={email}
 					onChangeText={setEmail}
 				/>
