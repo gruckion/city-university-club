@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "scheme": "convoexpo-and-nextjs-web-bun-better-auth",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "convoexpo-and-nextjs-web-bun-better-auth",
+    "slug": "convoexpo-and-nextjs-web-bun-better-auth",
+    "plugins": [
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

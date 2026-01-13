@@ -1,0 +1,44 @@
+{
+  "name": "convoexpo-and-nextjs-web-bun-better-auth",
+  "private": true,
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "dotenv": "^17.2.2",
+      "zod": "^4.1.13",
+      "typescript": "^5",
+      "@cloudflare/workers-types": "^4.20251213.0",
+      "convex": "^1.31.2",
+      "better-auth": "1.4.9",
+      "@convex-dev/better-auth": "^0.10.9",
+      "@convex-dev/agent": "^0.3.2",
+      "alchemy": "^0.82.1",
+      "@better-auth/expo": "1.4.9"
+    }
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:native": "turbo -F native dev",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F @convoexpo-and-nextjs-web-bun-better-auth/backend dev",
+    "dev:setup": "turbo -F @convoexpo-and-nextjs-web-bun-better-auth/backend dev:setup"
+  },
+  "packageManager": "bun@1.2.20",
+  "dependencies": {
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@convoexpo-and-nextjs-web-bun-better-auth/env": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@convoexpo-and-nextjs-web-bun-better-auth/config": "workspace:*",
+    "@cloudflare/workers-types": "catalog:",
+    "turbo": "^2.6.3"
+  }
+}
