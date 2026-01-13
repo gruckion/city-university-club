@@ -1,24 +1,18 @@
-import type { ThemeConfig } from "heroui-native";
 import type React from "react";
 import {
 	createContext,
 	useCallback,
 	useContext,
 	useMemo,
-	useState,
 } from "react";
 import { Uniwind, useUniwind } from "uniwind";
-import { cucTheme, cucThemes, type CucThemeId } from "../themes/cuc-theme";
 
 interface AppThemeContextType {
-	currentThemeId: CucThemeId;
-	currentTheme: ThemeConfig;
 	colorScheme: "light" | "dark";
 	isLight: boolean;
 	isDark: boolean;
 	setColorScheme: (scheme: "light" | "dark") => void;
 	toggleColorScheme: () => void;
-	availableThemes: typeof cucThemes;
 }
 
 const AppThemeContext = createContext<AppThemeContextType | undefined>(
@@ -29,8 +23,6 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const { theme } = useUniwind();
-	const [currentThemeId] = useState<CucThemeId>("cuc");
-
 	const colorScheme = theme as "light" | "dark";
 	const isLight = colorScheme === "light";
 	const isDark = colorScheme === "dark";
@@ -45,23 +37,13 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const value = useMemo(
 		() => ({
-			currentThemeId,
-			currentTheme: cucTheme,
 			colorScheme,
 			isLight,
 			isDark,
 			setColorScheme,
 			toggleColorScheme,
-			availableThemes: cucThemes,
 		}),
-		[
-			currentThemeId,
-			colorScheme,
-			isLight,
-			isDark,
-			setColorScheme,
-			toggleColorScheme,
-		],
+		[colorScheme, isLight, isDark, setColorScheme, toggleColorScheme],
 	);
 
 	return (

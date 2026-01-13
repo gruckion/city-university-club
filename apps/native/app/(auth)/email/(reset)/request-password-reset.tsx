@@ -1,7 +1,6 @@
-import Ionicons from "@expo/vector-icons/build/Ionicons";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
-import { Button, Spinner, TextField, useTheme } from "heroui-native";
+import { Button, Spinner, TextField, useThemeColor } from "heroui-native";
 import { useState } from "react";
 import { Alert } from "react-native";
 import FormHeader, { FormContainer } from "@/components/form";
@@ -9,7 +8,7 @@ import { authClient } from "@/lib/auth-client";
 
 export default function RequestPasswordResetRoute() {
 	const router = useRouter();
-	const { colors } = useTheme();
+	const background = useThemeColor("background");
 	/* ---------------------------------- state --------------------------------- */
 	const [email, setEmail] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -55,36 +54,28 @@ export default function RequestPasswordResetRoute() {
 			/>
 			{/* email */}
 			<TextField isRequired>
+				<TextField.Label>Email</TextField.Label>
 				<TextField.Input
-					className="h-16 rounded-3xl"
+					className="h-14 rounded-2xl"
 					placeholder="Enter your email"
 					keyboardType="email-address"
 					autoCapitalize="none"
 					value={email}
 					onChangeText={setEmail}
-				>
-					<TextField.InputStartContent className="pointer-events-none pl-2">
-						<Ionicons
-							name="mail-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputStartContent>
-				</TextField.Input>
+				/>
 			</TextField>
 			{/* submit button */}
 			<Button
 				onPress={handleRequestReset}
-				disabled={isLoading}
-				className="rounded-3xl"
+				isDisabled={isLoading}
+				className="rounded-2xl"
 				size="lg"
 			>
-				<Button.LabelContent>
-					{isLoading ? "Sending..." : "Send Reset Link"}
-				</Button.LabelContent>
-				<Button.EndContent>
-					{isLoading ? <Spinner color={colors.background} /> : null}
-				</Button.EndContent>
+				{isLoading ? (
+					<Spinner color={background} />
+				) : (
+					<Button.Label>Send Reset Link</Button.Label>
+				)}
 			</Button>
 		</FormContainer>
 	);

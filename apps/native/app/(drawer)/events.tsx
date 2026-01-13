@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Surface, useTheme } from "heroui-native";
+import { Button, Surface, useThemeColor } from "heroui-native";
 import { Text, View } from "react-native";
 import { Container } from "@/components/container";
 
 export default function Events() {
-	const { colors } = useTheme();
+	const foreground = useThemeColor("foreground");
+	const muted = useThemeColor("muted");
 
 	return (
 		<Container className="p-4">
@@ -31,16 +32,16 @@ export default function Events() {
 				</View>
 				<View className="flex-row items-center gap-4 mt-2">
 					<View className="flex-row items-center gap-1">
-						<Ionicons name="calendar-outline" size={14} color={colors.accentForeground} />
+						<Ionicons name="calendar-outline" size={14} color={foreground} />
 						<Text className="text-accent-foreground/80 text-xs">Jul 15</Text>
 					</View>
 					<View className="flex-row items-center gap-1">
-						<Ionicons name="time-outline" size={14} color={colors.accentForeground} />
+						<Ionicons name="time-outline" size={14} color={foreground} />
 						<Text className="text-accent-foreground/80 text-xs">6:00 PM</Text>
 					</View>
 				</View>
 				<Button variant="secondary" size="sm" className="mt-4 rounded-xl">
-					<Button.LabelContent>RSVP Now</Button.LabelContent>
+					<Button.Label>RSVP Now</Button.Label>
 				</Button>
 			</Surface>
 
@@ -78,21 +79,21 @@ function EventCard({
 	time: string;
 	location: string;
 }) {
-	const { colors } = useTheme();
+	const muted = useThemeColor("muted");
 	return (
 		<Surface variant="secondary" className="p-4 rounded-xl mb-3">
 			<Text className="text-foreground font-medium">{title}</Text>
 			<View className="flex-row items-center gap-4 mt-2">
 				<View className="flex-row items-center gap-1">
-					<Ionicons name="calendar-outline" size={14} color={colors.mutedForeground} />
+					<Ionicons name="calendar-outline" size={14} color={muted} />
 					<Text className="text-muted-foreground text-xs">{date}</Text>
 				</View>
 				<View className="flex-row items-center gap-1">
-					<Ionicons name="time-outline" size={14} color={colors.mutedForeground} />
+					<Ionicons name="time-outline" size={14} color={muted} />
 					<Text className="text-muted-foreground text-xs">{time}</Text>
 				</View>
 				<View className="flex-row items-center gap-1">
-					<Ionicons name="location-outline" size={14} color={colors.mutedForeground} />
+					<Ionicons name="location-outline" size={14} color={muted} />
 					<Text className="text-muted-foreground text-xs">{location}</Text>
 				</View>
 			</View>

@@ -1,12 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Surface, useTheme } from "heroui-native";
+import { Surface, useThemeColor } from "heroui-native";
 import { Text, View } from "react-native";
 import { Container } from "@/components/container";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
 
 export default function Membership() {
-	const { colors } = useTheme();
+	const foreground = useThemeColor("foreground");
+	const muted = useThemeColor("muted");
+	const accent = useThemeColor("accent");
 	const { isAuthenticated } = useConvexAuth();
 	const user = useQuery(api.auth.getCurrentUser, isAuthenticated ? {} : "skip");
 
@@ -27,7 +29,7 @@ export default function Membership() {
 							{user?.name || "Member"}
 						</Text>
 					</View>
-					<Ionicons name="shield-checkmark" size={28} color={colors.accentForeground} />
+					<Ionicons name="shield-checkmark" size={28} color={foreground} />
 				</View>
 
 				<View className="flex-row justify-between items-end">
@@ -80,20 +82,20 @@ export default function Membership() {
 			<Surface variant="secondary" className="p-4 rounded-xl mb-3">
 				<View className="flex-row items-center justify-between">
 					<View className="flex-row items-center gap-3">
-						<Ionicons name="mail-outline" size={20} color={colors.foreground} />
+						<Ionicons name="mail-outline" size={20} color={foreground} />
 						<Text className="text-foreground">{user?.email || "email@example.com"}</Text>
 					</View>
-					<Ionicons name="chevron-forward" size={20} color={colors.mutedForeground} />
+					<Ionicons name="chevron-forward" size={20} color={muted} />
 				</View>
 			</Surface>
 
 			<Surface variant="secondary" className="p-4 rounded-xl mb-3">
 				<View className="flex-row items-center justify-between">
 					<View className="flex-row items-center gap-3">
-						<Ionicons name="receipt-outline" size={20} color={colors.foreground} />
+						<Ionicons name="receipt-outline" size={20} color={foreground} />
 						<Text className="text-foreground">View Statements</Text>
 					</View>
-					<Ionicons name="chevron-forward" size={20} color={colors.mutedForeground} />
+					<Ionicons name="chevron-forward" size={20} color={muted} />
 				</View>
 			</Surface>
 		</Container>
@@ -109,11 +111,11 @@ function MemberBenefit({
 	title: string;
 	description: string;
 }) {
-	const { colors } = useTheme();
+	const accent = useThemeColor("accent");
 	return (
 		<Surface variant="secondary" className="p-4 rounded-xl mb-3 flex-row items-center">
 			<View className="bg-accent/10 p-2 rounded-full mr-4">
-				<Ionicons name={icon} size={20} color={colors.accent} />
+				<Ionicons name={icon} size={20} color={accent} />
 			</View>
 			<View className="flex-1">
 				<Text className="text-foreground font-medium">{title}</Text>

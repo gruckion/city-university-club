@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
-import { Button, Surface, useTheme } from "heroui-native";
+import { useRouter } from "expo-router";
+import { Button, Surface, useThemeColor } from "heroui-native";
 import { Pressable, Text, View } from "react-native";
 import { Container } from "@/components/container";
 import { useConvexAuth, useQuery } from "convex/react";
@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth-client";
 
 export default function Home() {
 	const router = useRouter();
-	const { colors } = useTheme();
+	const foreground = useThemeColor("foreground");
 	const { isAuthenticated } = useConvexAuth();
 	const user = useQuery(api.auth.getCurrentUser, isAuthenticated ? {} : "skip");
 
@@ -29,7 +29,7 @@ export default function Home() {
 						className="w-full rounded-2xl"
 						onPress={() => router.push("/(auth)/landing")}
 					>
-						<Button.LabelContent>Sign In</Button.LabelContent>
+						<Button.Label>Sign In</Button.Label>
 					</Button>
 				</View>
 			</Container>
@@ -66,7 +66,7 @@ export default function Home() {
 					</View>
 				</View>
 				<View className="flex-row items-center gap-2">
-					<Ionicons name="card-outline" size={16} color={colors.accentForeground} />
+					<Ionicons name="card-outline" size={16} color={foreground} />
 					<Text className="text-accent-foreground/80 text-sm">
 						View full membership card
 					</Text>
@@ -127,14 +127,7 @@ export default function Home() {
 					className="self-center"
 					onPress={() => authClient.signOut()}
 				>
-					<Button.StartContent>
-						<Ionicons
-							name="log-out-outline"
-							size={16}
-							color={colors.foreground}
-						/>
-					</Button.StartContent>
-					<Button.LabelContent>Sign Out</Button.LabelContent>
+					<Button.Label>Sign Out</Button.Label>
 				</Button>
 			</View>
 		</Container>
@@ -153,12 +146,12 @@ function QuickActionCard({
 	subtitle: string;
 	onPress: () => void;
 }) {
-	const { colors } = useTheme();
+	const accent = useThemeColor("accent");
 	return (
 		<Pressable onPress={onPress} className="flex-1">
 			<Surface variant="secondary" className="p-4 rounded-xl items-center">
 				<View className="bg-accent/10 p-3 rounded-full mb-2">
-					<Ionicons name={icon} size={24} color={colors.accent} />
+					<Ionicons name={icon} size={24} color={accent} />
 				</View>
 				<Text className="text-foreground font-medium text-sm">{title}</Text>
 				<Text className="text-muted-foreground text-xs">{subtitle}</Text>

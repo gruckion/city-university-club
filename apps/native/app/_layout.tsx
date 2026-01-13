@@ -10,7 +10,7 @@ import { Stack } from "expo-router";
 import { HeroUINativeProvider } from "heroui-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { AppThemeProvider, useAppTheme } from "@/contexts/app-theme-context";
+import { AppThemeProvider } from "@/contexts/app-theme-context";
 
 export const unstable_settings = {
 	initialRouteName: "(drawer)",
@@ -33,33 +33,23 @@ function StackLayout() {
 	);
 }
 
-/* ------------------------------ themed layout ------------------------------ */
-function ThemedLayout() {
-	const { currentTheme } = useAppTheme();
-	return (
-		<HeroUINativeProvider
-			config={{
-				colorScheme: "system",
-				theme: currentTheme,
-				textProps: {
-					allowFontScaling: false,
-				},
-			}}
-		>
-			<StackLayout />
-		</HeroUINativeProvider>
-	);
-}
-
 /* ------------------------------- root layout ------------------------------ */
 export default function Layout() {
 	return (
 		<ConvexBetterAuthProvider client={convex} authClient={authClient}>
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<KeyboardProvider>
-					<AppThemeProvider>
-						<ThemedLayout />
-					</AppThemeProvider>
+					<HeroUINativeProvider
+						config={{
+							textProps: {
+								allowFontScaling: false,
+							},
+						}}
+					>
+						<AppThemeProvider>
+							<StackLayout />
+						</AppThemeProvider>
+					</HeroUINativeProvider>
 				</KeyboardProvider>
 			</GestureHandlerRootView>
 		</ConvexBetterAuthProvider>

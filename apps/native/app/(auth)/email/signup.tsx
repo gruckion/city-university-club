@@ -1,13 +1,12 @@
-import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Link } from "expo-router";
-import { Button, Spinner, TextField, useTheme } from "heroui-native";
+import { Button, Spinner, TextField, useThemeColor } from "heroui-native";
 import { useState } from "react";
 import { Alert, Text } from "react-native";
 import FormHeader, { FormContainer } from "@/components/form";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignUpRoute() {
-	const { colors } = useTheme();
+	const background = useThemeColor("background");
 	/* ---------------------------------- state --------------------------------- */
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -68,104 +67,61 @@ export default function SignUpRoute() {
 			/>
 			{/* name */}
 			<TextField isRequired>
+				<TextField.Label>Full Name</TextField.Label>
 				<TextField.Input
-					className="h-16 rounded-3xl"
+					className="h-14 rounded-2xl"
 					placeholder="Enter your full name"
 					autoCapitalize="words"
 					value={name}
 					onChangeText={setName}
-				>
-					<TextField.InputStartContent className="pointer-events-none pl-2">
-						<Ionicons
-							name="person-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputStartContent>
-				</TextField.Input>
+				/>
 			</TextField>
 			{/* email */}
 			<TextField isRequired>
+				<TextField.Label>Email</TextField.Label>
 				<TextField.Input
-					className="h-16 rounded-3xl"
+					className="h-14 rounded-2xl"
 					placeholder="Enter your email"
 					keyboardType="email-address"
 					autoCapitalize="none"
 					value={email}
 					onChangeText={setEmail}
-				>
-					<TextField.InputStartContent className="pointer-events-none pl-2">
-						<Ionicons
-							name="mail-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputStartContent>
-				</TextField.Input>
+				/>
 			</TextField>
 			{/* password */}
 			<TextField isRequired>
+				<TextField.Label>Password</TextField.Label>
 				<TextField.Input
-					className="h-16 rounded-3xl"
+					className="h-14 rounded-2xl"
 					placeholder="Enter your password"
 					secureTextEntry
 					value={password}
 					onChangeText={setPassword}
-				>
-					<TextField.InputStartContent className="pointer-events-none pl-2">
-						<Ionicons
-							name="lock-closed-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputStartContent>
-					<TextField.InputEndContent className="pointer-events-none pr-2">
-						<Ionicons
-							name="eye-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputEndContent>
-				</TextField.Input>
+				/>
 			</TextField>
 			{/* confirm password */}
 			<TextField isRequired>
+				<TextField.Label>Confirm Password</TextField.Label>
 				<TextField.Input
-					className="h-16 rounded-3xl"
+					className="h-14 rounded-2xl"
 					placeholder="Confirm your password"
 					secureTextEntry
 					value={confirmPassword}
 					onChangeText={setConfirmPassword}
-				>
-					<TextField.InputStartContent className="pointer-events-none pl-2">
-						<Ionicons
-							name="lock-closed-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputStartContent>
-					<TextField.InputEndContent className="pointer-events-none pr-2">
-						<Ionicons
-							name="checkmark-outline"
-							size={20}
-							color={colors.mutedForeground}
-						/>
-					</TextField.InputEndContent>
-				</TextField.Input>
+				/>
 			</TextField>
 			{/* submit button */}
 			<Button
 				onPress={handleSignUp}
-				disabled={isLoading}
-				className="rounded-3xl"
+				isDisabled={isLoading}
+				className="rounded-2xl"
 				size="lg"
 			>
-				<Button.LabelContent>
-					{isLoading ? "Creating Account..." : "Sign Up"}
-				</Button.LabelContent>
-				<Button.EndContent>
-					{isLoading ? <Spinner color={colors.background} /> : null}
-				</Button.EndContent>
+				{isLoading ? (
+					<Spinner color={background} />
+				) : (
+					<Button.Label>Sign Up</Button.Label>
+				)}
 			</Button>
 			<Text className="px-14 text-center text-muted-foreground text-sm">
 				by continuing you agree to our{" "}

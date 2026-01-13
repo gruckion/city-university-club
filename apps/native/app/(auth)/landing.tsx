@@ -1,15 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import { Button, useTheme } from "heroui-native";
+import { Button, useThemeColor } from "heroui-native";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppleAuth, useGoogleAuth } from "@/lib/oauth";
 
 export default function Landing() {
-	const { colors } = useTheme();
+	const foreground = useThemeColor("foreground");
 	const { signIn: signInWithGoogle, isLoading: isGoogleLoading } =
 		useGoogleAuth();
 	const { signIn: signInWithApple, isLoading: isAppleLoading } = useAppleAuth();
+
 	return (
 		<SafeAreaView className="flex-1 gap-4 px-8">
 			<View className="flex-1 justify-end">
@@ -27,16 +28,12 @@ export default function Landing() {
 					size="lg"
 					variant="tertiary"
 					onPress={signInWithGoogle}
-					disabled={isGoogleLoading || isAppleLoading}
+					isDisabled={isGoogleLoading || isAppleLoading}
 				>
-					<Button.StartContent>
-						<Ionicons
-							name="logo-google"
-							size={20}
-							color={colors.defaultForeground}
-						/>
-					</Button.StartContent>
-					<Button.LabelContent>Google</Button.LabelContent>
+					<View className="flex-row items-center gap-2">
+						<Ionicons name="logo-google" size={20} color={foreground} />
+						<Text className="text-foreground font-medium">Google</Text>
+					</View>
 				</Button>
 				{/* apple */}
 				<Button
@@ -44,21 +41,17 @@ export default function Landing() {
 					size="lg"
 					variant="tertiary"
 					onPress={signInWithApple}
-					disabled={isGoogleLoading || isAppleLoading}
+					isDisabled={isGoogleLoading || isAppleLoading}
 				>
-					<Button.StartContent>
-						<Ionicons
-							name="logo-apple"
-							size={20}
-							color={colors.defaultForeground}
-						/>
-					</Button.StartContent>
-					<Button.LabelContent>Apple</Button.LabelContent>
+					<View className="flex-row items-center gap-2">
+						<Ionicons name="logo-apple" size={20} color={foreground} />
+						<Text className="text-foreground font-medium">Apple</Text>
+					</View>
 				</Button>
 			</View>
 			<Link href="/(auth)/email/signin" asChild>
 				<Button className="w-full rounded-full" size="lg">
-					<Button.LabelContent>Email</Button.LabelContent>
+					<Button.Label>Email</Button.Label>
 				</Button>
 			</Link>
 		</SafeAreaView>

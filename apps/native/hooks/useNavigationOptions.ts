@@ -1,26 +1,28 @@
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
-import { useTheme } from "heroui-native";
+import { useThemeColor } from "heroui-native";
 import { useMemo } from "react";
 import { Platform } from "react-native";
 
 export const useNavigationOptions = () => {
-	const { colors } = useTheme();
+	const background = useThemeColor("background");
+	const foreground = useThemeColor("foreground");
+
 	return useMemo(() => {
 		const root: NativeStackNavigationOptions = {
 			contentStyle: {
-				backgroundColor: colors.background,
+				backgroundColor: background,
 			},
 		};
 
 		const base: NativeStackNavigationOptions = {
-			headerTintColor: colors.foreground,
+			headerTintColor: foreground,
 			headerTitleAlign: "center",
 			headerLargeTitleShadowVisible: false,
 			headerLargeTitleStyle: {
-				color: colors.foreground,
+				color: foreground,
 			},
 			headerShadowVisible: false,
-			contentStyle: { backgroundColor: colors.background },
+			contentStyle: { backgroundColor: background },
 		};
 
 		return {
@@ -29,7 +31,7 @@ export const useNavigationOptions = () => {
 				...base,
 				headerStyle: {
 					backgroundColor:
-						Platform.OS === "ios" ? "transparent" : colors.background,
+						Platform.OS === "ios" ? "transparent" : background,
 				},
 				headerTransparent: Platform.OS === "ios",
 			},
@@ -37,9 +39,9 @@ export const useNavigationOptions = () => {
 				...base,
 				headerStyle: {
 					backgroundColor:
-						Platform.OS === "ios" ? "transparent" : colors.background,
+						Platform.OS === "ios" ? "transparent" : background,
 				},
 			},
 		};
-	}, [colors]);
+	}, [background, foreground]);
 };

@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Surface, useTheme } from "heroui-native";
+import { Button, Surface, useThemeColor } from "heroui-native";
 import { Text, View } from "react-native";
 import { Container } from "@/components/container";
 
 export default function Dining() {
-	const { colors } = useTheme();
+	const accent = useThemeColor("accent");
+	const muted = useThemeColor("muted");
 
 	return (
 		<Container className="p-4">
@@ -24,10 +25,7 @@ export default function Dining() {
 					Book a table in our main dining room
 				</Text>
 				<Button variant="secondary" className="rounded-xl">
-					<Button.StartContent>
-						<Ionicons name="calendar-outline" size={18} color={colors.accent} />
-					</Button.StartContent>
-					<Button.LabelContent>Reserve Table</Button.LabelContent>
+					<Button.Label>Reserve Table</Button.Label>
 				</Button>
 			</Surface>
 
@@ -55,10 +53,7 @@ export default function Dining() {
 
 			{/* View Menu Button */}
 			<Button variant="tertiary" className="mt-4 self-center rounded-xl">
-				<Button.StartContent>
-					<Ionicons name="book-outline" size={18} color={colors.foreground} />
-				</Button.StartContent>
-				<Button.LabelContent>View Full Menu</Button.LabelContent>
+				<Button.Label>View Full Menu</Button.Label>
 			</Button>
 		</Container>
 	);
@@ -75,17 +70,18 @@ function DiningOption({
 	description: string;
 	hours: string;
 }) {
-	const { colors } = useTheme();
+	const accent = useThemeColor("accent");
+	const muted = useThemeColor("muted");
 	return (
 		<Surface variant="secondary" className="p-4 rounded-xl mb-3 flex-row items-center">
 			<View className="bg-accent/10 p-3 rounded-full mr-4">
-				<Ionicons name={icon} size={24} color={colors.accent} />
+				<Ionicons name={icon} size={24} color={accent} />
 			</View>
 			<View className="flex-1">
 				<Text className="text-foreground font-medium">{title}</Text>
 				<Text className="text-muted-foreground text-sm">{description}</Text>
 				<View className="flex-row items-center gap-1 mt-1">
-					<Ionicons name="time-outline" size={12} color={colors.mutedForeground} />
+					<Ionicons name="time-outline" size={12} color={muted} />
 					<Text className="text-muted-foreground text-xs">{hours}</Text>
 				</View>
 			</View>
