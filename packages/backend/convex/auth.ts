@@ -1,17 +1,17 @@
+import { expo } from "@better-auth/expo";
 import {
+  type AuthFunctions,
   createClient,
   type GenericCtx,
-  type AuthFunctions,
 } from "@convex-dev/better-auth";
-import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { convex, crossDomain } from "@convex-dev/better-auth/plugins";
-import { expo } from "@better-auth/expo";
+import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { Resend } from "@convex-dev/resend";
+import { betterAuth } from "better-auth";
+import { lastLoginMethod } from "better-auth/plugins";
 import { components, internal } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
-import { betterAuth } from "better-auth";
-import { lastLoginMethod } from "better-auth/plugins";
 import authConfig from "./auth.config";
 
 /**
@@ -39,16 +39,16 @@ export const authComponent = createClient<DataModel>(components.betterAuth, {
   verbose: process.env.NODE_ENV === "development",
   triggers: {
     user: {
-      onCreate: async (ctx, authUser) => {
+      onCreate: async (_ctx, authUser) => {
         // Called when a new user is created
         // You can create related records here (e.g., profile, settings)
         console.log("User created:", authUser.email);
       },
-      onUpdate: async (ctx, newUser, oldUser) => {
+      onUpdate: async (_ctx, _newUser, _oldUser) => {
         // Called when user data is updated
         // Both old and new documents are available for comparison
       },
-      onDelete: async (ctx, authUser) => {
+      onDelete: async (_ctx, authUser) => {
         // Called when a user is deleted
         // Clean up related records here
         console.log("User deleted:", authUser.email);
@@ -73,11 +73,13 @@ function createAuth(ctx: GenericCtx<DataModel>) {
       nativeAppUrl,
       // Expo Go development URLs - always included for development flexibility
       // Using explicit patterns since NODE_ENV may not be reliable in Convex runtime
-      "exp://127.0.0.1:*/**",      // iOS Simulator
-      "exp://192.168.*.*:*/**",    // Local network devices (common home/office range)
-      "exp://10.*.*.*:*/**",       // Alternative local network range
-      "exp://localhost:*/**",      // Localhost
-      "http://localhost:8081",     // Expo web development
+      "exp://127.0.0.1:*/**", // iOS Simulator
+      "exp://192.168.*.*:*/**", // Local network devices (common home/office range)
+      "exp://10.*.*.*:*/**", // Alternative local network range
+      "exp://localhost:*/**", // Localhost
+      "http://localhost:8081", // Expo web development
+      // Apple Sign-In requires this origin
+      "https://appleid.apple.com",
     ],
     database: authComponent.adapter(ctx),
     emailAndPassword: {
@@ -108,6 +110,12 @@ function createAuth(ctx: GenericCtx<DataModel>) {
         });
       },
     },
+    socialProviders: {
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID!,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      },
+    },
     plugins: [
       expo(),
       convex({
@@ -115,7 +123,7 @@ function createAuth(ctx: GenericCtx<DataModel>) {
         jwksRotateOnTokenGenerationError: true,
       }),
       lastLoginMethod(),
-      crossDomain({ siteUrl }),  // Required for Expo web support
+      crossDomain({ siteUrl }), // Required for Expo web support
     ],
   });
 }

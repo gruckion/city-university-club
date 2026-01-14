@@ -1,3 +1,6 @@
 {
   "extends": "@convoexpo-and-nextjs-web-bun-better-auth/config/tsconfig.base.json",
+  "compilerOptions": {
+    "strictNullChecks": true
+  }
 }

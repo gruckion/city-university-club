@@ -61,7 +61,7 @@ export const generateResponseAsync = internalAction({
       ctx,
       { threadId },
       { promptMessageId },
-      { saveStreamDeltas: true },
+      { saveStreamDeltas: true }
     );
   },
 });

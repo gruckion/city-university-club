@@ -2,14 +2,15 @@
 
 This document covers setting up an Android emulator on Apple Silicon Mac for testing the Expo React Native application, along with Maestro UI testing integration.
 
-## Current Environment Status
+## Current Environment Status (After Setup)
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Maestro | Installed (v2.1.0) | UI testing framework, requires emulator separately |
-| Java | Installed (OpenJDK 13) | May need upgrade to 17+ for Maestro |
-| Android Studio | **Not installed** | Required for Android emulator |
-| Android SDK | **Not configured** | `ANDROID_HOME` points to non-existent path |
+| Maestro | Installed (v2.1.0) | UI testing framework, connects to emulator |
+| Java | JDK 21 (via Android Studio) | Android Studio's bundled JBR |
+| Android Studio | Installed (2025.2.2.8) | Installed via Homebrew |
+| Android SDK | Configured | `$HOME/Library/Android/sdk` |
+| AVD | Pixel_8_API_35 | Android 15, ARM64, Google APIs |
 
 ## Key Understanding: Maestro vs Emulators
 
@@ -156,6 +157,43 @@ For optimal Android emulator performance on Apple Silicon:
 - Close other heavy applications
 - Allocate more RAM to the emulator in AVD settings
 - Use a simpler device profile (e.g., Medium Phone vs Pixel 8 Pro)
+
+## Quick Start (After Setup)
+
+### Start the Emulator
+
+```bash
+# Option 1: Using emulator command
+$ANDROID_HOME/emulator/emulator -avd Pixel_8_API_35 &
+
+# Option 2: Using Android Studio
+# Open Android Studio > Tools > Device Manager > Click Play on Pixel_8_API_35
+```
+
+### Verify Emulator is Running
+
+```bash
+adb devices
+# Should show: emulator-5554    device
+```
+
+### Run Expo App on Android
+
+```bash
+# Start the development server
+bun run dev:native
+
+# Press 'a' in the Expo CLI to open on Android
+# Or run directly:
+npx expo run:android
+```
+
+### Run Maestro Tests
+
+```bash
+# Maestro will auto-detect the running emulator
+maestro test your-flow.yaml
+```
 
 ## References
 

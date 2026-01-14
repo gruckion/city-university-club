@@ -1,9 +1,9 @@
 "use client";
 
-import { ConvexReactClient } from "convex/react";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
-import { authClient } from "@/lib/auth-client";
 import { env } from "@convoexpo-and-nextjs-web-bun-better-auth/env/web";
+import { ConvexReactClient } from "convex/react";
+import { authClient } from "@/lib/auth-client";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 
@@ -20,12 +20,12 @@ export default function Providers({
     <ThemeProvider
       attribute="class"
       defaultTheme="system"
-      enableSystem
       disableTransitionOnChange
+      enableSystem
     >
       <ConvexBetterAuthProvider
-        client={convex}
         authClient={authClient}
+        client={convex}
         initialToken={initialToken}
       >
         {children}

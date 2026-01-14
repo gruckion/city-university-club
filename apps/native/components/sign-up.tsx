@@ -1,7 +1,7 @@
-import { authClient } from "@/lib/auth-client";
+import { Button, ErrorView, Spinner, Surface, TextField } from "heroui-native";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { Button, ErrorView, Spinner, Surface, TextField } from "heroui-native";
+import { authClient } from "@/lib/auth-client";
 
 export function SignUp() {
   const [name, setName] = useState("");
@@ -33,50 +33,54 @@ export function SignUp() {
         onFinished: () => {
           setIsLoading(false);
         },
-      },
+      }
     );
   };
 
   return (
-    <Surface variant="secondary" className="p-4 rounded-lg">
-      <Text className="text-foreground font-medium mb-4">Create Account</Text>
+    <Surface className="rounded-lg p-4" variant="secondary">
+      <Text className="mb-4 font-medium text-foreground">Create Account</Text>
 
-      <ErrorView isInvalid={!!error} className="mb-3">
+      <ErrorView className="mb-3" isInvalid={!!error}>
         {error}
       </ErrorView>
 
       <View className="gap-3">
         <TextField>
           <TextField.Label>Name</TextField.Label>
-          <TextField.Input value={name} onChangeText={setName} placeholder="John Doe" />
+          <TextField.Input
+            onChangeText={setName}
+            placeholder="John Doe"
+            value={name}
+          />
         </TextField>
 
         <TextField>
           <TextField.Label>Email</TextField.Label>
           <TextField.Input
-            value={email}
-            onChangeText={setEmail}
-            placeholder="email@example.com"
-            keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            keyboardType="email-address"
+            onChangeText={setEmail}
+            placeholder="email@example.com"
             textContentType="emailAddress"
+            value={email}
           />
         </TextField>
 
         <TextField>
           <TextField.Label>Password</TextField.Label>
           <TextField.Input
-            value={password}
             onChangeText={setPassword}
             placeholder="••••••••"
             secureTextEntry
+            value={password}
           />
         </TextField>
 
-        <Button onPress={handleSignUp} isDisabled={isLoading} className="mt-1">
+        <Button className="mt-1" isDisabled={isLoading} onPress={handleSignUp}>
           {isLoading ? (
-            <Spinner size="sm" color="default" />
+            <Spinner color="default" size="sm" />
           ) : (
             <Button.Label>Create Account</Button.Label>
           )}

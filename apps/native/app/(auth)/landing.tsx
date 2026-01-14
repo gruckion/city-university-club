@@ -1,26 +1,26 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-	ImageBackground,
-	Pressable,
-	Text,
-	View,
-	Image,
-	StatusBar,
-	ActivityIndicator,
+  ActivityIndicator,
+  Image,
+  ImageBackground,
+  Pressable,
+  StatusBar,
+  Text,
+  View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAppleAuth, useGoogleAuth } from "@/lib/oauth";
-import { authClient } from "@/lib/auth-client";
 import { LastUsedIndicator } from "@/components/LastUsedIndicator";
+import { authClient } from "@/lib/auth-client";
+import { useAppleAuth, useGitHubAuth, useGoogleAuth } from "@/lib/oauth";
 
 // CUC brand colors
 const CUC_COLORS = {
-	navy: "#06273a",
-	sage: "#85b09a",
-	cream: "#fffef8",
-	white: "#ffffff",
+  navy: "#06273a",
+  sage: "#85b09a",
+  cream: "#fffef8",
+  white: "#ffffff",
 };
 
 // Local assets for instant loading
@@ -28,244 +28,294 @@ const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
 const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
 
 export default function Landing() {
-	const router = useRouter();
-	const insets = useSafeAreaInsets();
-	const { signIn: signInWithGoogle, isLoading: isGoogleLoading } =
-		useGoogleAuth();
-	const { signIn: signInWithApple, isLoading: isAppleLoading } = useAppleAuth();
-	const isLoading = isGoogleLoading || isAppleLoading;
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { signIn: signInWithGoogle, isLoading: isGoogleLoading } =
+    useGoogleAuth();
+  const { signIn: signInWithApple, isLoading: isAppleLoading } = useAppleAuth();
+  const { signIn: signInWithGitHub, isLoading: isGitHubLoading } =
+    useGitHubAuth();
+  const isLoading = isGoogleLoading || isAppleLoading || isGitHubLoading;
 
-	// Read last login method after mount to ensure SecureStore/cookies are available
-	const [lastMethod, setLastMethod] = useState<string | null>(null);
-	useEffect(() => {
-		const method = authClient.getLastUsedLoginMethod();
-		setLastMethod(method);
-	}, []);
+  // Read last login method after mount to ensure SecureStore/cookies are available
+  const [lastMethod, setLastMethod] = useState<string | null>(null);
+  useEffect(() => {
+    const method = authClient.getLastUsedLoginMethod();
+    setLastMethod(method);
+  }, []);
 
-	return (
-		<ImageBackground
-			source={HERO_IMAGE}
-			style={{ flex: 1 }}
-			resizeMode="cover"
-		>
-			<StatusBar barStyle="light-content" />
-			<View
-				style={{
-					flex: 1,
-					backgroundColor: "rgba(6, 39, 58, 0.75)",
-					paddingTop: insets.top,
-					paddingBottom: insets.bottom,
-				}}
-			>
-				{/* Close Button - dismisses auth modal and returns to tabs */}
-				<Pressable
-					onPress={() => router.dismiss()}
-					style={{
-						position: "absolute",
-						top: insets.top + 16,
-						left: 16,
-						width: 40,
-						height: 40,
-						borderRadius: 20,
-						backgroundColor: "rgba(255, 255, 255, 0.15)",
-						alignItems: "center",
-						justifyContent: "center",
-						zIndex: 10,
-					}}
-				>
-					<Ionicons name="close" size={24} color={CUC_COLORS.cream} />
-				</Pressable>
+  return (
+    <ImageBackground resizeMode="cover" source={HERO_IMAGE} style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content" />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "rgba(6, 39, 58, 0.75)",
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+        }}
+      >
+        {/* Close Button - dismisses auth modal and returns to tabs */}
+        <Pressable
+          onPress={() => router.dismiss()}
+          style={{
+            position: "absolute",
+            top: insets.top + 16,
+            left: 16,
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10,
+          }}
+        >
+          <Ionicons color={CUC_COLORS.cream} name="close" size={24} />
+        </Pressable>
 
-				{/* Header with Logo */}
-				<View className="items-center pt-8">
-					<View className="w-24 h-24 rounded-full bg-transparentitems-center justify-center overflow-hidden mb-4">
-						<Image
-							source={CUC_LOGO}
-							style={{ width: 80, height: 80 }}
-							resizeMode="contain"
-						/>
-					</View>
-					<Text
-						style={{
-							color: CUC_COLORS.cream,
-							fontSize: 32,
-							fontWeight: "300",
-							fontFamily: "serif",
-						}}
-					>
-						City University Club
-					</Text>
-					<Text
-						style={{
-							color: CUC_COLORS.sage,
-							fontSize: 16,
-							marginTop: 8,
-						}}
-					>
-						Your exclusive members club
-					</Text>
-				</View>
+        {/* Header with Logo */}
+        <View className="items-center pt-8">
+          <View className="mb-4 h-24 w-24 justify-center overflow-hidden rounded-full bg-transparentitems-center">
+            <Image
+              resizeMode="contain"
+              source={CUC_LOGO}
+              style={{ width: 80, height: 80 }}
+            />
+          </View>
+          <Text
+            style={{
+              color: CUC_COLORS.cream,
+              fontSize: 32,
+              fontWeight: "300",
+              fontFamily: "serif",
+            }}
+          >
+            City University Club
+          </Text>
+          <Text
+            style={{
+              color: CUC_COLORS.sage,
+              fontSize: 16,
+              marginTop: 8,
+            }}
+          >
+            Your exclusive members club
+          </Text>
+        </View>
 
-				{/* Spacer */}
-				<View className="flex-1" />
+        {/* Spacer */}
+        <View className="flex-1" />
 
-				{/* Sign In Options */}
-				<View className="px-6 pb-8 gap-4">
-					<Text
-						style={{
-							color: CUC_COLORS.cream,
-							fontSize: 18,
-							textAlign: "center",
-							marginBottom: 8,
-						}}
-					>
-						Sign in to continue
-					</Text>
+        {/* Sign In Options */}
+        <View className="gap-4 px-6 pb-8">
+          <Text
+            style={{
+              color: CUC_COLORS.cream,
+              fontSize: 18,
+              textAlign: "center",
+              marginBottom: 8,
+            }}
+          >
+            Sign in to continue
+          </Text>
 
-					{/* Social Login Buttons */}
-					<View className="flex-row gap-3">
-						{/* Google */}
-						<View style={{ flex: 1, position: "relative" }}>
-							<Pressable
-								onPress={signInWithGoogle}
-								disabled={isLoading}
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: 8,
-									backgroundColor: CUC_COLORS.white,
-									paddingVertical: 14,
-									borderRadius: 12,
-									opacity: isLoading ? 0.7 : 1,
-								}}
-							>
-								{isGoogleLoading ? (
-									<ActivityIndicator size="small" color={CUC_COLORS.navy} />
-								) : (
-									<>
-										<Ionicons name="logo-google" size={20} color={CUC_COLORS.navy} />
-										<Text
-											style={{
-												color: CUC_COLORS.navy,
-												fontSize: 16,
-												fontWeight: "500",
-											}}
-										>
-											Google
-										</Text>
-									</>
-								)}
-							</Pressable>
-							{lastMethod === "google" && (
-								<View style={{ position: "absolute", top: -10, right: -4 }}>
-									<LastUsedIndicator />
-								</View>
-							)}
-						</View>
+          {/* Social Login Buttons */}
+          <View className="flex-row gap-3">
+            {/* GitHub */}
+            <View style={{ flex: 1, position: "relative" }}>
+              <Pressable
+                disabled={isLoading}
+                onPress={signInWithGitHub}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  backgroundColor: CUC_COLORS.white,
+                  paddingVertical: 14,
+                  borderRadius: 12,
+                  opacity: isLoading ? 0.7 : 1,
+                }}
+              >
+                {isGitHubLoading ? (
+                  <ActivityIndicator color={CUC_COLORS.navy} size="small" />
+                ) : (
+                  <>
+                    <Ionicons
+                      color={CUC_COLORS.navy}
+                      name="logo-github"
+                      size={20}
+                    />
+                    <Text
+                      style={{
+                        color: CUC_COLORS.navy,
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    >
+                      GitHub
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+              {lastMethod === "github" && (
+                <View style={{ position: "absolute", top: -10, right: -4 }}>
+                  <LastUsedIndicator />
+                </View>
+              )}
+            </View>
 
-						{/* Apple */}
-						<View style={{ flex: 1, position: "relative" }}>
-							<Pressable
-								onPress={signInWithApple}
-								disabled={isLoading}
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: 8,
-									backgroundColor: CUC_COLORS.white,
-									paddingVertical: 14,
-									borderRadius: 12,
-									opacity: isLoading ? 0.7 : 1,
-								}}
-							>
-								{isAppleLoading ? (
-									<ActivityIndicator size="small" color={CUC_COLORS.navy} />
-								) : (
-									<>
-										<Ionicons name="logo-apple" size={20} color={CUC_COLORS.navy} />
-										<Text
-											style={{
-												color: CUC_COLORS.navy,
-												fontSize: 16,
-												fontWeight: "500",
-											}}
-										>
-											Apple
-										</Text>
-									</>
-								)}
-							</Pressable>
-							{lastMethod === "apple" && (
-								<View style={{ position: "absolute", top: -10, right: -4 }}>
-									<LastUsedIndicator />
-								</View>
-							)}
-						</View>
-					</View>
+            {/* Google */}
+            <View style={{ flex: 1, position: "relative" }}>
+              <Pressable
+                disabled={isLoading}
+                onPress={signInWithGoogle}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  backgroundColor: CUC_COLORS.white,
+                  paddingVertical: 14,
+                  borderRadius: 12,
+                  opacity: isLoading ? 0.7 : 1,
+                }}
+              >
+                {isGoogleLoading ? (
+                  <ActivityIndicator color={CUC_COLORS.navy} size="small" />
+                ) : (
+                  <>
+                    <Ionicons
+                      color={CUC_COLORS.navy}
+                      name="logo-google"
+                      size={20}
+                    />
+                    <Text
+                      style={{
+                        color: CUC_COLORS.navy,
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    >
+                      Google
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+              {lastMethod === "google" && (
+                <View style={{ position: "absolute", top: -10, right: -4 }}>
+                  <LastUsedIndicator />
+                </View>
+              )}
+            </View>
 
-					{/* Email Button */}
-					<View style={{ position: "relative" }}>
-						<Link href="/(auth)/email/signin" asChild>
-							<Pressable
-								style={{
-									backgroundColor: CUC_COLORS.navy,
-									paddingVertical: 16,
-									borderRadius: 12,
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "center",
-									borderWidth: 1,
-									borderColor: CUC_COLORS.sage,
-								}}
-							>
-								<Text
-									style={{
-										color: CUC_COLORS.cream,
-										fontSize: 16,
-										fontWeight: "500",
-									}}
-								>
-									Continue with Email
-								</Text>
-							</Pressable>
-						</Link>
-						{lastMethod === "email" && (
-							<View
-								style={{
-									position: "absolute",
-									top: -10,
-									right: -4,
-								}}
-							>
-								<LastUsedIndicator />
-							</View>
-						)}
-					</View>
+            {/* Apple */}
+            <View style={{ flex: 1, position: "relative" }}>
+              <Pressable
+                disabled={isLoading}
+                onPress={signInWithApple}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  backgroundColor: CUC_COLORS.white,
+                  paddingVertical: 14,
+                  borderRadius: 12,
+                  opacity: isLoading ? 0.7 : 1,
+                }}
+              >
+                {isAppleLoading ? (
+                  <ActivityIndicator color={CUC_COLORS.navy} size="small" />
+                ) : (
+                  <>
+                    <Ionicons
+                      color={CUC_COLORS.navy}
+                      name="logo-apple"
+                      size={20}
+                    />
+                    <Text
+                      style={{
+                        color: CUC_COLORS.navy,
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    >
+                      Apple
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+              {lastMethod === "apple" && (
+                <View style={{ position: "absolute", top: -10, right: -4 }}>
+                  <LastUsedIndicator />
+                </View>
+              )}
+            </View>
+          </View>
 
-					{/* Sign Up Link */}
-					<View className="flex-row justify-center items-center gap-1 mt-2">
-						<Text style={{ color: CUC_COLORS.sage, fontSize: 14 }}>
-							Don't have an account?
-						</Text>
-						<Link href="/(auth)/email/signup" asChild>
-							<Pressable>
-								<Text
-									style={{
-										color: CUC_COLORS.cream,
-										fontSize: 14,
-										fontWeight: "600",
-										textDecorationLine: "underline",
-									}}
-								>
-									Sign Up
-								</Text>
-							</Pressable>
-						</Link>
-					</View>
-				</View>
-			</View>
-		</ImageBackground>
-	);
+          {/* Email Button */}
+          <View style={{ position: "relative" }}>
+            <Link asChild href="/(auth)/email/signin">
+              <Pressable
+                style={{
+                  backgroundColor: CUC_COLORS.navy,
+                  paddingVertical: 16,
+                  borderRadius: 12,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                  borderColor: CUC_COLORS.sage,
+                }}
+              >
+                <Text
+                  style={{
+                    color: CUC_COLORS.cream,
+                    fontSize: 16,
+                    fontWeight: "500",
+                  }}
+                >
+                  Continue with Email
+                </Text>
+              </Pressable>
+            </Link>
+            {lastMethod === "email" && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: -10,
+                  right: -4,
+                }}
+              >
+                <LastUsedIndicator />
+              </View>
+            )}
+          </View>
+
+          {/* Sign Up Link */}
+          <View className="mt-2 flex-row items-center justify-center gap-1">
+            <Text style={{ color: CUC_COLORS.sage, fontSize: 14 }}>
+              Don't have an account?
+            </Text>
+            <Link asChild href="/(auth)/email/signup">
+              <Pressable>
+                <Text
+                  style={{
+                    color: CUC_COLORS.cream,
+                    fontSize: 14,
+                    fontWeight: "600",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  Sign Up
+                </Text>
+              </Pressable>
+            </Link>
+          </View>
+        </View>
+      </View>
+    </ImageBackground>
+  );
 }

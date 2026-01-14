@@ -4,44 +4,42 @@ import { useMemo } from "react";
 import { Platform } from "react-native";
 
 export const useNavigationOptions = () => {
-	const background = useThemeColor("background");
-	const foreground = useThemeColor("foreground");
+  const background = useThemeColor("background");
+  const foreground = useThemeColor("foreground");
 
-	return useMemo(() => {
-		const root: NativeStackNavigationOptions = {
-			contentStyle: {
-				backgroundColor: background,
-			},
-		};
+  return useMemo(() => {
+    const root: NativeStackNavigationOptions = {
+      contentStyle: {
+        backgroundColor: background,
+      },
+    };
 
-		const base: NativeStackNavigationOptions = {
-			headerTintColor: foreground,
-			headerTitleAlign: "center",
-			headerLargeTitleShadowVisible: false,
-			headerLargeTitleStyle: {
-				color: foreground,
-			},
-			headerShadowVisible: false,
-			contentStyle: { backgroundColor: background },
-		};
+    const base: NativeStackNavigationOptions = {
+      headerTintColor: foreground,
+      headerTitleAlign: "center",
+      headerLargeTitleShadowVisible: false,
+      headerLargeTitleStyle: {
+        color: foreground,
+      },
+      headerShadowVisible: false,
+      contentStyle: { backgroundColor: background },
+    };
 
-		return {
-			root,
-			standard: {
-				...base,
-				headerStyle: {
-					backgroundColor:
-						Platform.OS === "ios" ? "transparent" : background,
-				},
-				headerTransparent: Platform.OS === "ios",
-			},
-			modal: {
-				...base,
-				headerStyle: {
-					backgroundColor:
-						Platform.OS === "ios" ? "transparent" : background,
-				},
-			},
-		};
-	}, [background, foreground]);
+    return {
+      root,
+      standard: {
+        ...base,
+        headerStyle: {
+          backgroundColor: Platform.OS === "ios" ? "transparent" : background,
+        },
+        headerTransparent: Platform.OS === "ios",
+      },
+      modal: {
+        ...base,
+        headerStyle: {
+          backgroundColor: Platform.OS === "ios" ? "transparent" : background,
+        },
+      },
+    };
+  }, [background, foreground]);
 };

@@ -9,8 +9,8 @@ const defaultConfig = getDefaultConfig(__dirname);
 
 // Apply UniWind config
 const uniwindConfig = withUniwindConfig(defaultConfig, {
-	cssEntryFile: "./global.css",
-	dtsFile: "./uniwind-types.d.ts",
+  cssEntryFile: "./global.css",
+  dtsFile: "./uniwind-types.d.ts",
 });
 
 // Apply monorepo and turborepo config
@@ -33,19 +33,19 @@ module.exports = config;
  * @returns {import('expo/metro-config').MetroConfig}
  */
 function withMonorepoPaths(config) {
-	const projectRoot = __dirname;
-	const workspaceRoot = path.resolve(projectRoot, "../..");
+  const projectRoot = import.meta.dirname;
+  const workspaceRoot = path.resolve(projectRoot, "../..");
 
-	// #1 - Watch all files in the monorepo
-	config.watchFolders = [workspaceRoot];
+  // #1 - Watch all files in the monorepo
+  config.watchFolders = [workspaceRoot];
 
-	// #2 - Resolve modules within the project's `node_modules` first, then all monorepo modules
-	config.resolver.nodeModulesPaths = [
-		path.resolve(projectRoot, "node_modules"),
-		path.resolve(workspaceRoot, "node_modules"),
-	];
+  // #2 - Resolve modules within the project's `node_modules` first, then all monorepo modules
+  config.resolver.nodeModulesPaths = [
+    path.resolve(projectRoot, "node_modules"),
+    path.resolve(workspaceRoot, "node_modules"),
+  ];
 
-	return config;
+  return config;
 }
 
 /**
@@ -57,8 +57,8 @@ function withMonorepoPaths(config) {
  * @returns {import('expo/metro-config').MetroConfig}
  */
 function withTurborepoManagedCache(config) {
-	config.cacheStores = [
-		new FileStore({ root: path.join(__dirname, ".cache/metro") }),
-	];
-	return config;
+  config.cacheStores = [
+    new FileStore({ root: path.join(__dirname, ".cache/metro") }),
+  ];
+  return config;
 }

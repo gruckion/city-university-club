@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { authClient } from "../auth-client";
 
-export const useGoogleAuth = () => {
+export const useGitHubAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const signIn = async () => {
     setIsLoading(true);
     try {
       await authClient.signIn.social({
-        provider: "google",
+        provider: "github",
         callbackURL: "/",
       });
     } catch (error) {
-      console.error("Google sign in error:", error);
+      console.error("GitHub sign in error:", error);
     } finally {
       setIsLoading(false);
     }
