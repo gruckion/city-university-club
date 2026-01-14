@@ -1,20 +1,17 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Button, Surface, useThemeColor } from "heroui-native";
 import {
 	ImageBackground,
 	Pressable,
 	Text,
 	View,
 	Image,
-	Dimensions,
 	StatusBar,
 } from "react-native";
-import { Container } from "@/components/container";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
-import { authClient } from "@/lib/auth-client";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MembershipCard } from "@/components/MembershipCard";
 
 // CUC brand colors from design.md
 const CUC_COLORS = {
@@ -24,13 +21,9 @@ const CUC_COLORS = {
 	white: "#ffffff",
 };
 
-// Background image from user input
-const HERO_IMAGE_URL =
-	"https://static.wixstatic.com/media/5e0aaa_ccdcbf3fc2554b5dade459417f201713~mv2.jpg/v1/fill/w_1770,h_1184,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/5e0aaa_ccdcbf3fc2554b5dade459417f201713~mv2.jpg";
-
-// Logo URL from design.md
-const LOGO_URL =
-	"https://static.wixstatic.com/media/5e0aaa_0e0a73fe0edb472b8eebfde40d24d47f~mv2.png/v1/fill/w_102,h_102,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Untitled%20(Instagram%20Post).png";
+// Local assets for instant loading
+const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
+const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
 
 function getGreeting(): string {
 	const hour = new Date().getHours();
@@ -49,7 +42,7 @@ export default function Home() {
 	if (!isAuthenticated) {
 		return (
 			<ImageBackground
-				source={{ uri: HERO_IMAGE_URL }}
+				source={HERO_IMAGE}
 				style={{ flex: 1 }}
 				resizeMode="cover"
 			>
@@ -64,9 +57,9 @@ export default function Home() {
 					{/* Header */}
 					<View className="flex-row items-center justify-between px-4 py-3">
 						<View className="flex-row items-center gap-3">
-							<View className="w-16 h-16 rounded-full bg-white items-center justify-center overflow-hidden">
+							<View className="w-16 h-16 rounded-full bg-transparent items-center justify-center overflow-hidden">
 								<Image
-									source={{ uri: LOGO_URL }}
+									source={CUC_LOGO}
 									style={{ width: 56, height: 56 }}
 									resizeMode="contain"
 								/>
@@ -147,7 +140,7 @@ export default function Home() {
 
 	return (
 		<ImageBackground
-			source={{ uri: HERO_IMAGE_URL }}
+			source={HERO_IMAGE}
 			style={{ flex: 1 }}
 			resizeMode="cover"
 		>
@@ -159,13 +152,13 @@ export default function Home() {
 					paddingTop: insets.top,
 				}}
 			>
-				{/* Header with Logo, Greeting and Notification */}
+				{/* Header with Logo and Greeting */}
 				<View className="flex-row items-center justify-between px-4 py-3">
 					<View className="flex-row items-center gap-3">
 						{/* Logo */}
 						<View className="w-16 h-16 rounded-full bg-white items-center justify-center overflow-hidden">
 							<Image
-								source={{ uri: LOGO_URL }}
+								source={CUC_LOGO}
 								style={{ width: 56, height: 56 }}
 								resizeMode="contain"
 							/>
@@ -187,48 +180,16 @@ export default function Home() {
 							</Text>
 						</View>
 					</View>
-
-					{/* Notification Bell */}
-					<Pressable
-						style={{
-							width: 44,
-							height: 44,
-							borderRadius: 22,
-							backgroundColor: "rgba(255, 255, 255, 0.15)",
-							alignItems: "center",
-							justifyContent: "center",
-						}}
-					>
-						<Ionicons name="notifications-outline" size={24} color={CUC_COLORS.cream} />
-					</Pressable>
 				</View>
 
-				{/* Main content area - spacer for the background image */}
-				<View className="flex-1" />
-
-				{/* Membership Card Button */}
-				<View className="px-6 pb-6">
-					<Pressable
-						onPress={() => router.push("/(tabs)/more")}
-						style={{
-							backgroundColor: CUC_COLORS.navy,
-							paddingVertical: 16,
-							paddingHorizontal: 24,
-							borderRadius: 8,
-							alignItems: "center",
-						}}
-					>
-						<Text
-							style={{
-								color: CUC_COLORS.cream,
-								fontSize: 16,
-								fontWeight: "500",
-							}}
-						>
-							Membership Card
-						</Text>
-					</Pressable>
+				{/* Main content area with Membership Card */}
+				<View className="flex-1 justify-center">
+					<MembershipCard
+						memberName={user?.name || "Member"}
+						memberSince={user?._creationTime ? new Date(user._creationTime).toISOString() : undefined}
+					/>
 				</View>
+
 			</View>
 		</ImageBackground>
 	);

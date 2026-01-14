@@ -1,24 +1,34 @@
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Link, Stack } from "expo-router";
-import { useThemeColor } from "heroui-native";
-import { Pressable, Text } from "react-native";
-import { useNavigationOptions } from "@/hooks/useNavigationOptions";
+import { Pressable } from "react-native";
+
+// CUC brand colors
+const CUC_COLORS = {
+	navy: "#06273a",
+	sage: "#85b09a",
+	cream: "#fffef8",
+	white: "#ffffff",
+};
 
 export default function EmailLayout() {
-	const { modal } = useNavigationOptions();
 	return (
 		<Stack
 			screenOptions={{
 				gestureEnabled: false,
 				headerTransparent: true,
-				...modal,
+				headerStyle: {
+					backgroundColor: CUC_COLORS.cream,
+				},
+				headerTintColor: CUC_COLORS.navy,
+				contentStyle: {
+					backgroundColor: CUC_COLORS.cream,
+				},
 			}}
 		>
 			<Stack.Screen
 				name="signin"
 				options={{
 					headerLeft: () => <CloseButton />,
-					headerRight: () => <SignUpButton />,
 					title: "",
 				}}
 			/>
@@ -26,12 +36,14 @@ export default function EmailLayout() {
 				name="signup"
 				options={{
 					title: "",
+					headerBackTitle: "Sign In",
 				}}
 			/>
 			<Stack.Screen
 				name="(reset)/request-password-reset"
 				options={{
 					title: "",
+					headerBackTitle: "Sign In",
 				}}
 			/>
 			<Stack.Screen
@@ -44,24 +56,22 @@ export default function EmailLayout() {
 	);
 }
 
-/* ------------------------------ close button ------------------------------ */
 const CloseButton = () => {
-	const foreground = useThemeColor("foreground");
 	return (
 		<Link href=".." asChild>
-			<Pressable className="justify-center rounded-full p-2">
-				<Ionicons name="close" size={22} color={foreground} />
+			<Pressable
+				style={{
+					width: 36,
+					height: 36,
+					borderRadius: 18,
+					backgroundColor: `${CUC_COLORS.navy}10`,
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				<Ionicons name="close" size={20} color={CUC_COLORS.navy} />
 			</Pressable>
 		</Link>
 	);
 };
 
-const SignUpButton = () => {
-	return (
-		<Link href="/(auth)/email/signup" asChild>
-			<Pressable className="justify-center rounded-full px-3">
-				<Text className="text-foreground">Sign Up</Text>
-			</Pressable>
-		</Link>
-	);
-};

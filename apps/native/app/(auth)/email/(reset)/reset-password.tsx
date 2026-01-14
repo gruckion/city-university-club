@@ -1,22 +1,49 @@
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { Button, Spinner, TextField, useThemeColor } from "heroui-native";
 import { useState } from "react";
-import { Alert, Text, View } from "react-native";
-import FormHeader, { FormContainer } from "@/components/form";
+import { Alert, Text, View, Pressable } from "react-native";
+import FormHeader, {
+	FormContainer,
+	StyledTextInput,
+	StyledButton,
+	CUC_COLORS,
+} from "@/components/form";
 import { authClient } from "@/lib/auth-client";
 
+/**
+ * Sanitize error messages for password reset
+ */
+function getSafeErrorMessage(errorMessage: string | undefined): string {
+	const lowerMessage = (errorMessage || "").toLowerCase();
+
+	if (
+		lowerMessage.includes("token") ||
+		lowerMessage.includes("expired") ||
+		lowerMessage.includes("invalid")
+	) {
+		return "This reset link has expired or is invalid. Please request a new one.";
+	}
+
+	if (
+		lowerMessage.includes("password") &&
+		(lowerMessage.includes("weak") || lowerMessage.includes("short"))
+	) {
+		return "Password does not meet requirements. Please use at least 6 characters.";
+	}
+
+	return "Unable to reset password. Please try again or request a new reset link.";
+}
+
 export default function ResetPasswordRoute() {
-	const background = useThemeColor("background");
 	const router = useRouter();
 	const { token, error } = useLocalSearchParams<{
 		token: string;
 		error?: string;
 	}>();
-	/* ---------------------------------- state --------------------------------- */
+
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	/* ------------------------- handle reset password ------------------------- */
+
 	const handleResetPassword = async () => {
 		if (!password) {
 			Alert.alert("Error", "Please enter your new password");
@@ -32,7 +59,8 @@ export default function ResetPasswordRoute() {
 			Alert.alert("Error", "Password must be at least 6 characters");
 			return;
 		}
-		const { error: resetError, data } = await authClient.resetPassword(
+
+		await authClient.resetPassword(
 			{
 				newPassword: password,
 				token: token,
@@ -43,83 +71,108 @@ export default function ResetPasswordRoute() {
 				},
 				onError: (ctx) => {
 					setIsLoading(false);
-					Alert.alert("Error", ctx.error.message || "Failed to reset password");
+					Alert.alert("Error", getSafeErrorMessage(ctx.error.message));
 				},
 				onSuccess: () => {
 					setIsLoading(false);
-					console.log("success!");
-					Alert.alert("Success", "Password reset successfully");
+					Alert.alert("Success", "Password reset successfully. Please sign in with your new password.");
 					router.back();
 				},
 			},
 		);
-		console.log(data, resetError);
 	};
-	/* --------------------------------- invalid token --------------------------------- */
+
+	// Invalid token state
 	if (error === "INVALID_TOKEN" || !token) {
 		return (
-			<View className="flex-1 bg-background">
-				<View className="flex-1 justify-center px-6">
-					<View className="mb-8 text-center">
-						<Text className="mb-4 font-bold text-2xl text-foreground">
-							Invalid Link
-						</Text>
-						<Text className="text-muted-foreground">
-							This reset link has already been used or is invalid
-						</Text>
-					</View>
-					<Link href="/(auth)/email/signin" asChild>
-						<Button className="rounded-2xl">
-							<Button.Label>Back to Sign In</Button.Label>
-						</Button>
-					</Link>
+			<View
+				style={{
+					flex: 1,
+					backgroundColor: CUC_COLORS.cream,
+					justifyContent: "center",
+					paddingHorizontal: 24,
+				}}
+			>
+				<View style={{ alignItems: "center", marginBottom: 32 }}>
+					<Text
+						style={{
+							fontSize: 28,
+							fontWeight: "300",
+							fontFamily: "serif",
+							color: CUC_COLORS.navy,
+							marginBottom: 12,
+							textAlign: "center",
+						}}
+					>
+						Invalid Link
+					</Text>
+					<Text
+						style={{
+							fontSize: 15,
+							color: "#666",
+							textAlign: "center",
+							lineHeight: 22,
+						}}
+					>
+						This reset link has expired or is invalid. Please request a new one.
+					</Text>
 				</View>
+				<Link href="/(auth)/email/signin" asChild>
+					<Pressable
+						style={{
+							backgroundColor: CUC_COLORS.navy,
+							borderRadius: 12,
+							paddingVertical: 16,
+							alignItems: "center",
+						}}
+					>
+						<Text
+							style={{
+								color: CUC_COLORS.cream,
+								fontSize: 16,
+								fontWeight: "600",
+							}}
+						>
+							Back to Sign In
+						</Text>
+					</Pressable>
+				</Link>
 			</View>
 		);
 	}
-	/* --------------------------------- return --------------------------------- */
+
 	return (
 		<FormContainer>
-			{/* header */}
 			<FormHeader
-				title="Reset Password"
+				title="New Password"
 				description="Enter your new password to complete the reset"
 			/>
-			{/* new password */}
-			<TextField isRequired>
-				<TextField.Label>New Password</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
-					placeholder="Enter your new password"
-					secureTextEntry
-					value={password}
-					onChangeText={setPassword}
+
+			<StyledTextInput
+				label="New Password"
+				placeholder="Enter your new password"
+				value={password}
+				onChangeText={setPassword}
+				secureTextEntry
+				textContentType="password"
+			/>
+
+			<StyledTextInput
+				label="Confirm Password"
+				placeholder="Confirm your new password"
+				value={confirmPassword}
+				onChangeText={setConfirmPassword}
+				secureTextEntry
+				textContentType="password"
+			/>
+
+			<View style={{ marginTop: 8 }}>
+				<StyledButton
+					onPress={handleResetPassword}
+					label="Reset Password"
+					isLoading={isLoading}
 				/>
-			</TextField>
-			{/* confirm password */}
-			<TextField isRequired>
-				<TextField.Label>Confirm Password</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
-					placeholder="Confirm your new password"
-					secureTextEntry
-					value={confirmPassword}
-					onChangeText={setConfirmPassword}
-				/>
-			</TextField>
-			{/* submit button */}
-			<Button
-				onPress={handleResetPassword}
-				isDisabled={isLoading}
-				className="rounded-2xl"
-				size="lg"
-			>
-				{isLoading ? (
-					<Spinner color={background} />
-				) : (
-					<Button.Label>Reset Password</Button.Label>
-				)}
-			</Button>
+			</View>
 		</FormContainer>
 	);
 }

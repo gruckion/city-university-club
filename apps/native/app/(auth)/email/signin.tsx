@@ -1,17 +1,58 @@
 import { Link } from "expo-router";
-import { Button, Spinner, TextField, useThemeColor } from "heroui-native";
 import { useState } from "react";
-import { Alert } from "react-native";
-import FormHeader, { FormContainer } from "@/components/form";
+import { Alert, Pressable, Text, View } from "react-native";
+import FormHeader, {
+	FormContainer,
+	StyledTextInput,
+	StyledButton,
+	CUC_COLORS,
+} from "@/components/form";
 import { authClient } from "@/lib/auth-client";
 
+/**
+ * Sanitize error messages to prevent information disclosure
+ * This prevents email enumeration attacks by using generic messages
+ */
+function getSafeErrorMessage(errorMessage: string | undefined): string {
+	const lowerMessage = (errorMessage || "").toLowerCase();
+
+	// Map specific revealing errors to generic messages
+	// Don't reveal whether email exists or password is wrong
+	if (
+		lowerMessage.includes("user not found") ||
+		lowerMessage.includes("no user") ||
+		lowerMessage.includes("invalid email") ||
+		lowerMessage.includes("invalid password") ||
+		lowerMessage.includes("incorrect password") ||
+		lowerMessage.includes("wrong password") ||
+		lowerMessage.includes("invalid credentials")
+	) {
+		return "Invalid email or password. Please try again.";
+	}
+
+	if (
+		lowerMessage.includes("too many") ||
+		lowerMessage.includes("rate limit")
+	) {
+		return "Too many attempts. Please try again later.";
+	}
+
+	if (
+		lowerMessage.includes("account locked") ||
+		lowerMessage.includes("account disabled")
+	) {
+		return "Unable to sign in. Please contact support.";
+	}
+
+	// Generic fallback for any other errors
+	return "Unable to sign in. Please check your credentials and try again.";
+}
+
 export default function SignInRoute() {
-	const background = useThemeColor("background");
-	/* ---------------------------------- state --------------------------------- */
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	/* ----------------------------- handle sign in ----------------------------- */
+
 	const handleSignIn = async () => {
 		if (!email.trim()) {
 			Alert.alert("Error", "Please enter your email");
@@ -22,7 +63,7 @@ export default function SignInRoute() {
 			return;
 		}
 
-		const { data, error } = await authClient.signIn.email(
+		await authClient.signIn.email(
 			{
 				email: email.trim(),
 				password: password,
@@ -34,76 +75,94 @@ export default function SignInRoute() {
 				},
 				onError: (ctx) => {
 					setIsLoading(false);
-					Alert.alert("Error", ctx.error.message || "Failed to sign in");
+					// Use sanitized error message to prevent email enumeration
+					Alert.alert("Error", getSafeErrorMessage(ctx.error.message));
 				},
 				onSuccess: () => {
 					setIsLoading(false);
-					console.log("success!");
+					// Navigation is handled automatically by Stack.Protected guards
 				},
 			},
 		);
-		console.log(data, error);
 	};
-	/* --------------------------------- return --------------------------------- */
+
 	return (
 		<FormContainer>
-			{/* header */}
 			<FormHeader
-				title="Login"
-				description="Enter your email and password to login"
+				title="Welcome Back"
+				description="Sign in to access your membership and exclusive club features"
 			/>
 
-			{/* email text-field*/}
-			<TextField isRequired>
-				<TextField.Label>Email</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
-					placeholder="Enter your email"
-					keyboardType="email-address"
-					autoCapitalize="none"
-					autoCorrect={false}
-					textContentType="emailAddress"
-					value={email}
-					onChangeText={setEmail}
+			<StyledTextInput
+				label="Email Address"
+				placeholder="Enter your email"
+				value={email}
+				onChangeText={setEmail}
+				keyboardType="email-address"
+				autoCapitalize="none"
+				autoCorrect={false}
+				textContentType="emailAddress"
+				autoComplete="email"
+			/>
+
+			<StyledTextInput
+				label="Password"
+				placeholder="Enter your password"
+				value={password}
+				onChangeText={setPassword}
+				secureTextEntry
+				textContentType="password"
+				autoComplete="password"
+			/>
+
+			<View style={{ marginTop: 8 }}>
+				<StyledButton
+					onPress={handleSignIn}
+					label="Sign In"
+					isLoading={isLoading}
 				/>
-			</TextField>
+			</View>
 
-			{/* password text-field */}
-			<TextField isRequired>
-				<TextField.Label>Password</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
-					placeholder="Enter your password"
-					secureTextEntry
-					value={password}
-					onChangeText={setPassword}
-				/>
-			</TextField>
-
-			{/* submit button */}
-			<Button
-				onPress={handleSignIn}
-				isDisabled={isLoading}
-				size="lg"
-				className="rounded-2xl"
-			>
-				{isLoading ? (
-					<Spinner color={background} />
-				) : (
-					<Button.Label>Sign In</Button.Label>
-				)}
-			</Button>
-
-			{/* forgot password route */}
 			<Link href="/(auth)/email/(reset)/request-password-reset" asChild>
-				<Button
-					variant="tertiary"
-					size="sm"
-					className="self-center rounded-2xl"
-				>
-					<Button.Label>Forgot Password?</Button.Label>
-				</Button>
+				<Pressable style={{ alignSelf: "center", paddingVertical: 8 }}>
+					<Text
+						style={{
+							color: CUC_COLORS.sage,
+							fontSize: 14,
+							fontWeight: "500",
+						}}
+					>
+						Forgot Password?
+					</Text>
+				</Pressable>
 			</Link>
+
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItems: "center",
+					marginTop: 24,
+					gap: 4,
+				}}
+			>
+				<Text style={{ color: "#666", fontSize: 14 }}>
+					Don't have an account?
+				</Text>
+				<Link href="/(auth)/email/signup" replace asChild>
+					<Pressable>
+						<Text
+							style={{
+								color: CUC_COLORS.sage,
+								fontSize: 14,
+								fontWeight: "600",
+							}}
+						>
+							Sign Up
+						</Text>
+					</Pressable>
+				</Link>
+			</View>
 		</FormContainer>
 	);
 }

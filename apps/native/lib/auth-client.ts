@@ -1,6 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
 import { expoClient } from "@better-auth/expo/client";
+import { lastLoginMethodClient } from "better-auth/client/plugins";
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import { env } from "@convoexpo-and-nextjs-web-bun-better-auth/env/native";
@@ -14,5 +15,6 @@ export const authClient = createAuthClient({
 			storage: SecureStore,
 		}),
 		convexClient(),
+		lastLoginMethodClient(),
 	],
 });

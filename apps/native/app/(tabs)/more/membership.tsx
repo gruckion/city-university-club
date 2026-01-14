@@ -1,0 +1,210 @@
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Text, View, Pressable } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useConvexAuth, useQuery } from "convex/react";
+import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
+import { MembershipCard } from "@/components/MembershipCard";
+
+// CUC brand colors
+const CUC_COLORS = {
+	navy: "#06273a",
+	sage: "#85b09a",
+	cream: "#fffef8",
+	white: "#ffffff",
+};
+
+export default function MembershipScreen() {
+	const router = useRouter();
+	const insets = useSafeAreaInsets();
+	const { isAuthenticated } = useConvexAuth();
+	const user = useQuery(api.auth.getCurrentUser, isAuthenticated ? {} : "skip");
+
+	const handleSignIn = () => {
+		router.push("/(auth)/landing");
+	};
+
+	return (
+		<View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+			{/* Header */}
+			<View
+				style={{
+					backgroundColor: CUC_COLORS.navy,
+					paddingTop: insets.top + 8,
+					paddingBottom: 20,
+					paddingHorizontal: 16,
+				}}
+			>
+				<View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+					<Pressable
+						onPress={() => router.back()}
+						style={{
+							width: 40,
+							height: 40,
+							borderRadius: 20,
+							backgroundColor: "rgba(255, 255, 255, 0.15)",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<Ionicons name="arrow-back" size={24} color={CUC_COLORS.cream} />
+					</Pressable>
+					<Text
+						style={{
+							color: CUC_COLORS.cream,
+							fontSize: 24,
+							fontWeight: "300",
+							fontFamily: "serif",
+						}}
+					>
+						Membership Card
+					</Text>
+				</View>
+			</View>
+
+			{/* Content */}
+			<View
+				style={{
+					flex: 1,
+					justifyContent: "center",
+					alignItems: "center",
+					paddingHorizontal: 24,
+				}}
+			>
+				{/* TODO: restore auth check - temporarily disabled for testing */}
+				{false && !isAuthenticated ? (
+					// Not logged in state
+					<View style={{ alignItems: "center", paddingHorizontal: 16 }}>
+						<View
+							style={{
+								width: 100,
+								height: 100,
+								borderRadius: 50,
+								backgroundColor: `${CUC_COLORS.navy}10`,
+								alignItems: "center",
+								justifyContent: "center",
+								marginBottom: 24,
+							}}
+						>
+							<Ionicons name="card" size={48} color={CUC_COLORS.navy} />
+						</View>
+
+						<Text
+							style={{
+								color: CUC_COLORS.navy,
+								fontSize: 24,
+								fontWeight: "300",
+								fontFamily: "serif",
+								textAlign: "center",
+								marginBottom: 12,
+							}}
+						>
+							Members Only
+						</Text>
+
+						<Text
+							style={{
+								color: "#666",
+								fontSize: 16,
+								textAlign: "center",
+								lineHeight: 24,
+								marginBottom: 32,
+							}}
+						>
+							Sign in to access your digital membership card. Show it when
+							visiting the club or any of our 450+ reciprocal clubs worldwide.
+						</Text>
+
+						<Pressable
+							onPress={handleSignIn}
+							style={{
+								backgroundColor: CUC_COLORS.navy,
+								paddingVertical: 16,
+								paddingHorizontal: 48,
+								borderRadius: 8,
+							}}
+						>
+							<Text
+								style={{
+									color: CUC_COLORS.cream,
+									fontSize: 16,
+									fontWeight: "500",
+								}}
+							>
+								Sign In
+							</Text>
+						</Pressable>
+					</View>
+				) : (
+					// Logged in - show membership card
+					<View style={{ alignItems: "center", width: "100%" }}>
+						{/* Membership Card */}
+						<MembershipCard
+							memberName={user?.name || "Member"}
+							memberSince={user?._creationTime ? new Date(user._creationTime).toISOString() : undefined}
+						/>
+
+						{/* Card info */}
+						<View
+							style={{
+								marginTop: 32,
+								backgroundColor: CUC_COLORS.white,
+								borderRadius: 12,
+								padding: 16,
+								width: "100%",
+								shadowColor: "#000",
+								shadowOffset: { width: 0, height: 2 },
+								shadowOpacity: 0.08,
+								shadowRadius: 4,
+								elevation: 2,
+							}}
+						>
+							<View
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+									gap: 12,
+								}}
+							>
+								<View
+									style={{
+										width: 44,
+										height: 44,
+										borderRadius: 22,
+										backgroundColor: `${CUC_COLORS.sage}20`,
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
+									<Ionicons
+										name="information-circle"
+										size={24}
+										color={CUC_COLORS.sage}
+									/>
+								</View>
+								<View style={{ flex: 1 }}>
+									<Text
+										style={{
+											color: CUC_COLORS.navy,
+											fontSize: 15,
+											fontWeight: "500",
+											marginBottom: 2,
+										}}
+									>
+										Show at entry
+									</Text>
+									<Text style={{ color: "#888", fontSize: 13 }}>
+										Present this card when visiting the club or reciprocal clubs
+									</Text>
+								</View>
+							</View>
+						</View>
+					</View>
+				)}
+			</View>
+
+			{/* Bottom padding for safe area */}
+			<View style={{ height: insets.bottom + 16 }} />
+		</View>
+	);
+}

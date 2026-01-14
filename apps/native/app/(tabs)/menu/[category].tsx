@@ -1,8 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Text, View, ScrollView, Image, Pressable } from "react-native";
+import { Image } from "expo-image";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MENU_DATA } from "./index";
+
+// Generic food blurhash placeholder (warm brown/beige tones)
+const FOOD_BLURHASH = "LKJRyV~qIU-;_3M{ofRj9Fxut7WB";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -116,9 +120,12 @@ function MenuItem({
 		>
 			{item.image && (
 				<Image
-					source={{ uri: item.image }}
+					source={item.image}
 					style={{ width: "100%", height: 180 }}
-					resizeMode="cover"
+					contentFit="cover"
+					cachePolicy="memory-disk"
+					placeholder={{ blurhash: FOOD_BLURHASH }}
+					transition={200}
 				/>
 			)}
 			<View style={{ padding: 16 }}>

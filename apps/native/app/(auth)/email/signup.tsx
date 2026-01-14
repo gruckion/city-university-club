@@ -1,19 +1,55 @@
 import { Link } from "expo-router";
-import { Button, Spinner, TextField, useThemeColor } from "heroui-native";
 import { useState } from "react";
-import { Alert, Text } from "react-native";
-import FormHeader, { FormContainer } from "@/components/form";
+import { Alert, Pressable, Text, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import FormHeader, {
+	FormContainer,
+	StyledTextInput,
+	StyledButton,
+	CUC_COLORS,
+} from "@/components/form";
 import { authClient } from "@/lib/auth-client";
 
+/**
+ * Sanitize error messages to prevent information disclosure
+ * This prevents email enumeration attacks by using generic messages
+ */
+function getSafeErrorMessage(errorMessage: string | undefined): string {
+	const lowerMessage = (errorMessage || "").toLowerCase();
+
+	// Map specific revealing errors to generic messages
+	if (
+		lowerMessage.includes("user already exists") ||
+		lowerMessage.includes("email already") ||
+		lowerMessage.includes("already registered")
+	) {
+		return "Unable to create account. Please check your details or try signing in.";
+	}
+
+	if (
+		lowerMessage.includes("invalid email") ||
+		lowerMessage.includes("email format")
+	) {
+		return "Please enter a valid email address.";
+	}
+
+	if (
+		lowerMessage.includes("password") &&
+		(lowerMessage.includes("weak") || lowerMessage.includes("short"))
+	) {
+		return "Password does not meet requirements. Please use at least 6 characters.";
+	}
+
+	// Generic fallback for any other errors
+	return "Unable to create account. Please try again.";
+}
+
 export default function SignUpRoute() {
-	const background = useThemeColor("background");
-	/* ---------------------------------- state --------------------------------- */
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	/* ------------------------------ handle signup ----------------------------- */
+
 	const handleSignUp = async () => {
 		if (!name.trim()) {
 			Alert.alert("Error", "Please enter your name");
@@ -35,7 +71,7 @@ export default function SignUpRoute() {
 			return;
 		}
 
-		const { data, error } = await authClient.signUp.email(
+		await authClient.signUp.email(
 			{
 				name: name.trim(),
 				email: email.trim(),
@@ -47,94 +83,137 @@ export default function SignUpRoute() {
 				},
 				onError: (ctx) => {
 					setIsLoading(false);
-					Alert.alert("Error", ctx.error.message || "Failed to sign up");
+					// Use sanitized error message to prevent email enumeration
+					Alert.alert("Error", getSafeErrorMessage(ctx.error.message));
 				},
 				onSuccess: () => {
 					setIsLoading(false);
-					console.log("success!");
+					// Navigation is handled automatically by Stack.Protected guards
 				},
 			},
 		);
-		console.log(data, error);
 	};
-	/* --------------------------------- return --------------------------------- */
+
 	return (
-		<FormContainer>
-			{/* header */}
-			<FormHeader
-				title="Sign Up"
-				description="Create your account to get started"
-			/>
-			{/* name */}
-			<TextField isRequired>
-				<TextField.Label>Full Name</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
+		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+			style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}
+		>
+			<ScrollView
+				style={{ flex: 1 }}
+				contentContainerStyle={{
+					paddingHorizontal: 24,
+					paddingTop: 100,
+					paddingBottom: 40,
+					gap: 16,
+				}}
+				keyboardShouldPersistTaps="handled"
+			>
+				<FormHeader
+					title="Create Account"
+					description="Join City University Club and enjoy exclusive member benefits"
+				/>
+
+				<StyledTextInput
+					label="Full Name"
 					placeholder="Enter your full name"
-					autoCapitalize="words"
 					value={name}
 					onChangeText={setName}
+					autoCapitalize="words"
+					textContentType="name"
+					autoComplete="name"
 				/>
-			</TextField>
-			{/* email */}
-			<TextField isRequired>
-				<TextField.Label>Email</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
+
+				<StyledTextInput
+					label="Email Address"
 					placeholder="Enter your email"
+					value={email}
+					onChangeText={setEmail}
 					keyboardType="email-address"
 					autoCapitalize="none"
 					autoCorrect={false}
 					textContentType="emailAddress"
-					value={email}
-					onChangeText={setEmail}
+					autoComplete="email"
 				/>
-			</TextField>
-			{/* password */}
-			<TextField isRequired>
-				<TextField.Label>Password</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
-					placeholder="Enter your password"
-					secureTextEntry
+
+				<StyledTextInput
+					label="Password"
+					placeholder="Create a password"
 					value={password}
 					onChangeText={setPassword}
-				/>
-			</TextField>
-			{/* confirm password */}
-			<TextField isRequired>
-				<TextField.Label>Confirm Password</TextField.Label>
-				<TextField.Input
-					className="h-14 rounded-2xl"
-					placeholder="Confirm your password"
 					secureTextEntry
+					textContentType="newPassword"
+					autoComplete="new-password"
+				/>
+
+				<StyledTextInput
+					label="Confirm Password"
+					placeholder="Confirm your password"
 					value={confirmPassword}
 					onChangeText={setConfirmPassword}
+					secureTextEntry
+					textContentType="newPassword"
+					autoComplete="new-password"
 				/>
-			</TextField>
-			{/* submit button */}
-			<Button
-				onPress={handleSignUp}
-				isDisabled={isLoading}
-				className="rounded-2xl"
-				size="lg"
-			>
-				{isLoading ? (
-					<Spinner color={background} />
-				) : (
-					<Button.Label>Sign Up</Button.Label>
-				)}
-			</Button>
-			<Text className="px-14 text-center text-muted-foreground text-sm">
-				by continuing you agree to our{" "}
-				<Link href="http://convex.dev" className="text-foreground underline">
-					terms of service
-				</Link>{" "}
-				and{" "}
-				<Link href="http://convex.dev" className="text-foreground underline">
-					privacy policy
-				</Link>
-			</Text>
-		</FormContainer>
+
+				<View style={{ marginTop: 8 }}>
+					<StyledButton
+						onPress={handleSignUp}
+						label="Create Account"
+						isLoading={isLoading}
+					/>
+				</View>
+
+				<Text
+					style={{
+						textAlign: "center",
+						color: "#666",
+						fontSize: 13,
+						lineHeight: 20,
+						paddingHorizontal: 20,
+					}}
+				>
+					By signing up, you agree to our{" "}
+					<Link href="https://cityuniversityclub.co.uk/terms" asChild>
+						<Text style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}>
+							Terms of Service
+						</Text>
+					</Link>{" "}
+					and{" "}
+					<Link href="https://cityuniversityclub.co.uk/privacy" asChild>
+						<Text style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}>
+							Privacy Policy
+						</Text>
+					</Link>
+				</Text>
+
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "center",
+						alignItems: "center",
+						marginTop: 8,
+						gap: 4,
+					}}
+				>
+					<Text style={{ color: "#666", fontSize: 14 }}>
+						Already have an account?
+					</Text>
+					<Link href="/(auth)/email/signin" replace asChild>
+						<Pressable>
+							<Text
+								style={{
+									color: CUC_COLORS.sage,
+									fontSize: 14,
+									fontWeight: "600",
+								}}
+							>
+								Sign In
+							</Text>
+						</Pressable>
+					</Link>
+				</View>
+			</ScrollView>
+		</KeyboardAvoidingView>
 	);
 }

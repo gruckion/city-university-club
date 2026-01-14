@@ -1,14 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-	Text,
-	View,
-	ScrollView,
-	Image,
-	Pressable,
-	Dimensions,
-} from "react-native";
+import { Image } from "expo-image";
+import { useEffect } from "react";
+import { Text, View, ScrollView, Pressable, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+// Generic food blurhash placeholder (warm brown/beige tones)
+const FOOD_BLURHASH = "LKJRyV~qIU-;_3M{ofRj9Fxut7WB";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -203,9 +201,23 @@ export const MENU_DATA = {
 	],
 };
 
+// Collect all menu images for prefetching
+const ALL_MENU_IMAGES = [
+	...MENU_CATEGORIES.map((c) => c.image),
+	...Object.values(MENU_DATA)
+		.flat()
+		.map((item) => item.image)
+		.filter(Boolean),
+] as string[];
+
 export default function MenuIndex() {
 	const router = useRouter();
 	const insets = useSafeAreaInsets();
+
+	// Prefetch all menu images on mount
+	useEffect(() => {
+		Image.prefetch(ALL_MENU_IMAGES, "memory-disk");
+	}, []);
 
 	return (
 		<View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
@@ -261,9 +273,12 @@ export default function MenuIndex() {
 						}}
 					>
 						<Image
-							source={{ uri: category.image }}
+							source={category.image}
 							style={{ width: "100%", height: 140 }}
-							resizeMode="cover"
+							contentFit="cover"
+							cachePolicy="memory-disk"
+							placeholder={{ blurhash: FOOD_BLURHASH }}
+							transition={200}
 						/>
 						<View style={{ padding: 16 }}>
 							<View

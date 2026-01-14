@@ -31,9 +31,10 @@
   },
   "packageManager": "bun@1.2.20",
   "dependencies": {
+    "@convoexpo-and-nextjs-web-bun-better-auth/env": "workspace:*",
     "dotenv": "catalog:",
-    "zod": "catalog:",
-    "@convoexpo-and-nextjs-web-bun-better-auth/env": "workspace:*"
+    "expo-splash-screen": "~31.0.13",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "typescript": "catalog:",

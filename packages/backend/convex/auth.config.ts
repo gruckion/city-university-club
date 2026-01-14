@@ -1,6 +1,14 @@
-import { getAuthConfigProvider } from "@convex-dev/better-auth/auth-config";
 import type { AuthConfig } from "convex/server";
 
+/**
+ * Auth configuration for Convex with Better Auth
+ * Uses explicit domain and applicationID for reliable JWT validation
+ */
 export default {
-  providers: [getAuthConfigProvider()],
+  providers: [
+    {
+      domain: process.env.CONVEX_SITE_URL || process.env.SITE_URL,
+      applicationID: "convex",
+    },
+  ],
 } satisfies AuthConfig;
