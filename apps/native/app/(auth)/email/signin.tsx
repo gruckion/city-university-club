@@ -1,12 +1,12 @@
 import { Link, router } from "expo-router";
-import { useState } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { useRef, useState } from "react";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import FormHeader, {
-	FormContainer,
 	StyledTextInput,
 	StyledButton,
 	CUC_COLORS,
 } from "@/components/form";
+import { KeyboardAwareForm } from "@/components/keyboard";
 import { authClient } from "@/lib/auth-client";
 
 /**
@@ -53,6 +53,9 @@ export default function SignInRoute() {
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
+	// Ref for focusing password field on Enter
+	const passwordRef = useRef<TextInput>(null);
+
 	const handleSignIn = async () => {
 		if (!email.trim()) {
 			Alert.alert("Error", "Please enter your email");
@@ -88,7 +91,7 @@ export default function SignInRoute() {
 	};
 
 	return (
-		<FormContainer>
+		<KeyboardAwareForm>
 			<FormHeader
 				title="Welcome Back"
 				description="Sign in to access your membership and exclusive club features"
@@ -104,9 +107,13 @@ export default function SignInRoute() {
 				autoCorrect={false}
 				textContentType="emailAddress"
 				autoComplete="email"
+				returnKeyType="next"
+				blurOnSubmit={false}
+				onSubmitEditing={() => passwordRef.current?.focus()}
 			/>
 
 			<StyledTextInput
+				ref={passwordRef}
 				label="Password"
 				placeholder="Enter your password"
 				value={password}
@@ -114,6 +121,8 @@ export default function SignInRoute() {
 				secureTextEntry
 				textContentType="password"
 				autoComplete="password"
+				returnKeyType="go"
+				onSubmitEditing={handleSignIn}
 			/>
 
 			<View style={{ marginTop: 8 }}>
@@ -164,6 +173,6 @@ export default function SignInRoute() {
 					</Pressable>
 				</Link>
 			</View>
-		</FormContainer>
+		</KeyboardAwareForm>
 	);
 }

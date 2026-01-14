@@ -1,4 +1,11 @@
-import { Text, View } from "react-native";
+import {
+	Text,
+	View,
+	TextInput,
+	Pressable,
+	ActivityIndicator,
+	type TextInputProps,
+} from "react-native";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -73,6 +80,11 @@ export function StyledTextInput({
 	autoCorrect,
 	textContentType,
 	autoComplete,
+	// Keyboard navigation props (React 19 - ref as prop, no forwardRef)
+	ref,
+	returnKeyType,
+	onSubmitEditing,
+	blurOnSubmit,
 }: {
 	label: string;
 	placeholder: string;
@@ -84,10 +96,12 @@ export function StyledTextInput({
 	autoCorrect?: boolean;
 	textContentType?: "emailAddress" | "password" | "newPassword" | "name" | "none";
 	autoComplete?: "email" | "password" | "new-password" | "name" | "off";
+	// Keyboard navigation props
+	ref?: React.Ref<TextInput>;
+	returnKeyType?: TextInputProps["returnKeyType"];
+	onSubmitEditing?: TextInputProps["onSubmitEditing"];
+	blurOnSubmit?: boolean;
 }) {
-	// Import TextInput here to avoid circular deps
-	const { TextInput } = require("react-native");
-
 	return (
 		<View style={{ gap: 8 }}>
 			<Text
@@ -100,6 +114,7 @@ export function StyledTextInput({
 				{label}
 			</Text>
 			<TextInput
+				ref={ref}
 				style={{
 					backgroundColor: CUC_COLORS.white,
 					borderRadius: 12,
@@ -120,6 +135,9 @@ export function StyledTextInput({
 				autoCorrect={autoCorrect}
 				textContentType={textContentType}
 				autoComplete={autoComplete}
+				returnKeyType={returnKeyType}
+				onSubmitEditing={onSubmitEditing}
+				blurOnSubmit={blurOnSubmit}
 			/>
 		</View>
 	);
@@ -137,8 +155,6 @@ export function StyledButton({
 	isLoading?: boolean;
 	variant?: "primary" | "secondary" | "tertiary";
 }) {
-	const { Pressable, ActivityIndicator } = require("react-native");
-
 	const getStyles = () => {
 		switch (variant) {
 			case "secondary":

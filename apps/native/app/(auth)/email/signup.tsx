@@ -1,12 +1,12 @@
 import { Link, router } from "expo-router";
-import { useState } from "react";
-import { Alert, Pressable, Text, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { useRef, useState } from "react";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import FormHeader, {
-	FormContainer,
 	StyledTextInput,
 	StyledButton,
 	CUC_COLORS,
 } from "@/components/form";
+import { KeyboardAwareForm } from "@/components/keyboard";
 import { authClient } from "@/lib/auth-client";
 
 /**
@@ -49,6 +49,11 @@ export default function SignUpRoute() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+
+	// Refs for keyboard navigation: name → email → password → confirmPassword → submit
+	const emailRef = useRef<TextInput>(null);
+	const passwordRef = useRef<TextInput>(null);
+	const confirmPasswordRef = useRef<TextInput>(null);
 
 	const handleSignUp = async () => {
 		if (!name.trim()) {
@@ -96,125 +101,125 @@ export default function SignUpRoute() {
 	};
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}
-		>
-			<ScrollView
-				style={{ flex: 1 }}
-				contentContainerStyle={{
-					paddingHorizontal: 24,
-					paddingTop: 100,
-					paddingBottom: 40,
-					gap: 16,
+		<KeyboardAwareForm>
+			<FormHeader
+				title="Create Account"
+				description="Join City University Club and enjoy exclusive member benefits"
+			/>
+
+			<StyledTextInput
+				label="Full Name"
+				placeholder="Enter your full name"
+				value={name}
+				onChangeText={setName}
+				autoCapitalize="words"
+				textContentType="name"
+				autoComplete="name"
+				returnKeyType="next"
+				blurOnSubmit={false}
+				onSubmitEditing={() => emailRef.current?.focus()}
+			/>
+
+			<StyledTextInput
+				ref={emailRef}
+				label="Email Address"
+				placeholder="Enter your email"
+				value={email}
+				onChangeText={setEmail}
+				keyboardType="email-address"
+				autoCapitalize="none"
+				autoCorrect={false}
+				textContentType="emailAddress"
+				autoComplete="email"
+				returnKeyType="next"
+				blurOnSubmit={false}
+				onSubmitEditing={() => passwordRef.current?.focus()}
+			/>
+
+			<StyledTextInput
+				ref={passwordRef}
+				label="Password"
+				placeholder="Create a password"
+				value={password}
+				onChangeText={setPassword}
+				secureTextEntry
+				textContentType="newPassword"
+				autoComplete="new-password"
+				returnKeyType="next"
+				blurOnSubmit={false}
+				onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+			/>
+
+			<StyledTextInput
+				ref={confirmPasswordRef}
+				label="Confirm Password"
+				placeholder="Confirm your password"
+				value={confirmPassword}
+				onChangeText={setConfirmPassword}
+				secureTextEntry
+				textContentType="newPassword"
+				autoComplete="new-password"
+				returnKeyType="go"
+				onSubmitEditing={handleSignUp}
+			/>
+
+			<View style={{ marginTop: 8 }}>
+				<StyledButton
+					onPress={handleSignUp}
+					label="Create Account"
+					isLoading={isLoading}
+				/>
+			</View>
+
+			<Text
+				style={{
+					textAlign: "center",
+					color: "#666",
+					fontSize: 13,
+					lineHeight: 20,
+					paddingHorizontal: 20,
 				}}
-				keyboardShouldPersistTaps="handled"
 			>
-				<FormHeader
-					title="Create Account"
-					description="Join City University Club and enjoy exclusive member benefits"
-				/>
-
-				<StyledTextInput
-					label="Full Name"
-					placeholder="Enter your full name"
-					value={name}
-					onChangeText={setName}
-					autoCapitalize="words"
-					textContentType="name"
-					autoComplete="name"
-				/>
-
-				<StyledTextInput
-					label="Email Address"
-					placeholder="Enter your email"
-					value={email}
-					onChangeText={setEmail}
-					keyboardType="email-address"
-					autoCapitalize="none"
-					autoCorrect={false}
-					textContentType="emailAddress"
-					autoComplete="email"
-				/>
-
-				<StyledTextInput
-					label="Password"
-					placeholder="Create a password"
-					value={password}
-					onChangeText={setPassword}
-					secureTextEntry
-					textContentType="newPassword"
-					autoComplete="new-password"
-				/>
-
-				<StyledTextInput
-					label="Confirm Password"
-					placeholder="Confirm your password"
-					value={confirmPassword}
-					onChangeText={setConfirmPassword}
-					secureTextEntry
-					textContentType="newPassword"
-					autoComplete="new-password"
-				/>
-
-				<View style={{ marginTop: 8 }}>
-					<StyledButton
-						onPress={handleSignUp}
-						label="Create Account"
-						isLoading={isLoading}
-					/>
-				</View>
-
-				<Text
-					style={{
-						textAlign: "center",
-						color: "#666",
-						fontSize: 13,
-						lineHeight: 20,
-						paddingHorizontal: 20,
-					}}
-				>
-					By signing up, you agree to our{" "}
-					<Link href="https://cityuniversityclub.co.uk/terms" asChild>
-						<Text style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}>
-							Terms of Service
-						</Text>
-					</Link>{" "}
-					and{" "}
-					<Link href="https://cityuniversityclub.co.uk/privacy" asChild>
-						<Text style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}>
-							Privacy Policy
-						</Text>
-					</Link>
-				</Text>
-
-				<View
-					style={{
-						flexDirection: "row",
-						justifyContent: "center",
-						alignItems: "center",
-						marginTop: 8,
-						gap: 4,
-					}}
-				>
-					<Text style={{ color: "#666", fontSize: 14 }}>
-						Already have an account?
+				By signing up, you agree to our{" "}
+				<Link href="https://cityuniversityclub.co.uk/terms" asChild>
+					<Text style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}>
+						Terms of Service
 					</Text>
-					<Link href="/(auth)/email/signin" replace asChild>
-						<Pressable>
-							<Text
-								style={{
-									color: CUC_COLORS.sage,
-									fontSize: 14,
-									fontWeight: "600",
-								}}
-							>
-								Sign In
-							</Text>
-						</Pressable>
-					</Link>
-				</View>
-			</ScrollView>
-		</KeyboardAvoidingView>
+				</Link>{" "}
+				and{" "}
+				<Link href="https://cityuniversityclub.co.uk/privacy" asChild>
+					<Text style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}>
+						Privacy Policy
+					</Text>
+				</Link>
+			</Text>
+
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItems: "center",
+					marginTop: 8,
+					gap: 4,
+				}}
+			>
+				<Text style={{ color: "#666", fontSize: 14 }}>
+					Already have an account?
+				</Text>
+				<Link href="/(auth)/email/signin" replace asChild>
+					<Pressable>
+						<Text
+							style={{
+								color: CUC_COLORS.sage,
+								fontSize: 14,
+								fontWeight: "600",
+							}}
+						>
+							Sign In
+						</Text>
+					</Pressable>
+				</Link>
+			</View>
+		</KeyboardAwareForm>
 	);
 }
