@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authClient } from "@/lib/auth-client";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -309,20 +310,13 @@ export default function More() {
 				)}
 
 				{/* Website Link */}
-				<Pressable
-					onPress={() =>
-						Linking.openURL("https://www.cityuniversityclub.co.uk/")
-					}
-					style={{
-						marginTop: 16,
-						paddingVertical: 16,
-						alignItems: "center",
-					}}
-				>
-					<Text style={{ color: CUC_COLORS.navy, fontSize: 14 }}>
-						Visit our website →
-					</Text>
-				</Pressable>
+				<View style={{ marginTop: 16 }}>
+					<ExternalLinkButton
+						label="Visit Our Website"
+						url="https://www.cityuniversityclub.co.uk/"
+						variant="subtle"
+					/>
+				</View>
 			</ScrollView>
 		</View>
 	);

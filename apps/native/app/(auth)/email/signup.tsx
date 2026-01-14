@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, Text, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import FormHeader, {
@@ -88,7 +88,8 @@ export default function SignUpRoute() {
 				},
 				onSuccess: () => {
 					setIsLoading(false);
-					// Navigation is handled automatically by Stack.Protected guards
+					// Navigate to tabs, dismissing all auth modals
+					router.replace("/(tabs)");
 				},
 			},
 		);

@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { Text, View, ScrollView, Pressable, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -594,30 +595,13 @@ export default function About() {
 				</View>
 
 				{/* Website Link */}
-				<Pressable
-					onPress={() => Linking.openURL("https://www.cityuniversityclub.co.uk/")}
-					style={{
-						marginHorizontal: 16,
-						backgroundColor: CUC_COLORS.navy,
-						paddingVertical: 16,
-						borderRadius: 8,
-						alignItems: "center",
-						flexDirection: "row",
-						justifyContent: "center",
-						gap: 8,
-					}}
-				>
-					<Ionicons name="globe-outline" size={20} color={CUC_COLORS.cream} />
-					<Text
-						style={{
-							color: CUC_COLORS.cream,
-							fontSize: 16,
-							fontWeight: "500",
-						}}
-					>
-						Visit Our Website
-					</Text>
-				</Pressable>
+				<View style={{ marginHorizontal: 16 }}>
+					<ExternalLinkButton
+						label="Visit Our Website"
+						url="https://www.cityuniversityclub.co.uk/"
+						variant="primary"
+					/>
+				</View>
 			</ScrollView>
 		</View>
 	);

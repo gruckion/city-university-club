@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { Text, View, ScrollView, Pressable, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useConvexAuth } from "convex/react";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -58,12 +59,6 @@ export default function ReciprocalClubs() {
 
 	const handleSignIn = () => {
 		router.push("/(auth)/landing");
-	};
-
-	const handleViewMembersArea = () => {
-		Linking.openURL(
-			"https://www.cityuniversityclub.co.uk/copy-of-reciprocal-clubs"
-		);
 	};
 
 	return (
@@ -322,34 +317,13 @@ export default function ReciprocalClubs() {
 							Full reciprocal clubs directory coming soon. In the meantime, you
 							can view the complete list on our website.
 						</Text>
-						<Pressable
-							onPress={handleViewMembersArea}
-							style={{
-								backgroundColor: CUC_COLORS.navy,
-								paddingVertical: 14,
-								paddingHorizontal: 24,
-								borderRadius: 8,
-								marginTop: 16,
-								flexDirection: "row",
-								alignItems: "center",
-								gap: 8,
-							}}
-						>
-							<Text
-								style={{
-									color: CUC_COLORS.cream,
-									fontSize: 15,
-									fontWeight: "600",
-								}}
-							>
-								View Members' Area
-							</Text>
-							<Ionicons
-								name="open-outline"
-								size={18}
-								color={CUC_COLORS.cream}
+						<View style={{ marginTop: 16 }}>
+							<ExternalLinkButton
+								label="View Members' Area"
+								url="https://www.cityuniversityclub.co.uk/copy-of-reciprocal-clubs"
+								variant="primary"
 							/>
-						</Pressable>
+						</View>
 					</View>
 				) : (
 					// Not authenticated: Show sign in prompt

@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
+import { useState, useEffect } from "react";
 import {
 	ImageBackground,
 	Pressable,
@@ -33,6 +34,13 @@ export default function Landing() {
 		useGoogleAuth();
 	const { signIn: signInWithApple, isLoading: isAppleLoading } = useAppleAuth();
 	const isLoading = isGoogleLoading || isAppleLoading;
+
+	// Read last login method after mount to ensure SecureStore/cookies are available
+	const [lastMethod, setLastMethod] = useState<string | null>(null);
+	useEffect(() => {
+		const method = authClient.getLastUsedLoginMethod();
+		setLastMethod(method);
+	}, []);
 
 	return (
 		<ImageBackground
@@ -117,109 +125,124 @@ export default function Landing() {
 					{/* Social Login Buttons */}
 					<View className="flex-row gap-3">
 						{/* Google */}
-						<Pressable
-							onPress={signInWithGoogle}
-							disabled={isLoading}
-							style={{
-								flex: 1,
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "center",
-								gap: 8,
-								backgroundColor: CUC_COLORS.white,
-								paddingVertical: 14,
-								borderRadius: 12,
-								opacity: isLoading ? 0.7 : 1,
-							}}
-						>
-							{isGoogleLoading ? (
-								<ActivityIndicator size="small" color={CUC_COLORS.navy} />
-							) : (
-								<>
-									<Ionicons name="logo-google" size={20} color={CUC_COLORS.navy} />
-									<Text
-										style={{
-											color: CUC_COLORS.navy,
-											fontSize: 16,
-											fontWeight: "500",
-										}}
-									>
-										Google
-									</Text>
-									{authClient.isLastUsedLoginMethod("google") && (
-										<LastUsedIndicator />
-									)}
-								</>
+						<View style={{ flex: 1, position: "relative" }}>
+							<Pressable
+								onPress={signInWithGoogle}
+								disabled={isLoading}
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+									justifyContent: "center",
+									gap: 8,
+									backgroundColor: CUC_COLORS.white,
+									paddingVertical: 14,
+									borderRadius: 12,
+									opacity: isLoading ? 0.7 : 1,
+								}}
+							>
+								{isGoogleLoading ? (
+									<ActivityIndicator size="small" color={CUC_COLORS.navy} />
+								) : (
+									<>
+										<Ionicons name="logo-google" size={20} color={CUC_COLORS.navy} />
+										<Text
+											style={{
+												color: CUC_COLORS.navy,
+												fontSize: 16,
+												fontWeight: "500",
+											}}
+										>
+											Google
+										</Text>
+									</>
+								)}
+							</Pressable>
+							{lastMethod === "google" && (
+								<View style={{ position: "absolute", top: -10, right: -4 }}>
+									<LastUsedIndicator />
+								</View>
 							)}
-						</Pressable>
+						</View>
 
 						{/* Apple */}
-						<Pressable
-							onPress={signInWithApple}
-							disabled={isLoading}
-							style={{
-								flex: 1,
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "center",
-								gap: 8,
-								backgroundColor: CUC_COLORS.white,
-								paddingVertical: 14,
-								borderRadius: 12,
-								opacity: isLoading ? 0.7 : 1,
-							}}
-						>
-							{isAppleLoading ? (
-								<ActivityIndicator size="small" color={CUC_COLORS.navy} />
-							) : (
-								<>
-									<Ionicons name="logo-apple" size={20} color={CUC_COLORS.navy} />
-									<Text
-										style={{
-											color: CUC_COLORS.navy,
-											fontSize: 16,
-											fontWeight: "500",
-										}}
-									>
-										Apple
-									</Text>
-									{authClient.isLastUsedLoginMethod("apple") && (
-										<LastUsedIndicator />
-									)}
-								</>
+						<View style={{ flex: 1, position: "relative" }}>
+							<Pressable
+								onPress={signInWithApple}
+								disabled={isLoading}
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+									justifyContent: "center",
+									gap: 8,
+									backgroundColor: CUC_COLORS.white,
+									paddingVertical: 14,
+									borderRadius: 12,
+									opacity: isLoading ? 0.7 : 1,
+								}}
+							>
+								{isAppleLoading ? (
+									<ActivityIndicator size="small" color={CUC_COLORS.navy} />
+								) : (
+									<>
+										<Ionicons name="logo-apple" size={20} color={CUC_COLORS.navy} />
+										<Text
+											style={{
+												color: CUC_COLORS.navy,
+												fontSize: 16,
+												fontWeight: "500",
+											}}
+										>
+											Apple
+										</Text>
+									</>
+								)}
+							</Pressable>
+							{lastMethod === "apple" && (
+								<View style={{ position: "absolute", top: -10, right: -4 }}>
+									<LastUsedIndicator />
+								</View>
 							)}
-						</Pressable>
+						</View>
 					</View>
 
 					{/* Email Button */}
-					<Link href="/(auth)/email/signin" asChild>
-						<Pressable
-							style={{
-								backgroundColor: CUC_COLORS.navy,
-								paddingVertical: 16,
-								borderRadius: 12,
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "center",
-								gap: 8,
-								borderWidth: 1,
-								borderColor: CUC_COLORS.sage,
-							}}
-						>
-							<Text
+					<View style={{ position: "relative" }}>
+						<Link href="/(auth)/email/signin" asChild>
+							<Pressable
 								style={{
-									color: CUC_COLORS.cream,
-									fontSize: 16,
-									fontWeight: "500",
+									backgroundColor: CUC_COLORS.navy,
+									paddingVertical: 16,
+									borderRadius: 12,
+									flexDirection: "row",
+									alignItems: "center",
+									justifyContent: "center",
+									borderWidth: 1,
+									borderColor: CUC_COLORS.sage,
 								}}
 							>
-								Continue with Email
-							</Text>
-							{authClient.isLastUsedLoginMethod("email") && (
+								<Text
+									style={{
+										color: CUC_COLORS.cream,
+										fontSize: 16,
+										fontWeight: "500",
+									}}
+								>
+									Continue with Email
+								</Text>
+							</Pressable>
+						</Link>
+						{lastMethod === "email" && (
+							<View
+								style={{
+									position: "absolute",
+									top: -10,
+									right: -4,
+								}}
+							>
 								<LastUsedIndicator />
-							)}
-						</Pressable>
-					</Link>
+							</View>
+						)}
+					</View>
 
 					{/* Sign Up Link */}
 					<View className="flex-row justify-center items-center gap-1 mt-2">

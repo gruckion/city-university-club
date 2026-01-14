@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { Text, View, ScrollView, Pressable, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -22,10 +23,6 @@ export default function FabricFund() {
 
 	const handleDonate = () => {
 		Linking.openURL("mailto:secretary@cityuniversityclub.co.uk?subject=Fabric%20Fund%20Donation");
-	};
-
-	const handleLearnMore = () => {
-		Linking.openURL("https://www.cityuniversityclub.co.uk/about-2");
 	};
 
 	const handleCall = () => {
@@ -377,29 +374,11 @@ export default function FabricFund() {
 							</Text>
 						</Pressable>
 
-						<Pressable
-							onPress={handleLearnMore}
-							style={({ pressed }) => ({
-								backgroundColor: pressed ? `${CUC_COLORS.navy}dd` : CUC_COLORS.navy,
-								borderRadius: 12,
-								padding: 18,
-								alignItems: "center",
-								flexDirection: "row",
-								justifyContent: "center",
-							})}
-						>
-							<Ionicons name="open-outline" size={22} color={CUC_COLORS.cream} />
-							<Text
-								style={{
-									color: CUC_COLORS.cream,
-									fontSize: 16,
-									fontWeight: "600",
-									marginLeft: 10,
-								}}
-							>
-								Visit Website
-							</Text>
-						</Pressable>
+						<ExternalLinkButton
+							label="Learn More"
+							url="https://www.cityuniversityclub.co.uk/about-2"
+							variant="primary"
+						/>
 					</View>
 				</View>
 			</ScrollView>

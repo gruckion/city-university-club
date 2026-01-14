@@ -35,8 +35,15 @@ function getGreeting(): string {
 export default function Home() {
 	const router = useRouter();
 	const insets = useSafeAreaInsets();
-	const { isAuthenticated } = useConvexAuth();
+	const { isAuthenticated, isLoading } = useConvexAuth();
 	const user = useQuery(api.auth.getCurrentUser, isAuthenticated ? {} : "skip");
+
+	// Defense-in-depth: Don't render anything while auth is loading
+	// This should rarely trigger since AuthGate handles splash visibility,
+	// but protects against edge cases
+	if (isLoading) {
+		return null;
+	}
 
 	// If not authenticated, show landing prompt
 	if (!isAuthenticated) {

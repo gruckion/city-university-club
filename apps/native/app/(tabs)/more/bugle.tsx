@@ -1,10 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Text, View, ScrollView, Pressable, Linking, ActivityIndicator } from "react-native";
+import { Text, View, ScrollView, Pressable, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { WebView } from "react-native-webview";
-import { useCallback, useRef, useState } from "react";
+import * as WebBrowser from "expo-web-browser";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // CUC brand colors
 const CUC_COLORS = {
@@ -14,10 +13,9 @@ const CUC_COLORS = {
 	white: "#ffffff",
 };
 
-// The Bugle PDF URL - using Google Docs viewer for reliable PDF rendering
+// The Bugle PDF URL
 const BUGLE_PDF_URL =
 	"https://www.cityuniversityclub.co.uk/_files/ugd/da00a6_ff60a29890864b51be0e5aa177ba1d6a.pdf";
-const PDF_VIEWER_URL = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(BUGLE_PDF_URL)}`;
 
 // Past issues (for display purposes)
 const PAST_ISSUES = [
@@ -30,29 +28,10 @@ const PAST_ISSUES = [
 export default function Bugle() {
 	const router = useRouter();
 	const insets = useSafeAreaInsets();
-	const bottomSheetRef = useRef<BottomSheet>(null);
-	const [isLoading, setIsLoading] = useState(true);
 
-	const handleOpenPDF = useCallback(() => {
-		setIsLoading(true);
-		bottomSheetRef.current?.expand();
-	}, []);
-
-	const handleCloseSheet = useCallback(() => {
-		bottomSheetRef.current?.close();
-	}, []);
-
-	const renderBackdrop = useCallback(
-		(props: any) => (
-			<BottomSheetBackdrop
-				{...props}
-				disappearsOnIndex={-1}
-				appearsOnIndex={0}
-				opacity={0.5}
-			/>
-		),
-		[]
-	);
+	const handleOpenPDF = async () => {
+		await WebBrowser.openBrowserAsync(BUGLE_PDF_URL);
+	};
 
 	return (
 		<View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
@@ -396,112 +375,14 @@ export default function Bugle() {
 				</View>
 
 				{/* Website Link */}
-				<Pressable
-					onPress={() =>
-						Linking.openURL("https://www.cityuniversityclub.co.uk/about-3")
-					}
-					style={{
-						marginTop: 20,
-						paddingVertical: 16,
-						alignItems: "center",
-					}}
-				>
-					<Text style={{ color: CUC_COLORS.navy, fontSize: 14 }}>
-						View on website
-					</Text>
-				</Pressable>
+				<View style={{ marginTop: 20 }}>
+					<ExternalLinkButton
+						label="View on Website"
+						url="https://www.cityuniversityclub.co.uk/about-3"
+						variant="subtle"
+					/>
+				</View>
 			</ScrollView>
-
-			{/* PDF Viewer Bottom Sheet */}
-			<BottomSheet
-				ref={bottomSheetRef}
-				index={-1}
-				snapPoints={["95%"]}
-				enablePanDownToClose
-				enableContentPanningGesture={false}
-				backdropComponent={renderBackdrop}
-				handleIndicatorStyle={{ backgroundColor: CUC_COLORS.sage }}
-				backgroundStyle={{ backgroundColor: CUC_COLORS.white }}
-			>
-				<BottomSheetView style={{ flex: 1 }}>
-					{/* Sheet Header */}
-					<View
-						style={{
-							flexDirection: "row",
-							alignItems: "center",
-							justifyContent: "space-between",
-							paddingHorizontal: 16,
-							paddingVertical: 12,
-							borderBottomWidth: 1,
-							borderBottomColor: "#f0f0f0",
-						}}
-					>
-						<Text
-							style={{
-								color: CUC_COLORS.navy,
-								fontSize: 18,
-								fontWeight: "600",
-							}}
-						>
-							The Bugle - Autumn 2025
-						</Text>
-						<Pressable
-							onPress={handleCloseSheet}
-							style={{
-								width: 32,
-								height: 32,
-								borderRadius: 16,
-								backgroundColor: `${CUC_COLORS.navy}10`,
-								alignItems: "center",
-								justifyContent: "center",
-							}}
-						>
-							<Ionicons name="close" size={20} color={CUC_COLORS.navy} />
-						</Pressable>
-					</View>
-
-					{/* PDF WebView */}
-					<View style={{ flex: 1 }}>
-						{isLoading && (
-							<View
-								style={{
-									position: "absolute",
-									top: 0,
-									left: 0,
-									right: 0,
-									bottom: 0,
-									alignItems: "center",
-									justifyContent: "center",
-									backgroundColor: CUC_COLORS.white,
-									zIndex: 1,
-								}}
-							>
-								<ActivityIndicator size="large" color={CUC_COLORS.navy} />
-								<Text
-									style={{
-										marginTop: 12,
-										color: CUC_COLORS.navy,
-										fontSize: 14,
-									}}
-								>
-									Loading newsletter...
-								</Text>
-							</View>
-						)}
-						<WebView
-							source={{ uri: PDF_VIEWER_URL }}
-							style={{ flex: 1 }}
-							onLoadEnd={() => setIsLoading(false)}
-							onError={() => setIsLoading(false)}
-							nestedScrollEnabled
-							javaScriptEnabled
-							domStorageEnabled
-							startInLoadingState={false}
-							originWhitelist={["*"]}
-						/>
-					</View>
-				</BottomSheetView>
-			</BottomSheet>
 		</View>
 	);
 }

@@ -35,6 +35,7 @@ export default function EmailLayout() {
 			<Stack.Screen
 				name="signup"
 				options={{
+					headerLeft: () => <CloseButton />,
 					title: "",
 					headerBackTitle: "Sign In",
 				}}

@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 import Animated, {
 	FadeInDown,
 	useAnimatedStyle,
@@ -141,17 +142,11 @@ export default function Events() {
 				))}
 
 				{/* View Website Link */}
-				<Pressable
-					style={{
-						marginTop: 16,
-						paddingVertical: 16,
-						alignItems: "center",
-					}}
-				>
-					<Text style={{ color: CUC_COLORS.navy, fontSize: 14 }}>
-						View all events on our website
-					</Text>
-				</Pressable>
+				<ExternalLinkButton
+					label="View All Events"
+					url="https://www.cityuniversityclub.co.uk/events"
+					variant="subtle"
+				/>
 			</ScrollView>
 		</View>
 	);

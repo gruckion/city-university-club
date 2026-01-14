@@ -1,16 +1,17 @@
 import "@/polyfills";
 import "@/global.css";
 
-import { ConvexReactClient } from "convex/react";
+import { ConvexReactClient, useConvexAuth, useQuery } from "convex/react";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import { authClient } from "@/lib/auth-client";
 import { env } from "@convoexpo-and-nextjs-web-bun-better-auth/env/native";
+import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
 
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import Constants, { ExecutionEnvironment } from "expo-constants";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HeroUINativeProvider } from "heroui-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -73,6 +74,53 @@ function StackLayout() {
 	);
 }
 
+/**
+ * AuthGate - Controls splash screen visibility based on auth state
+ *
+ * This component ensures the splash screen stays visible until:
+ * 1. Auth state is resolved (isLoading becomes false)
+ * 2. If authenticated, user data is preloaded
+ *
+ * This prevents the "flash" of unauthenticated UI when the app reloads
+ * while a user is logged in, and prevents the "Member" placeholder
+ * from appearing before the actual user name loads.
+ */
+function AuthGate({ children }: { children: React.ReactNode }) {
+	const { isLoading, isAuthenticated } = useConvexAuth();
+	const [splashHidden, setSplashHidden] = useState(false);
+
+	// Preload user data while splash is visible (only if authenticated)
+	// This ensures user name is ready before we show the UI
+	const user = useQuery(
+		api.auth.getCurrentUser,
+		isAuthenticated ? {} : "skip",
+	);
+
+	useEffect(() => {
+		// Auth must be resolved (not loading)
+		const authReady = !isLoading;
+
+		// If authenticated, wait for user data; if not authenticated, we're ready
+		const userReady = !isAuthenticated || user !== undefined;
+
+		// Only hide splash once, and only when both conditions are met
+		if (authReady && userReady && !splashHidden) {
+			SplashScreen.hideAsync().catch((error) => {
+				if (!isExpoGo) throw error;
+			});
+			setSplashHidden(true);
+		}
+	}, [isLoading, isAuthenticated, user, splashHidden]);
+
+	// Keep returning null until splash can be hidden
+	// This prevents any flash of incorrect UI
+	if (!splashHidden) {
+		return null;
+	}
+
+	return <>{children}</>;
+}
+
 /* ------------------------------- root layout ------------------------------ */
 export default function Layout() {
 	const [fontsLoaded, fontError] = useFonts({
@@ -80,15 +128,8 @@ export default function Layout() {
 		"DancingScript-Bold": require("@/assets/fonts/DancingScript-Bold.ttf"),
 	});
 
-	useEffect(() => {
-		if (fontsLoaded || fontError) {
-			SplashScreen.hideAsync().catch((error) => {
-				if (!isExpoGo) throw error;
-			});
-		}
-	}, [fontsLoaded, fontError]);
-
 	// Don't render until fonts are loaded
+	// Note: SplashScreen.hideAsync() is now handled by AuthGate after auth resolves
 	if (!fontsLoaded && !fontError) {
 		return null;
 	}
@@ -105,7 +146,9 @@ export default function Layout() {
 						}}
 					>
 						<AppThemeProvider>
-							<StackLayout />
+							<AuthGate>
+								<StackLayout />
+							</AuthGate>
 						</AppThemeProvider>
 					</HeroUINativeProvider>
 				</KeyboardProvider>
