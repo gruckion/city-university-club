@@ -11,6 +11,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { HeroUINativeProvider } from "heroui-native";
 import { useEffect, useState } from "react";
+import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
@@ -136,6 +137,7 @@ export default function Layout() {
 
   return (
     <ConvexBetterAuthProvider authClient={authClient} client={convex}>
+      <SystemBars style="light" />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider>
           <HeroUINativeProvider

@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import {
   KeyboardAwareScrollView,
   KeyboardToolbar,
+  useKeyboardState,
 } from "react-native-keyboard-controller";
 
 interface KeyboardAwareFormProps {
@@ -14,6 +15,9 @@ export function KeyboardAwareForm({
   children,
   bottomOffset = 62,
 }: KeyboardAwareFormProps) {
+  // Only show toolbar when keyboard is actually visible
+  const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
+
   return (
     <>
       <KeyboardAwareScrollView
@@ -23,7 +27,7 @@ export function KeyboardAwareForm({
       >
         {children}
       </KeyboardAwareScrollView>
-      <KeyboardToolbar />
+      {isKeyboardVisible && <KeyboardToolbar />}
     </>
   );
 }

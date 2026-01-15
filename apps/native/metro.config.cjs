@@ -1,3 +1,4 @@
+"use strict";
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require("expo/metro-config");
 const { FileStore } = require("metro-cache");
@@ -33,7 +34,7 @@ module.exports = config;
  * @returns {import('expo/metro-config').MetroConfig}
  */
 function withMonorepoPaths(config) {
-  const projectRoot = import.meta.dirname;
+  const projectRoot = __dirname;
   const workspaceRoot = path.resolve(projectRoot, "../..");
 
   // #1 - Watch all files in the monorepo

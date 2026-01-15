@@ -1,6 +1,7 @@
-import { Link, router } from "expo-router";
-import { useRef, useState } from "react";
+import { Link } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Pressable, Text, type TextInput, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import FormHeader, {
   CUC_COLORS,
   StyledButton,
@@ -55,6 +56,12 @@ export default function SignUpRoute() {
   const passwordRef = useRef<TextInput>(null);
   const confirmPasswordRef = useRef<TextInput>(null);
 
+  // Set dark status bar style for light background (stack-based approach)
+  useEffect(() => {
+    const entry = SystemBars.pushStackEntry({ style: "dark" });
+    return () => SystemBars.popStackEntry(entry);
+  }, []);
+
   const handleSignUp = async () => {
     if (!name.trim()) {
       Alert.alert("Error", "Please enter your name");
@@ -93,8 +100,7 @@ export default function SignUpRoute() {
         },
         onSuccess: () => {
           setIsLoading(false);
-          // Navigate to tabs, dismissing all auth modals
-          router.replace("/(tabs)");
+          // Navigation handled by (auth)/_layout.tsx auth state listener
         },
       }
     );

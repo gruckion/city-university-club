@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
   FadeInDown,
@@ -9,6 +10,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { CategoryFilter, EVENT_CATEGORIES } from "@/components/CategoryFilter";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // CUC brand colors
@@ -92,6 +94,14 @@ export default function Events() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
+  // Category filter state
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Derived filtered events - no useEffect needed!
+  const filteredEvents = selectedCategory
+    ? EVENTS.filter((event) => event.type === selectedCategory)
+    : EVENTS;
+
   return (
     <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
       {/* Header */}
@@ -124,22 +134,74 @@ export default function Events() {
         </Text>
       </View>
 
+      {/* Category Filter */}
+      <CategoryFilter
+        categories={EVENT_CATEGORIES}
+        colors={CUC_COLORS}
+        onSelectCategory={setSelectedCategory}
+        selectedCategory={selectedCategory}
+      />
+
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
         style={{ flex: 1 }}
       >
-        {EVENTS.map((event, index) => (
-          <Animated.View
-            entering={FadeInDown.delay(index * 100).springify()}
-            key={event.id}
+        {filteredEvents.length === 0 ? (
+          <View
+            style={{
+              padding: 32,
+              alignItems: "center",
+            }}
           >
-            <EventCard
-              event={event}
-              featured={index === 0}
-              onPress={() => router.push(`/events/${event.id}`)}
+            <Ionicons
+              color={CUC_COLORS.sage}
+              name="calendar-outline"
+              size={48}
             />
-          </Animated.View>
-        ))}
+            <Text
+              style={{
+                color: CUC_COLORS.navy,
+                fontSize: 16,
+                marginTop: 16,
+                textAlign: "center",
+              }}
+            >
+              No events found in this category
+            </Text>
+            <Pressable
+              onPress={() => setSelectedCategory(null)}
+              style={{
+                marginTop: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                backgroundColor: CUC_COLORS.sage,
+                borderRadius: 8,
+              }}
+            >
+              <Text
+                style={{
+                  color: CUC_COLORS.navy,
+                  fontWeight: "500",
+                }}
+              >
+                View All Events
+              </Text>
+            </Pressable>
+          </View>
+        ) : (
+          filteredEvents.map((event, index) => (
+            <Animated.View
+              entering={FadeInDown.delay(index * 100).springify()}
+              key={event.id}
+            >
+              <EventCard
+                event={event}
+                featured={index === 0 && selectedCategory === null}
+                onPress={() => router.push(`/events/${event.id}`)}
+              />
+            </Animated.View>
+          ))
+        )}
 
         {/* View Website Link */}
         <ExternalLinkButton

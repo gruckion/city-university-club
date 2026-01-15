@@ -99,8 +99,15 @@ export function StyledTextInput({
     | "password"
     | "newPassword"
     | "name"
-    | "none";
-  autoComplete?: "email" | "password" | "new-password" | "name" | "off";
+    | "none"
+    | "oneTimeCode";
+  autoComplete?:
+    | "email"
+    | "password"
+    | "new-password"
+    | "name"
+    | "off"
+    | "one-time-code";
   // Keyboard navigation props
   ref?: React.Ref<TextInput>;
   returnKeyType?: TextInputProps["returnKeyType"];

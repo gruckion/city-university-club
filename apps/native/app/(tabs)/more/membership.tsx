@@ -71,72 +71,7 @@ export default function MembershipScreen() {
           paddingHorizontal: 24,
         }}
       >
-        {/* TODO: restore auth check - temporarily disabled for testing */}
-        {/* biome-ignore lint/correctness/noConstantCondition: Intentional - temporarily disabled for testing */}
-        {false ? (
-          // Not logged in state
-          <View style={{ alignItems: "center", paddingHorizontal: 16 }}>
-            <View
-              style={{
-                width: 100,
-                height: 100,
-                borderRadius: 50,
-                backgroundColor: `${CUC_COLORS.navy}10`,
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 24,
-              }}
-            >
-              <Ionicons color={CUC_COLORS.navy} name="card" size={48} />
-            </View>
-
-            <Text
-              style={{
-                color: CUC_COLORS.navy,
-                fontSize: 24,
-                fontWeight: "300",
-                fontFamily: "serif",
-                textAlign: "center",
-                marginBottom: 12,
-              }}
-            >
-              Members Only
-            </Text>
-
-            <Text
-              style={{
-                color: "#666",
-                fontSize: 16,
-                textAlign: "center",
-                lineHeight: 24,
-                marginBottom: 32,
-              }}
-            >
-              Sign in to access your digital membership card. Show it when
-              visiting the club or any of our 450+ reciprocal clubs worldwide.
-            </Text>
-
-            <Pressable
-              onPress={handleSignIn}
-              style={{
-                backgroundColor: CUC_COLORS.navy,
-                paddingVertical: 16,
-                paddingHorizontal: 48,
-                borderRadius: 8,
-              }}
-            >
-              <Text
-                style={{
-                  color: CUC_COLORS.cream,
-                  fontSize: 16,
-                  fontWeight: "500",
-                }}
-              >
-                Sign In
-              </Text>
-            </Pressable>
-          </View>
-        ) : (
+        {isAuthenticated ? (
           // Logged in - show membership card
           <View style={{ alignItems: "center", width: "100%" }}>
             {/* Membership Card */}
@@ -204,6 +139,69 @@ export default function MembershipScreen() {
                 </View>
               </View>
             </View>
+          </View>
+        ) : (
+          // Not logged in state
+          <View style={{ alignItems: "center", paddingHorizontal: 16 }}>
+            <View
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                backgroundColor: `${CUC_COLORS.navy}10`,
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 24,
+              }}
+            >
+              <Ionicons color={CUC_COLORS.navy} name="card" size={48} />
+            </View>
+
+            <Text
+              style={{
+                color: CUC_COLORS.navy,
+                fontSize: 24,
+                fontWeight: "300",
+                fontFamily: "serif",
+                textAlign: "center",
+                marginBottom: 12,
+              }}
+            >
+              Members Only
+            </Text>
+
+            <Text
+              style={{
+                color: "#666",
+                fontSize: 16,
+                textAlign: "center",
+                lineHeight: 24,
+                marginBottom: 32,
+              }}
+            >
+              Sign in to access your digital membership card. Show it when
+              visiting the club or any of our 450+ reciprocal clubs worldwide.
+            </Text>
+
+            <Pressable
+              onPress={handleSignIn}
+              style={{
+                backgroundColor: CUC_COLORS.navy,
+                paddingVertical: 16,
+                paddingHorizontal: 48,
+                borderRadius: 8,
+              }}
+            >
+              <Text
+                style={{
+                  color: CUC_COLORS.cream,
+                  fontSize: 16,
+                  fontWeight: "500",
+                }}
+              >
+                Sign In
+              </Text>
+            </Pressable>
           </View>
         )}
       </View>

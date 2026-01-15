@@ -7,7 +7,6 @@ import {
   Linking,
   Pressable,
   ScrollView,
-  StatusBar,
   Text,
   View,
 } from "react-native";
@@ -108,7 +107,6 @@ export default function More() {
 
   return (
     <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
-      <StatusBar barStyle="light-content" />
       {/* Header */}
       <View
         style={{

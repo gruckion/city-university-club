@@ -8,7 +8,7 @@ import { convex, crossDomain } from "@convex-dev/better-auth/plugins";
 import { requireActionCtx } from "@convex-dev/better-auth/utils";
 import { Resend } from "@convex-dev/resend";
 import { betterAuth } from "better-auth";
-import { lastLoginMethod } from "better-auth/plugins";
+import { emailOTP, lastLoginMethod } from "better-auth/plugins";
 import { components, internal } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -25,6 +25,7 @@ export const resend = new Resend(components.resend, {
 const siteUrl = process.env.SITE_URL!;
 const nativeAppUrl =
   process.env.NATIVE_APP_URL || "convoexpo-and-nextjs-web-bun-better-auth://";
+const nativeAppScheme = process.env.NATIVE_APP_SCHEME || "cityuniversityclub";
 const emailFromAddress =
   process.env.EMAIL_FROM_ADDRESS || "Password Reset <onboarding@resend.dev>";
 
@@ -124,6 +125,52 @@ function createAuth(ctx: GenericCtx<DataModel>) {
       }),
       lastLoginMethod(),
       crossDomain({ siteUrl }), // Required for Expo web support
+      emailOTP({
+        otpLength: 6,
+        expiresIn: 300, // 5 minutes
+        async sendVerificationOTP({ email, otp, type }) {
+          if (type === "forget-password") {
+            console.log(`[Password Reset OTP] Sending OTP to: ${email}`);
+            console.log(`[Password Reset OTP] Code: ${otp}`);
+
+            // Create deep link that will open the app with OTP pre-filled
+            const deepLink = `${nativeAppScheme}://email/verify-reset-code?email=${encodeURIComponent(email)}&otp=${otp}`;
+
+            // Send password reset email with OTP code via Resend
+            await resend.sendEmail(requireActionCtx(ctx), {
+              from: emailFromAddress,
+              to: email,
+              subject: "Reset your password - Verification Code",
+              html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #1a365d;">Reset Your Password</h2>
+                  <p>You requested a password reset for your account.</p>
+
+                  <div style="background-color: #f7fafc; border-radius: 8px; padding: 24px; margin: 24px 0; text-align: center;">
+                    <p style="margin: 0 0 8px 0; color: #666; font-size: 14px;">Your verification code is:</p>
+                    <div style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #1a365d; font-family: monospace;">
+                      ${otp}
+                    </div>
+                    <p style="margin: 12px 0 0 0; color: #666; font-size: 12px;">This code expires in 5 minutes</p>
+                  </div>
+
+                  <p style="text-align: center; margin: 24px 0;">
+                    <span style="color: #666;">─────────── or ───────────</span>
+                  </p>
+
+                  <p style="text-align: center;">
+                    <a href="${deepLink}" style="display: inline-block; background-color: #1a365d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+                      Open App & Reset Password
+                    </a>
+                  </p>
+
+                  <p style="color: #666; font-size: 14px; margin-top: 24px;">If you didn't request this, you can safely ignore this email.</p>
+                </div>
+              `,
+            });
+          }
+        },
+      }),
     ],
   });
 }

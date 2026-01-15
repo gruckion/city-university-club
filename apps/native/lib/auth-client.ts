@@ -8,7 +8,10 @@ import { env } from "@convoexpo-and-nextjs-web-bun-better-auth/env/native";
 // Platform-specific lastLoginMethodClient imports:
 // - Web version uses document.cookie
 // - Expo version uses SecureStore
-import { lastLoginMethodClient as lastLoginMethodClientWeb } from "better-auth/client/plugins";
+import {
+  emailOTPClient,
+  lastLoginMethodClient as lastLoginMethodClientWeb,
+} from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
@@ -20,6 +23,7 @@ export const authClient = createAuthClient({
   baseURL: env.EXPO_PUBLIC_CONVEX_SITE_URL,
   plugins: [
     convexClient(),
+    emailOTPClient(), // For OTP-based password reset flow
     // CRITICAL: expoClient and crossDomainClient CANNOT coexist
     // Use crossDomainClient for web, expoClient for native platforms
     // Similarly, lastLoginMethodClient must use the correct storage per platform

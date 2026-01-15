@@ -11,6 +11,8 @@ export const useGoogleAuth = () => {
         provider: "google",
         callbackURL: "/",
       });
+      // OAuth redirect initiated - browser will open
+      // Navigation handled by (auth)/_layout.tsx when auth completes via deep link
     } catch (error) {
       console.error("Google sign in error:", error);
     } finally {

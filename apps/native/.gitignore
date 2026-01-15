@@ -1,6 +1,11 @@
 node_modules/
 .expo/
 dist/
+
+# Native directories (generated via expo prebuild)
+/android
+/ios
+
 npm-debug.*
 *.jks
 *.p8

@@ -1,14 +1,7 @@
 import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
 import { useConvexAuth, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import {
-  Image,
-  ImageBackground,
-  Pressable,
-  StatusBar,
-  Text,
-  View,
-} from "react-native";
+import { Image, ImageBackground, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MembershipCard } from "@/components/MembershipCard";
 
@@ -56,7 +49,6 @@ export default function Home() {
         source={HERO_IMAGE}
         style={{ flex: 1 }}
       >
-        <StatusBar barStyle="light-content" />
         <View
           style={{
             flex: 1,
@@ -150,7 +142,6 @@ export default function Home() {
 
   return (
     <ImageBackground resizeMode="cover" source={HERO_IMAGE} style={{ flex: 1 }}>
-      <StatusBar barStyle="light-content" />
       <View
         style={{
           flex: 1,

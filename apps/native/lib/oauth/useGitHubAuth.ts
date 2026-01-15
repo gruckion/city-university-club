@@ -11,6 +11,8 @@ export const useGitHubAuth = () => {
         provider: "github",
         callbackURL: "/",
       });
+      // OAuth redirect initiated - browser will open
+      // Navigation handled by (auth)/_layout.tsx when auth completes via deep link
     } catch (error) {
       console.error("GitHub sign in error:", error);
     } finally {

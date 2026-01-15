@@ -50,7 +50,24 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-font",
     "expo-router",
     "expo-secure-store",
+    "expo-system-ui",
     "expo-web-browser",
+    [
+      "expo-calendar",
+      {
+        calendarPermission:
+          "Allow City University Club to add events to your calendar",
+      },
+    ],
+    [
+      "react-native-edge-to-edge",
+      {
+        android: {
+          parentTheme: "Material3",
+          enforceNavigationBarContrast: false,
+        },
+      },
+    ],
     [
       "expo-sensors",
       {
@@ -86,5 +103,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
+  },
+
+  // EAS Build configuration
+  extra: {
+    eas: {
+      projectId: "d6c04369-dbfe-449a-91e6-41aa260b8178",
+    },
   },
 });

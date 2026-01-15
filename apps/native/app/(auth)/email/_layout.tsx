@@ -48,6 +48,13 @@ export default function EmailLayout() {
         }}
       />
       <Stack.Screen
+        name="(reset)/verify-reset-code"
+        options={{
+          title: "",
+          headerBackTitle: "Back",
+        }}
+      />
+      <Stack.Screen
         name="(reset)/reset-password"
         options={{
           title: "",

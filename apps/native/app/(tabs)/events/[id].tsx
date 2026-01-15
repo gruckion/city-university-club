@@ -1,10 +1,11 @@
 import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_generated/api";
 import { Ionicons } from "@expo/vector-icons";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -26,6 +27,10 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  parseEventDateTime,
+  useAddToCalendar,
+} from "../../../lib/useAddToCalendar";
 import { CUC_COLORS, EVENTS } from "./index";
 
 // Blurhash for event images
@@ -42,12 +47,27 @@ export default function EventDetail() {
 
   const event = EVENTS.find((e) => e.id === id);
 
-  // RSVP form state - pre-filled from user data
+  // RSVP state - reactive query (no useEffect!)
+  const existingRsvp = useQuery(
+    api.rsvps.getUserRsvpForEvent,
+    isAuthenticated && event ? { eventId: event.id } : "skip"
+  );
+  const hasRsvp = existingRsvp != null;
+
+  // Mutations
+  const createRsvp = useMutation(api.rsvps.createRsvp);
+  const cancelRsvpMutation = useMutation(api.rsvps.cancelRsvp);
+
+  // Calendar hook
+  const { addToCalendar, isLoading: isCalendarLoading } = useAddToCalendar();
+
+  // RSVP form state
   const [formData, setFormData] = useState({
     guests: "1",
     notes: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   // Animation values
   const scrollY = useSharedValue(0);
@@ -65,20 +85,108 @@ export default function EventDetail() {
   });
 
   const handleSubmit = async () => {
-    if (!(isAuthenticated && user)) {
+    if (!(isAuthenticated && user && event)) {
       return;
     }
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
+    try {
+      const guestCount =
+        formData.guests === "5+" ? 5 : Number.parseInt(formData.guests, 10);
+
+      await createRsvp({
+        eventId: event.id,
+        guests: guestCount,
+        notes: formData.notes || undefined,
+      });
+
+      Alert.alert(
+        "RSVP Confirmed!",
+        `Thank you ${user.name}! We've received your RSVP for ${event.title}. A confirmation email has been sent to ${user.email}.`,
+        [{ text: "OK" }]
+      );
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error instanceof Error
+          ? error.message
+          : "Failed to create RSVP. Please try again.",
+        [{ text: "OK" }]
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancelRsvp = () => {
+    if (!event) {
+      return;
+    }
 
     Alert.alert(
-      "RSVP Confirmed!",
-      `Thank you ${user.name}! We've received your RSVP for ${event?.title}. A confirmation email has been sent to ${user.email}.`,
-      [{ text: "OK", onPress: () => router.back() }]
+      "Cancel RSVP",
+      `Are you sure you want to cancel your RSVP for ${event.title}?`,
+      [
+        { text: "Keep RSVP", style: "cancel" },
+        {
+          text: "Cancel RSVP",
+          style: "destructive",
+          onPress: async () => {
+            setIsCancelling(true);
+            try {
+              await cancelRsvpMutation({ eventId: event.id });
+              Alert.alert(
+                "RSVP Cancelled",
+                "Your RSVP has been cancelled successfully.",
+                [{ text: "OK" }]
+              );
+            } catch (error) {
+              Alert.alert(
+                "Error",
+                error instanceof Error
+                  ? error.message
+                  : "Failed to cancel RSVP. Please try again.",
+                [{ text: "OK" }]
+              );
+            } finally {
+              setIsCancelling(false);
+            }
+          },
+        },
+      ]
     );
+  };
+
+  const handleAddToCalendar = async () => {
+    if (!event) {
+      return;
+    }
+
+    try {
+      const { startDate, endDate } = parseEventDateTime(
+        event.dateRange,
+        event.time
+      );
+
+      const success = await addToCalendar({
+        title: `${event.title} - City University Club`,
+        startDate,
+        endDate,
+        location: `${event.location}, City University Club`,
+        notes: event.fullDescription,
+        alarmMinutesBefore: 60, // 1 hour reminder
+      });
+
+      if (success) {
+        Alert.alert(
+          "Added to Calendar",
+          "The event has been added to your calendar.",
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      console.error("Error adding to calendar:", error);
+    }
   };
 
   const handleSignIn = () => {
@@ -259,7 +367,7 @@ export default function EventDetail() {
               </Text>
             </Animated.View>
 
-            {/* RSVP Form */}
+            {/* RSVP Section */}
             <Animated.View
               entering={FadeInDown.delay(500).springify()}
               style={{
@@ -268,188 +376,377 @@ export default function EventDetail() {
                 padding: 20,
               }}
             >
-              <Text
-                style={{
-                  color: CUC_COLORS.cream,
-                  fontSize: 22,
-                  fontWeight: "300",
-                  fontFamily: "serif",
-                  marginBottom: 4,
-                }}
-              >
-                Reserve Your Spot
-              </Text>
-
               {isAuthenticated ? (
-                // RSVP form for authenticated users
-                <>
-                  <Text
-                    style={{
-                      color: CUC_COLORS.sage,
-                      fontSize: 14,
-                      marginBottom: 20,
-                    }}
-                  >
-                    Complete the form below to RSVP
-                  </Text>
-
-                  {/* User Info Display */}
-                  <View
-                    style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.08)",
-                      borderRadius: 12,
-                      padding: 16,
-                      marginBottom: 16,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginBottom: 8,
-                      }}
-                    >
-                      <Ionicons
-                        color={CUC_COLORS.sage}
-                        name="person-circle-outline"
-                        size={20}
-                        style={{ marginRight: 10 }}
-                      />
-                      <Text
-                        style={{
-                          color: CUC_COLORS.cream,
-                          fontSize: 16,
-                          fontWeight: "500",
-                        }}
-                      >
-                        {user?.name || "Loading..."}
-                      </Text>
-                    </View>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Ionicons
-                        color={CUC_COLORS.sage}
-                        name="mail-outline"
-                        size={18}
-                        style={{ marginRight: 10 }}
-                      />
-                      <Text
-                        style={{
-                          color: "rgba(255, 255, 255, 0.7)",
-                          fontSize: 14,
-                        }}
-                      >
-                        {user?.email || "Loading..."}
-                      </Text>
-                    </View>
-                  </View>
-
-                  {/* Number of Guests */}
-                  <View style={{ marginBottom: 16 }}>
-                    <Text
-                      style={{
-                        color: CUC_COLORS.sage,
-                        fontSize: 13,
-                        marginBottom: 8,
-                        fontWeight: "500",
-                      }}
-                    >
-                      Number of Guests
-                    </Text>
-                    <View style={{ flexDirection: "row", gap: 10 }}>
-                      {["1", "2", "3", "4", "5+"].map((num) => (
-                        <GuestButton
-                          key={num}
-                          onPress={() =>
-                            setFormData((prev) => ({ ...prev, guests: num }))
-                          }
-                          selected={formData.guests === num}
-                          value={num}
-                        />
-                      ))}
-                    </View>
-                  </View>
-
-                  {/* Special Requirements */}
-                  <View style={{ marginBottom: 20 }}>
-                    <Text
-                      style={{
-                        color: CUC_COLORS.sage,
-                        fontSize: 13,
-                        marginBottom: 8,
-                        fontWeight: "500",
-                      }}
-                    >
-                      Special Requirements (Optional)
-                    </Text>
-                    <TextInput
-                      multiline
-                      onChangeText={(text) =>
-                        setFormData((prev) => ({ ...prev, notes: text }))
-                      }
-                      placeholder="Dietary requirements, accessibility needs, etc."
-                      placeholderTextColor="rgba(255, 255, 255, 0.4)"
-                      style={{
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        borderRadius: 12,
-                        paddingHorizontal: 16,
-                        paddingVertical: 14,
-                        color: CUC_COLORS.cream,
-                        fontSize: 16,
-                        minHeight: 80,
-                        textAlignVertical: "top",
-                      }}
-                      value={formData.notes}
-                    />
-                  </View>
-
-                  {/* Submit Button */}
-                  <SubmitButton
-                    guests={formData.guests}
-                    isSubmitting={isSubmitting}
-                    onPress={handleSubmit}
-                    price={event.price}
+                hasRsvp ? (
+                  // User has RSVP'd - show confirmation + actions
+                  <RsvpConfirmation
+                    event={event}
+                    existingRsvp={existingRsvp}
+                    isCalendarLoading={isCalendarLoading}
+                    isCancelling={isCancelling}
+                    onAddToCalendar={handleAddToCalendar}
+                    onCancelRsvp={handleCancelRsvp}
                   />
-                </>
+                ) : (
+                  // User hasn't RSVP'd - show form
+                  <RsvpForm
+                    event={event}
+                    formData={formData}
+                    isSubmitting={isSubmitting}
+                    onSubmit={handleSubmit}
+                    setFormData={setFormData}
+                    user={user}
+                  />
+                )
               ) : (
-                // Sign in prompt
-                <>
-                  <Text
-                    style={{
-                      color: CUC_COLORS.sage,
-                      fontSize: 14,
-                      marginBottom: 20,
-                    }}
-                  >
-                    Sign in to reserve your spot at this event
-                  </Text>
-                  <Pressable
-                    onPress={handleSignIn}
-                    style={{
-                      backgroundColor: CUC_COLORS.cream,
-                      borderRadius: 14,
-                      paddingVertical: 16,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: CUC_COLORS.navy,
-                        fontSize: 17,
-                        fontWeight: "600",
-                      }}
-                    >
-                      Sign In to RSVP
-                    </Text>
-                  </Pressable>
-                </>
+                // Not authenticated - show sign in prompt
+                <SignInPrompt onSignIn={handleSignIn} />
               )}
             </Animated.View>
           </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
+  );
+}
+
+// RSVP Confirmation component - shown when user has RSVP'd
+function RsvpConfirmation({
+  event,
+  existingRsvp,
+  isCancelling,
+  isCalendarLoading,
+  onCancelRsvp,
+  onAddToCalendar,
+}: {
+  event: (typeof EVENTS)[0];
+  existingRsvp: { guests: number; notes?: string; createdAt: number };
+  isCancelling: boolean;
+  isCalendarLoading: boolean;
+  onCancelRsvp: () => void;
+  onAddToCalendar: () => void;
+}) {
+  const totalPrice = Number.parseInt(event.price, 10) * existingRsvp.guests;
+
+  return (
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <View
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            backgroundColor: CUC_COLORS.sage,
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 12,
+          }}
+        >
+          <Ionicons color={CUC_COLORS.navy} name="checkmark-circle" size={28} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              color: CUC_COLORS.cream,
+              fontSize: 20,
+              fontWeight: "600",
+            }}
+          >
+            You're Going!
+          </Text>
+          <Text
+            style={{
+              color: CUC_COLORS.sage,
+              fontSize: 14,
+            }}
+          >
+            RSVP confirmed
+          </Text>
+        </View>
+      </View>
+
+      {/* RSVP Details */}
+      <View
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.08)",
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 16,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 8,
+          }}
+        >
+          <Text style={{ color: "rgba(255, 255, 255, 0.7)" }}>Guests</Text>
+          <Text style={{ color: CUC_COLORS.cream, fontWeight: "500" }}>
+            {existingRsvp.guests}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ color: "rgba(255, 255, 255, 0.7)" }}>Total</Text>
+          <Text style={{ color: CUC_COLORS.cream, fontWeight: "500" }}>
+            £{totalPrice}
+          </Text>
+        </View>
+        {existingRsvp.notes && (
+          <View style={{ marginTop: 12 }}>
+            <Text
+              style={{
+                color: "rgba(255, 255, 255, 0.7)",
+                marginBottom: 4,
+              }}
+            >
+              Notes
+            </Text>
+            <Text style={{ color: CUC_COLORS.cream }}>
+              {existingRsvp.notes}
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Add to Calendar Button */}
+      <ActionButton
+        disabled={isCalendarLoading}
+        icon="calendar"
+        isLoading={isCalendarLoading}
+        label="Add to Calendar"
+        onPress={onAddToCalendar}
+        variant="primary"
+      />
+
+      {/* Cancel RSVP Button */}
+      <ActionButton
+        disabled={isCancelling}
+        icon="close-circle-outline"
+        isLoading={isCancelling}
+        label="Cancel RSVP"
+        onPress={onCancelRsvp}
+        style={{ marginTop: 12 }}
+        variant="destructive"
+      />
+    </>
+  );
+}
+
+// RSVP Form component
+function RsvpForm({
+  user,
+  event,
+  formData,
+  setFormData,
+  isSubmitting,
+  onSubmit,
+}: {
+  user: { name: string; email: string } | null | undefined;
+  event: (typeof EVENTS)[0];
+  formData: { guests: string; notes: string };
+  setFormData: React.Dispatch<
+    React.SetStateAction<{ guests: string; notes: string }>
+  >;
+  isSubmitting: boolean;
+  onSubmit: () => void;
+}) {
+  return (
+    <>
+      <Text
+        style={{
+          color: CUC_COLORS.cream,
+          fontSize: 22,
+          fontWeight: "300",
+          fontFamily: "serif",
+          marginBottom: 4,
+        }}
+      >
+        Reserve Your Spot
+      </Text>
+      <Text
+        style={{
+          color: CUC_COLORS.sage,
+          fontSize: 14,
+          marginBottom: 20,
+        }}
+      >
+        Complete the form below to RSVP
+      </Text>
+
+      {/* User Info Display */}
+      <View
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.08)",
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 16,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 8,
+          }}
+        >
+          <Ionicons
+            color={CUC_COLORS.sage}
+            name="person-circle-outline"
+            size={20}
+            style={{ marginRight: 10 }}
+          />
+          <Text
+            style={{
+              color: CUC_COLORS.cream,
+              fontSize: 16,
+              fontWeight: "500",
+            }}
+          >
+            {user?.name || "Loading..."}
+          </Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Ionicons
+            color={CUC_COLORS.sage}
+            name="mail-outline"
+            size={18}
+            style={{ marginRight: 10 }}
+          />
+          <Text
+            style={{
+              color: "rgba(255, 255, 255, 0.7)",
+              fontSize: 14,
+            }}
+          >
+            {user?.email || "Loading..."}
+          </Text>
+        </View>
+      </View>
+
+      {/* Number of Guests */}
+      <View style={{ marginBottom: 16 }}>
+        <Text
+          style={{
+            color: CUC_COLORS.sage,
+            fontSize: 13,
+            marginBottom: 8,
+            fontWeight: "500",
+          }}
+        >
+          Number of Guests
+        </Text>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          {["1", "2", "3", "4", "5+"].map((num) => (
+            <GuestButton
+              key={num}
+              onPress={() => setFormData((prev) => ({ ...prev, guests: num }))}
+              selected={formData.guests === num}
+              value={num}
+            />
+          ))}
+        </View>
+      </View>
+
+      {/* Special Requirements */}
+      <View style={{ marginBottom: 20 }}>
+        <Text
+          style={{
+            color: CUC_COLORS.sage,
+            fontSize: 13,
+            marginBottom: 8,
+            fontWeight: "500",
+          }}
+        >
+          Special Requirements (Optional)
+        </Text>
+        <TextInput
+          multiline
+          onChangeText={(text) =>
+            setFormData((prev) => ({ ...prev, notes: text }))
+          }
+          placeholder="Dietary requirements, accessibility needs, etc."
+          placeholderTextColor="rgba(255, 255, 255, 0.4)"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderRadius: 12,
+            paddingHorizontal: 16,
+            paddingVertical: 14,
+            color: CUC_COLORS.cream,
+            fontSize: 16,
+            minHeight: 80,
+            textAlignVertical: "top",
+          }}
+          value={formData.notes}
+        />
+      </View>
+
+      {/* Submit Button */}
+      <SubmitButton
+        guests={formData.guests}
+        isSubmitting={isSubmitting}
+        onPress={onSubmit}
+        price={event.price}
+      />
+    </>
+  );
+}
+
+// Sign In Prompt component
+function SignInPrompt({ onSignIn }: { onSignIn: () => void }) {
+  return (
+    <>
+      <Text
+        style={{
+          color: CUC_COLORS.cream,
+          fontSize: 22,
+          fontWeight: "300",
+          fontFamily: "serif",
+          marginBottom: 4,
+        }}
+      >
+        Reserve Your Spot
+      </Text>
+      <Text
+        style={{
+          color: CUC_COLORS.sage,
+          fontSize: 14,
+          marginBottom: 20,
+        }}
+      >
+        Sign in to reserve your spot at this event
+      </Text>
+      <Pressable
+        onPress={onSignIn}
+        style={{
+          backgroundColor: CUC_COLORS.cream,
+          borderRadius: 14,
+          paddingVertical: 16,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            color: CUC_COLORS.navy,
+            fontSize: 17,
+            fontWeight: "600",
+          }}
+        >
+          Sign In to RSVP
+        </Text>
+      </Pressable>
+    </>
   );
 }
 
@@ -621,6 +918,88 @@ function SubmitButton({
           {guestCount} {guestCount === 1 ? "guest" : "guests"} - Total: £
           {totalPrice}
         </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
+function ActionButton({
+  label,
+  icon,
+  onPress,
+  variant = "primary",
+  disabled,
+  isLoading,
+  style,
+}: {
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+  variant?: "primary" | "destructive";
+  disabled?: boolean;
+  isLoading?: boolean;
+  style?: object;
+}) {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const isPrimary = variant === "primary";
+
+  return (
+    <Pressable
+      disabled={disabled}
+      onPress={onPress}
+      onPressIn={() => {
+        scale.value = withSpring(0.98, { damping: 15, stiffness: 400 });
+      }}
+      onPressOut={() => {
+        scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+      }}
+      style={style}
+    >
+      <Animated.View
+        style={[
+          animatedStyle,
+          {
+            backgroundColor: isPrimary ? CUC_COLORS.sage : "transparent",
+            borderRadius: 14,
+            paddingVertical: 14,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            borderWidth: isPrimary ? 0 : 1,
+            borderColor: "rgba(255, 255, 255, 0.3)",
+            opacity: disabled ? 0.6 : 1,
+          },
+        ]}
+      >
+        {isLoading ? (
+          <ActivityIndicator
+            color={isPrimary ? CUC_COLORS.navy : CUC_COLORS.cream}
+            size="small"
+          />
+        ) : (
+          <>
+            <Ionicons
+              color={isPrimary ? CUC_COLORS.navy : CUC_COLORS.cream}
+              name={icon}
+              size={20}
+            />
+            <Text
+              style={{
+                color: isPrimary ? CUC_COLORS.navy : CUC_COLORS.cream,
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+            >
+              {label}
+            </Text>
+          </>
+        )}
       </Animated.View>
     </Pressable>
   );

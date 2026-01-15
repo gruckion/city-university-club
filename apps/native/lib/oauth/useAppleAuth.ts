@@ -27,7 +27,9 @@ export const useAppleAuth = () => {
           accessToken: credential.identityToken,
         },
       });
+      // Navigation handled by (auth)/_layout.tsx when auth state changes
     } catch (error) {
+      // Handle Apple Authentication errors (user cancelled, etc.)
       console.error("Apple sign in error:", error);
     } finally {
       setIsLoading(false);
