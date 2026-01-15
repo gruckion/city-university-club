@@ -1,20 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { useEffect } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Generic food blurhash placeholder (warm brown/beige tones)
 const FOOD_BLURHASH = "LKJRyV~qIU-;_3M{ofRj9Fxut7WB";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 // Menu categories based on the sitemap
 const MENU_CATEGORIES = [
@@ -233,39 +226,28 @@ export default function MenuIndex() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  // Theme colors for Ionicons
+  const accent = useThemeColor("accent");
+
   // Prefetch all menu images on mount
   useEffect(() => {
     Image.prefetch(ALL_MENU_IMAGES, "memory-disk");
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
-        style={{
-          backgroundColor: CUC_COLORS.navy,
-          paddingTop: insets.top + 16,
-          paddingBottom: 20,
-          paddingHorizontal: 20,
-        }}
+        className="bg-primary px-5 pb-5"
+        style={{ paddingTop: insets.top + 16 }}
       >
         <Text
-          style={{
-            color: CUC_COLORS.cream,
-            fontSize: 28,
-            fontWeight: "300",
-            fontFamily: "serif",
-          }}
+          className="font-light text-3xl text-primary-foreground"
+          style={{ fontFamily: "serif" }}
         >
           A La Carte Menu
         </Text>
-        <Text
-          style={{
-            color: CUC_COLORS.sage,
-            fontSize: 14,
-            marginTop: 4,
-          }}
-        >
+        <Text className="mt-1 text-accent text-sm">
           Exquisite dining at City University Club
         </Text>
       </View>
@@ -277,13 +259,11 @@ export default function MenuIndex() {
         {/* Menu Categories */}
         {MENU_CATEGORIES.map((category) => (
           <Pressable
+            className="mb-4 overflow-hidden bg-surface"
             key={category.id}
             onPress={() => router.push(`/(tabs)/menu/${category.id}`)}
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
-              marginBottom: 16,
-              overflow: "hidden",
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.1,
@@ -308,36 +288,20 @@ export default function MenuIndex() {
                 }}
               >
                 <View style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      color: CUC_COLORS.navy,
-                      fontSize: 18,
-                      fontWeight: "600",
-                    }}
-                  >
+                  <Text className="font-semibold text-foreground text-lg">
                     {category.name}
                   </Text>
-                  <Text
-                    style={{
-                      color: "#666",
-                      fontSize: 14,
-                      marginTop: 2,
-                    }}
-                  >
+                  <Text className="mt-0.5 text-muted text-sm">
                     {category.description}
                   </Text>
                 </View>
                 <View
                   style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
                 >
-                  <Text style={{ color: CUC_COLORS.sage, fontSize: 13 }}>
+                  <Text className="text-accent text-sm">
                     {category.itemCount} items
                   </Text>
-                  <Ionicons
-                    color={CUC_COLORS.sage}
-                    name="chevron-forward"
-                    size={20}
-                  />
+                  <Ionicons color={accent} name="chevron-forward" size={20} />
                 </View>
               </View>
             </View>
@@ -345,27 +309,13 @@ export default function MenuIndex() {
         ))}
 
         {/* Opening Hours */}
-        <View
-          style={{
-            backgroundColor: CUC_COLORS.navy,
-            borderRadius: 12,
-            padding: 20,
-            marginTop: 8,
-          }}
-        >
-          <Text
-            style={{
-              color: CUC_COLORS.cream,
-              fontSize: 16,
-              fontWeight: "600",
-              marginBottom: 12,
-            }}
-          >
+        <View className="mt-2 bg-primary p-5" style={{ borderRadius: 12 }}>
+          <Text className="mb-3 font-semibold text-base text-primary-foreground">
             Dining Hours
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Ionicons color={CUC_COLORS.sage} name="time-outline" size={18} />
-            <Text style={{ color: CUC_COLORS.cream, fontSize: 14 }}>
+            <Ionicons color={accent} name="time-outline" size={18} />
+            <Text className="text-primary-foreground text-sm">
               Monday to Friday, 9:00 AM - 5:00 PM
             </Text>
           </View>
@@ -377,12 +327,8 @@ export default function MenuIndex() {
               marginTop: 8,
             }}
           >
-            <Ionicons
-              color={CUC_COLORS.sage}
-              name="restaurant-outline"
-              size={18}
-            />
-            <Text style={{ color: CUC_COLORS.cream, fontSize: 14 }}>
+            <Ionicons color={accent} name="restaurant-outline" size={18} />
+            <Text className="text-primary-foreground text-sm">
               Lunch: 12:00 PM - Last orders 2:30 PM
             </Text>
           </View>

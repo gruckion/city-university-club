@@ -5,14 +5,6 @@ import { Image, ImageBackground, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MembershipCard } from "@/components/MembershipCard";
 
-// CUC brand colors from design.md
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a", // rgb(133, 176, 154) greeting text color
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 // Local assets for instant loading
 const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
 const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
@@ -67,16 +59,10 @@ export default function Home() {
                 />
               </View>
               <View>
-                <Text style={{ color: CUC_COLORS.sage, fontSize: 16 }}>
-                  Welcome to
-                </Text>
+                <Text className="text-accent text-base">Welcome to</Text>
                 <Text
-                  style={{
-                    color: CUC_COLORS.cream,
-                    fontSize: 24,
-                    fontWeight: "300",
-                    fontFamily: "serif",
-                  }}
+                  className="font-light text-2xl text-primary-foreground"
+                  style={{ fontFamily: "serif" }}
                 >
                   City University Club
                 </Text>
@@ -87,25 +73,12 @@ export default function Home() {
           {/* Content */}
           <View className="flex-1 items-center justify-center px-6">
             <Text
-              style={{
-                color: CUC_COLORS.cream,
-                fontSize: 32,
-                fontWeight: "300",
-                textAlign: "center",
-                fontFamily: "serif",
-                marginBottom: 16,
-              }}
+              className="mb-4 text-center font-light text-3xl text-primary-foreground"
+              style={{ fontFamily: "serif" }}
             >
               Your exclusive members club
             </Text>
-            <Text
-              style={{
-                color: CUC_COLORS.sage,
-                fontSize: 16,
-                textAlign: "center",
-                marginBottom: 32,
-              }}
-            >
+            <Text className="mb-8 text-center text-accent text-base">
               A lunch club in the heart of the financial area of London
             </Text>
           </View>
@@ -113,22 +86,15 @@ export default function Home() {
           {/* Membership Card Button */}
           <View className="px-6 pb-6">
             <Pressable
+              className="items-center bg-primary"
               onPress={() => router.push("/(auth)/landing")}
               style={{
-                backgroundColor: CUC_COLORS.navy,
                 paddingVertical: 16,
                 paddingHorizontal: 24,
                 borderRadius: 8,
-                alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  color: CUC_COLORS.cream,
-                  fontSize: 16,
-                  fontWeight: "500",
-                }}
-              >
+              <Text className="font-medium text-base text-primary-foreground">
                 Sign In
               </Text>
             </Pressable>
@@ -153,7 +119,7 @@ export default function Home() {
         <View className="flex-row items-center justify-between px-4 py-3">
           <View className="flex-row items-center gap-3">
             {/* Logo */}
-            <View className="h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white">
+            <View className="h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-surface">
               <Image
                 resizeMode="contain"
                 source={CUC_LOGO}
@@ -162,16 +128,10 @@ export default function Home() {
             </View>
             {/* Greeting */}
             <View>
-              <Text style={{ color: CUC_COLORS.sage, fontSize: 16 }}>
-                {getGreeting()}
-              </Text>
+              <Text className="text-accent text-base">{getGreeting()}</Text>
               <Text
-                style={{
-                  color: CUC_COLORS.cream,
-                  fontSize: 28,
-                  fontWeight: "300",
-                  fontFamily: "serif",
-                }}
+                className="font-light text-3xl text-primary-foreground"
+                style={{ fontFamily: "serif" }}
               >
                 {firstName}
               </Text>

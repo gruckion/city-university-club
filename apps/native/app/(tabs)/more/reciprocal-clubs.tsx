@@ -2,17 +2,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useConvexAuth } from "convex/react";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 // Globe image from CUC website (larger size for better display)
 const GLOBE_IMAGE_URL =
@@ -57,19 +50,22 @@ export default function ReciprocalClubs() {
   const insets = useSafeAreaInsets();
   const { isAuthenticated } = useConvexAuth();
 
+  // Theme colors for Ionicons
+  const foreground = useThemeColor("foreground");
+  const accent = useThemeColor("accent");
+  const primaryForeground = "#fffef8";
+
   const handleSignIn = () => {
     router.push("/(auth)/landing");
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary px-4 pb-5"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top + 8,
-          paddingBottom: 20,
-          paddingHorizontal: 16,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -79,26 +75,25 @@ export default function ReciprocalClubs() {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: `${CUC_COLORS.white}15`,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
               alignItems: "center",
               justifyContent: "center",
               marginRight: 12,
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={22} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={22} />
           </Pressable>
           <Text
+            className="flex-1 text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 20,
               fontWeight: "300",
               fontFamily: "serif",
-              flex: 1,
             }}
           >
             Reciprocal Clubs
           </Text>
-          <Ionicons color={CUC_COLORS.sage} name="globe-outline" size={24} />
+          <Ionicons color={accent} name="globe-outline" size={24} />
         </View>
       </View>
 
@@ -118,8 +113,8 @@ export default function ReciprocalClubs() {
         <View style={{ padding: 16 }}>
           {/* Stats Card */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -131,33 +126,30 @@ export default function ReciprocalClubs() {
             }}
           >
             <Text
+              className="text-center text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 28,
                 fontWeight: "700",
-                textAlign: "center",
                 marginBottom: 4,
               }}
             >
               450+
             </Text>
             <Text
+              className="text-center text-accent"
               style={{
-                color: CUC_COLORS.sage,
                 fontSize: 16,
                 fontWeight: "500",
-                textAlign: "center",
                 marginBottom: 12,
               }}
             >
               Reciprocal Clubs Worldwide
             </Text>
             <Text
+              className="text-center text-muted"
               style={{
-                color: "#666",
                 fontSize: 15,
                 lineHeight: 22,
-                textAlign: "center",
               }}
             >
               The City University Club has a unique list of over 450 reciprocal
@@ -167,8 +159,8 @@ export default function ReciprocalClubs() {
 
           {/* About Section */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -180,8 +172,8 @@ export default function ReciprocalClubs() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 17,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -190,8 +182,8 @@ export default function ReciprocalClubs() {
               World-Class Clubs
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#555",
                 fontSize: 15,
                 lineHeight: 24,
               }}
@@ -205,8 +197,8 @@ export default function ReciprocalClubs() {
 
           {/* Available Facilities */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -218,8 +210,8 @@ export default function ReciprocalClubs() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 17,
                 fontWeight: "600",
                 marginBottom: 16,
@@ -228,8 +220,8 @@ export default function ReciprocalClubs() {
               Available Facilities
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#555",
                 fontSize: 14,
                 lineHeight: 22,
                 marginBottom: 16,
@@ -247,25 +239,21 @@ export default function ReciprocalClubs() {
             >
               {FACILITIES.map((facility) => (
                 <View
+                  className="bg-primary/10"
                   key={facility.label}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    backgroundColor: `${CUC_COLORS.navy}08`,
                     paddingVertical: 8,
                     paddingHorizontal: 12,
                     borderRadius: 20,
                     gap: 6,
                   }}
                 >
-                  <Ionicons
-                    color={CUC_COLORS.navy}
-                    name={facility.icon}
-                    size={16}
-                  />
+                  <Ionicons color={foreground} name={facility.icon} size={16} />
                   <Text
+                    className="text-foreground"
                     style={{
-                      color: CUC_COLORS.navy,
                       fontSize: 13,
                       fontWeight: "500",
                     }}
@@ -281,8 +269,8 @@ export default function ReciprocalClubs() {
           {isAuthenticated ? (
             // Authenticated: Show full access coming soon
             <View
+              className="bg-accent"
               style={{
-                backgroundColor: CUC_COLORS.sage,
                 borderRadius: 12,
                 padding: 24,
                 marginBottom: 16,
@@ -290,27 +278,25 @@ export default function ReciprocalClubs() {
               }}
             >
               <Ionicons
-                color={CUC_COLORS.navy}
+                color={foreground}
                 name="checkmark-circle"
                 size={48}
                 style={{ marginBottom: 12 }}
               />
               <Text
+                className="text-center text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 18,
                   fontWeight: "600",
-                  textAlign: "center",
                   marginBottom: 8,
                 }}
               >
                 Member Access
               </Text>
               <Text
+                className="text-center text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 15,
-                  textAlign: "center",
                   lineHeight: 22,
                   opacity: 0.85,
                 }}
@@ -329,39 +315,36 @@ export default function ReciprocalClubs() {
           ) : (
             // Not authenticated: Show sign in prompt
             <View
+              className="border-accent bg-surface"
               style={{
-                backgroundColor: CUC_COLORS.white,
                 borderRadius: 12,
                 padding: 24,
                 marginBottom: 16,
                 borderWidth: 2,
-                borderColor: CUC_COLORS.sage,
                 borderStyle: "dashed",
                 alignItems: "center",
               }}
             >
               <Ionicons
-                color={CUC_COLORS.navy}
+                color={foreground}
                 name="lock-closed-outline"
                 size={40}
                 style={{ marginBottom: 12 }}
               />
               <Text
+                className="text-center text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 17,
                   fontWeight: "600",
-                  textAlign: "center",
                   marginBottom: 8,
                 }}
               >
                 Members Only
               </Text>
               <Text
+                className="text-center text-muted"
                 style={{
-                  color: "#666",
                   fontSize: 14,
-                  textAlign: "center",
                   lineHeight: 22,
                   marginBottom: 16,
                 }}
@@ -371,9 +354,9 @@ export default function ReciprocalClubs() {
                 booking process.
               </Text>
               <Pressable
+                className="bg-primary"
                 onPress={handleSignIn}
                 style={{
-                  backgroundColor: CUC_COLORS.navy,
                   paddingVertical: 14,
                   paddingHorizontal: 32,
                   borderRadius: 8,
@@ -383,13 +366,13 @@ export default function ReciprocalClubs() {
                 }}
               >
                 <Ionicons
-                  color={CUC_COLORS.cream}
+                  color={primaryForeground}
                   name="log-in-outline"
                   size={20}
                 />
                 <Text
+                  className="text-primary-foreground"
                   style={{
-                    color: CUC_COLORS.cream,
                     fontSize: 15,
                     fontWeight: "600",
                   }}
@@ -402,8 +385,8 @@ export default function ReciprocalClubs() {
 
           {/* Featured Clubs Preview */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -415,8 +398,8 @@ export default function ReciprocalClubs() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 17,
                 fontWeight: "600",
                 marginBottom: 16,
@@ -426,36 +409,32 @@ export default function ReciprocalClubs() {
             </Text>
             {FEATURED_CLUBS.map((club, index) => (
               <View
+                className="border-border"
                 key={club.name}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   paddingVertical: 12,
                   borderBottomWidth: index < FEATURED_CLUBS.length - 1 ? 1 : 0,
-                  borderBottomColor: "#f0f0f0",
                 }}
               >
                 <View
+                  className="bg-accent/30"
                   style={{
                     width: 40,
                     height: 40,
                     borderRadius: 20,
-                    backgroundColor: `${CUC_COLORS.sage}30`,
                     alignItems: "center",
                     justifyContent: "center",
                     marginRight: 12,
                   }}
                 >
-                  <Ionicons
-                    color={CUC_COLORS.navy}
-                    name={club.icon}
-                    size={20}
-                  />
+                  <Ionicons color={foreground} name={club.icon} size={20} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text
+                    className="text-foreground"
                     style={{
-                      color: CUC_COLORS.navy,
                       fontSize: 15,
                       fontWeight: "500",
                     }}
@@ -463,8 +442,8 @@ export default function ReciprocalClubs() {
                     {club.name}
                   </Text>
                   <Text
+                    className="text-muted"
                     style={{
-                      color: "#888",
                       fontSize: 13,
                       marginTop: 2,
                     }}
@@ -475,10 +454,9 @@ export default function ReciprocalClubs() {
               </View>
             ))}
             <Text
+              className="text-center text-muted"
               style={{
-                color: "#999",
                 fontSize: 12,
-                textAlign: "center",
                 marginTop: 12,
                 fontStyle: "italic",
               }}
@@ -489,16 +467,16 @@ export default function ReciprocalClubs() {
 
           {/* Contact for Assistance */}
           <View
+            className="bg-primary"
             style={{
-              backgroundColor: CUC_COLORS.navy,
               borderRadius: 12,
               padding: 20,
               alignItems: "center",
             }}
           >
             <Text
+              className="text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 15,
                 fontWeight: "600",
                 marginBottom: 8,
@@ -507,10 +485,9 @@ export default function ReciprocalClubs() {
               Need Assistance?
             </Text>
             <Text
+              className="text-center text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 14,
-                textAlign: "center",
                 opacity: 0.9,
                 marginBottom: 12,
               }}
@@ -518,9 +495,9 @@ export default function ReciprocalClubs() {
               Contact the club for help with reciprocal club bookings
             </Text>
             <Pressable
+              className="bg-accent"
               onPress={() => Linking.openURL("tel:02071676682")}
               style={{
-                backgroundColor: CUC_COLORS.sage,
                 paddingVertical: 12,
                 paddingHorizontal: 20,
                 borderRadius: 8,
@@ -529,10 +506,10 @@ export default function ReciprocalClubs() {
                 gap: 8,
               }}
             >
-              <Ionicons color={CUC_COLORS.navy} name="call" size={18} />
+              <Ionicons color={foreground} name="call" size={18} />
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 14,
                   fontWeight: "600",
                 }}

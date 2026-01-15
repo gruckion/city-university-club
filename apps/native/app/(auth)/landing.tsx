@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -14,14 +15,6 @@ import { LastUsedIndicator } from "@/components/LastUsedIndicator";
 import { authClient } from "@/lib/auth-client";
 import { useAppleAuth, useGitHubAuth, useGoogleAuth } from "@/lib/oauth";
 
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 // Local assets for instant loading
 const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
 const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
@@ -35,6 +28,10 @@ export default function Landing() {
   const { signIn: signInWithGitHub, isLoading: isGitHubLoading } =
     useGitHubAuth();
   const isLoading = isGoogleLoading || isAppleLoading || isGitHubLoading;
+
+  // Theme colors for Ionicons (which don't support className)
+  const foreground = useThemeColor("foreground");
+  const primaryForeground = "#fffef8";
 
   // Read last login method after mount to ensure SecureStore/cookies are available
   const [lastMethod, setLastMethod] = useState<string | null>(null);
@@ -69,7 +66,7 @@ export default function Landing() {
             zIndex: 10,
           }}
         >
-          <Ionicons color={CUC_COLORS.cream} name="close" size={24} />
+          <Ionicons color={primaryForeground} name="close" size={24} />
         </Pressable>
 
         {/* Header with Logo */}
@@ -82,8 +79,8 @@ export default function Landing() {
             />
           </View>
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 32,
               fontWeight: "300",
               fontFamily: "serif",
@@ -92,8 +89,8 @@ export default function Landing() {
             City University Club
           </Text>
           <Text
+            className="text-accent"
             style={{
-              color: CUC_COLORS.sage,
               fontSize: 16,
               marginTop: 8,
             }}
@@ -108,10 +105,9 @@ export default function Landing() {
         {/* Sign In Options */}
         <View className="gap-4 px-6 pb-8">
           <Text
+            className="text-center text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 18,
-              textAlign: "center",
               marginBottom: 8,
             }}
           >
@@ -123,6 +119,7 @@ export default function Landing() {
             {/* GitHub */}
             <View style={{ flex: 1, position: "relative" }}>
               <Pressable
+                className="bg-surface"
                 disabled={isLoading}
                 onPress={signInWithGitHub}
                 style={{
@@ -130,24 +127,19 @@ export default function Landing() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 8,
-                  backgroundColor: CUC_COLORS.white,
                   paddingVertical: 14,
                   borderRadius: 12,
                   opacity: isLoading ? 0.7 : 1,
                 }}
               >
                 {isGitHubLoading ? (
-                  <ActivityIndicator color={CUC_COLORS.navy} size="small" />
+                  <ActivityIndicator color={foreground} size="small" />
                 ) : (
                   <>
-                    <Ionicons
-                      color={CUC_COLORS.navy}
-                      name="logo-github"
-                      size={20}
-                    />
+                    <Ionicons color={foreground} name="logo-github" size={20} />
                     <Text
+                      className="text-foreground"
                       style={{
-                        color: CUC_COLORS.navy,
                         fontSize: 16,
                         fontWeight: "500",
                       }}
@@ -167,6 +159,7 @@ export default function Landing() {
             {/* Google */}
             <View style={{ flex: 1, position: "relative" }}>
               <Pressable
+                className="bg-surface"
                 disabled={isLoading}
                 onPress={signInWithGoogle}
                 style={{
@@ -174,24 +167,19 @@ export default function Landing() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 8,
-                  backgroundColor: CUC_COLORS.white,
                   paddingVertical: 14,
                   borderRadius: 12,
                   opacity: isLoading ? 0.7 : 1,
                 }}
               >
                 {isGoogleLoading ? (
-                  <ActivityIndicator color={CUC_COLORS.navy} size="small" />
+                  <ActivityIndicator color={foreground} size="small" />
                 ) : (
                   <>
-                    <Ionicons
-                      color={CUC_COLORS.navy}
-                      name="logo-google"
-                      size={20}
-                    />
+                    <Ionicons color={foreground} name="logo-google" size={20} />
                     <Text
+                      className="text-foreground"
                       style={{
-                        color: CUC_COLORS.navy,
                         fontSize: 16,
                         fontWeight: "500",
                       }}
@@ -211,6 +199,7 @@ export default function Landing() {
             {/* Apple */}
             <View style={{ flex: 1, position: "relative" }}>
               <Pressable
+                className="bg-surface"
                 disabled={isLoading}
                 onPress={signInWithApple}
                 style={{
@@ -218,24 +207,19 @@ export default function Landing() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 8,
-                  backgroundColor: CUC_COLORS.white,
                   paddingVertical: 14,
                   borderRadius: 12,
                   opacity: isLoading ? 0.7 : 1,
                 }}
               >
                 {isAppleLoading ? (
-                  <ActivityIndicator color={CUC_COLORS.navy} size="small" />
+                  <ActivityIndicator color={foreground} size="small" />
                 ) : (
                   <>
-                    <Ionicons
-                      color={CUC_COLORS.navy}
-                      name="logo-apple"
-                      size={20}
-                    />
+                    <Ionicons color={foreground} name="logo-apple" size={20} />
                     <Text
+                      className="text-foreground"
                       style={{
-                        color: CUC_COLORS.navy,
                         fontSize: 16,
                         fontWeight: "500",
                       }}
@@ -257,20 +241,19 @@ export default function Landing() {
           <View style={{ position: "relative" }}>
             <Link asChild href="/(auth)/email/signin">
               <Pressable
+                className="border-accent bg-primary"
                 style={{
-                  backgroundColor: CUC_COLORS.navy,
                   paddingVertical: 16,
                   borderRadius: 12,
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
                   borderWidth: 1,
-                  borderColor: CUC_COLORS.sage,
                 }}
               >
                 <Text
+                  className="text-primary-foreground"
                   style={{
-                    color: CUC_COLORS.cream,
                     fontSize: 16,
                     fontWeight: "500",
                   }}
@@ -294,14 +277,14 @@ export default function Landing() {
 
           {/* Sign Up Link */}
           <View className="mt-2 flex-row items-center justify-center gap-1">
-            <Text style={{ color: CUC_COLORS.sage, fontSize: 14 }}>
+            <Text className="text-accent" style={{ fontSize: 14 }}>
               Don't have an account?
             </Text>
             <Link asChild href="/(auth)/email/signup">
               <Pressable>
                 <Text
+                  className="text-primary-foreground"
                   style={{
-                    color: CUC_COLORS.cream,
                     fontSize: 14,
                     fontWeight: "600",
                     textDecorationLine: "underline",

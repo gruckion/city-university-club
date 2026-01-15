@@ -3,7 +3,12 @@ import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({
+  className,
+  type,
+  ref,
+  ...props
+}: React.ComponentProps<"input">) {
   return (
     <InputPrimitive
       className={cn(
@@ -11,6 +16,8 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         className
       )}
       data-slot="input"
+      // biome-ignore lint/suspicious/noExplicitAny: React types incompatibility between base-ui and @types/react
+      ref={ref as any}
       type={type}
       {...props}
     />

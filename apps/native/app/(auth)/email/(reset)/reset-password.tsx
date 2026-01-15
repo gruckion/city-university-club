@@ -2,11 +2,7 @@ import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Pressable, Text, type TextInput, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
-import FormHeader, {
-  CUC_COLORS,
-  StyledButton,
-  StyledTextInput,
-} from "@/components/form";
+import FormHeader, { StyledButton, StyledTextInput } from "@/components/form";
 import { KeyboardAwareForm } from "@/components/keyboard";
 import { authClient } from "@/lib/auth-client";
 
@@ -145,31 +141,29 @@ export default function ResetPasswordRoute() {
   if (error === "INVALID_TOKEN" || !hasValidParams) {
     return (
       <View
+        className="bg-background"
         style={{
           flex: 1,
-          backgroundColor: CUC_COLORS.cream,
           justifyContent: "center",
           paddingHorizontal: 24,
         }}
       >
         <View style={{ alignItems: "center", marginBottom: 32 }}>
           <Text
+            className="text-center text-foreground"
             style={{
               fontSize: 28,
               fontWeight: "300",
               fontFamily: "serif",
-              color: CUC_COLORS.navy,
               marginBottom: 12,
-              textAlign: "center",
             }}
           >
             Invalid Link
           </Text>
           <Text
+            className="text-center text-muted"
             style={{
               fontSize: 15,
-              color: "#666",
-              textAlign: "center",
               lineHeight: 22,
             }}
           >
@@ -178,16 +172,16 @@ export default function ResetPasswordRoute() {
         </View>
         <Link asChild href="/(auth)/email/signin">
           <Pressable
+            className="bg-primary"
             style={{
-              backgroundColor: CUC_COLORS.navy,
               borderRadius: 12,
               paddingVertical: 16,
               alignItems: "center",
             }}
           >
             <Text
+              className="text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 16,
                 fontWeight: "600",
               }}

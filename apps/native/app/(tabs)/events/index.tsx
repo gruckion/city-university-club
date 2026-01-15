@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
@@ -12,14 +13,6 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CategoryFilter, EVENT_CATEGORIES } from "@/components/CategoryFilter";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
-
-// CUC brand colors
-export const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 // Sample events data based on the website sitemap
 export const EVENTS = [
@@ -93,6 +86,7 @@ const EVENT_BLURHASH = "LKJRyV~qIU-;_3M{ofRj9Fxut7WB";
 export default function Events() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const accent = useThemeColor("accent");
 
   // Category filter state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -103,19 +97,19 @@ export default function Events() {
     : EVENTS;
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top + 16,
           paddingBottom: 20,
           paddingHorizontal: 20,
         }}
       >
         <Text
+          className="text-primary-foreground"
           style={{
-            color: CUC_COLORS.cream,
             fontSize: 28,
             fontWeight: "300",
             fontFamily: "serif",
@@ -124,8 +118,8 @@ export default function Events() {
           Events
         </Text>
         <Text
+          className="text-accent"
           style={{
-            color: CUC_COLORS.sage,
             fontSize: 14,
             marginTop: 4,
           }}
@@ -137,7 +131,6 @@ export default function Events() {
       {/* Category Filter */}
       <CategoryFilter
         categories={EVENT_CATEGORIES}
-        colors={CUC_COLORS}
         onSelectCategory={setSelectedCategory}
         selectedCategory={selectedCategory}
       />
@@ -153,14 +146,10 @@ export default function Events() {
               alignItems: "center",
             }}
           >
-            <Ionicons
-              color={CUC_COLORS.sage}
-              name="calendar-outline"
-              size={48}
-            />
+            <Ionicons color={accent} name="calendar-outline" size={48} />
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 16,
                 marginTop: 16,
                 textAlign: "center",
@@ -169,18 +158,18 @@ export default function Events() {
               No events found in this category
             </Text>
             <Pressable
+              className="bg-accent"
               onPress={() => setSelectedCategory(null)}
               style={{
                 marginTop: 12,
                 paddingHorizontal: 16,
                 paddingVertical: 8,
-                backgroundColor: CUC_COLORS.sage,
                 borderRadius: 8,
               }}
             >
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontWeight: "500",
                 }}
               >
@@ -225,6 +214,10 @@ function EventCard({
 }) {
   const scale = useSharedValue(1);
 
+  // useThemeColor only for Ionicons (which don't support className)
+  const accent = useThemeColor("accent") || "#85b09a";
+  const muted = useThemeColor("muted") || "#666666";
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
@@ -240,11 +233,11 @@ function EventCard({
   return (
     <Animated.View style={animatedStyle}>
       <Pressable
+        className={featured ? "bg-primary" : "bg-surface"}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={{
-          backgroundColor: featured ? CUC_COLORS.navy : CUC_COLORS.white,
           borderRadius: 12,
           marginBottom: 16,
           overflow: "hidden",
@@ -275,8 +268,10 @@ function EventCard({
           >
             <View style={{ flex: 1 }}>
               <Text
+                className={
+                  featured ? "text-primary-foreground" : "text-foreground"
+                }
                 style={{
-                  color: featured ? CUC_COLORS.cream : CUC_COLORS.navy,
                   fontSize: 18,
                   fontWeight: "600",
                   marginBottom: 4,
@@ -285,8 +280,8 @@ function EventCard({
                 {event.title}
               </Text>
               <Text
+                className={featured ? "text-accent" : "text-muted"}
                 style={{
-                  color: featured ? CUC_COLORS.sage : "#666",
                   fontSize: 14,
                   lineHeight: 20,
                 }}
@@ -296,8 +291,8 @@ function EventCard({
             </View>
             {featured && (
               <View
+                className="bg-accent"
                 style={{
-                  backgroundColor: CUC_COLORS.sage,
                   paddingHorizontal: 10,
                   paddingVertical: 4,
                   borderRadius: 12,
@@ -305,8 +300,8 @@ function EventCard({
                 }}
               >
                 <Text
+                  className="text-foreground"
                   style={{
-                    color: CUC_COLORS.navy,
                     fontSize: 11,
                     fontWeight: "600",
                   }}
@@ -330,13 +325,13 @@ function EventCard({
               style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
             >
               <Ionicons
-                color={featured ? CUC_COLORS.sage : "#666"}
+                color={featured ? accent : muted}
                 name="calendar-outline"
                 size={16}
               />
               <Text
+                className={featured ? "text-accent" : "text-muted"}
                 style={{
-                  color: featured ? CUC_COLORS.sage : "#666",
                   fontSize: 13,
                 }}
               >
@@ -345,16 +340,18 @@ function EventCard({
             </View>
 
             <View
+              className={featured ? "bg-primary-foreground" : "bg-primary"}
               style={{
-                backgroundColor: featured ? CUC_COLORS.cream : CUC_COLORS.navy,
                 paddingHorizontal: 16,
                 paddingVertical: 8,
                 borderRadius: 6,
               }}
             >
               <Text
+                className={
+                  featured ? "text-primary" : "text-primary-foreground"
+                }
                 style={{
-                  color: featured ? CUC_COLORS.navy : CUC_COLORS.cream,
                   fontSize: 13,
                   fontWeight: "500",
                 }}

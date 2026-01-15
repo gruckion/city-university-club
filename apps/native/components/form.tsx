@@ -1,3 +1,4 @@
+import { useThemeColor } from "heroui-native";
 import {
   ActivityIndicator,
   Pressable,
@@ -7,21 +8,12 @@ import {
   View,
 } from "react-native";
 
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 /* ----------------------------- form container ----------------------------- */
 export function FormContainer({ children }: { children: React.ReactNode }) {
   return (
     <View
+      className="flex-1 bg-background"
       style={{
-        flex: 1,
-        backgroundColor: CUC_COLORS.cream,
         paddingHorizontal: 24,
         paddingTop: 100,
         gap: 16,
@@ -45,19 +37,19 @@ export default function FormHeader({
   return (
     <View style={{ gap: 8, marginBottom: 8 }}>
       <Text
+        className="text-foreground"
         style={{
           fontSize: 32,
           fontWeight: "300",
           fontFamily: "serif",
-          color: CUC_COLORS.navy,
         }}
       >
         {title}
       </Text>
       <Text
+        className="text-muted"
         style={{
           fontSize: 15,
-          color: "#666",
           lineHeight: 22,
         }}
       >
@@ -69,27 +61,15 @@ export default function FormHeader({
 }
 
 /* ----------------------------- styled text input -------------------------- */
-export function StyledTextInput({
-  label,
-  placeholder,
-  value,
-  onChangeText,
-  secureTextEntry,
-  keyboardType,
-  autoCapitalize,
-  autoCorrect,
-  textContentType,
-  autoComplete,
-  // Keyboard navigation props (React 19 - ref as prop, no forwardRef)
-  ref,
-  returnKeyType,
-  onSubmitEditing,
-  blurOnSubmit,
-}: {
+
+export interface StyledTextInputProps {
+  // Required props
   label: string;
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
+
+  // Optional native props
   secureTextEntry?: boolean;
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
@@ -108,19 +88,39 @@ export function StyledTextInput({
     | "name"
     | "off"
     | "one-time-code";
-  // Keyboard navigation props
+
+  // Keyboard navigation (React 19 - ref as prop)
   ref?: React.Ref<TextInput>;
   returnKeyType?: TextInputProps["returnKeyType"];
   onSubmitEditing?: TextInputProps["onSubmitEditing"];
   blurOnSubmit?: boolean;
-}) {
+}
+
+export function StyledTextInput({
+  label,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+  keyboardType,
+  autoCapitalize,
+  autoCorrect,
+  textContentType,
+  autoComplete,
+  ref,
+  returnKeyType,
+  onSubmitEditing,
+  blurOnSubmit,
+}: StyledTextInputProps) {
+  const muted = useThemeColor("muted");
+
   return (
     <View style={{ gap: 8 }}>
       <Text
+        className="text-foreground"
         style={{
           fontSize: 14,
           fontWeight: "500",
-          color: CUC_COLORS.navy,
         }}
       >
         {label}
@@ -130,23 +130,21 @@ export function StyledTextInput({
         autoComplete={autoComplete}
         autoCorrect={autoCorrect}
         blurOnSubmit={blurOnSubmit}
+        className="border-border bg-surface text-foreground"
         keyboardType={keyboardType}
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
         placeholder={placeholder}
-        placeholderTextColor="#999"
+        placeholderTextColor={muted}
         ref={ref}
         returnKeyType={returnKeyType}
         secureTextEntry={secureTextEntry}
         style={{
-          backgroundColor: CUC_COLORS.white,
           borderRadius: 12,
           paddingHorizontal: 16,
           paddingVertical: 16,
           fontSize: 16,
-          color: CUC_COLORS.navy,
           borderWidth: 1,
-          borderColor: "#e5e5e5",
         }}
         textContentType={textContentType}
         value={value}
@@ -156,64 +154,73 @@ export function StyledTextInput({
 }
 
 /* ----------------------------- styled button ------------------------------ */
+
+export interface StyledButtonProps {
+  onPress: () => void;
+  label: string;
+  isLoading?: boolean;
+  variant?: "primary" | "secondary" | "tertiary";
+}
+
 export function StyledButton({
   onPress,
   label,
   isLoading,
   variant = "primary",
-}: {
-  onPress: () => void;
-  label: string;
-  isLoading?: boolean;
-  variant?: "primary" | "secondary" | "tertiary";
-}) {
-  const getStyles = () => {
+}: StyledButtonProps) {
+  const foreground = useThemeColor("foreground");
+  const primaryForeground = "#fffef8";
+
+  const getClassName = () => {
     switch (variant) {
       case "secondary":
-        return {
-          backgroundColor: CUC_COLORS.white,
-          borderWidth: 1,
-          borderColor: CUC_COLORS.navy,
-        };
+        return "bg-surface border-primary";
       case "tertiary":
-        return {
-          backgroundColor: "transparent",
-        };
+        return "bg-transparent";
       default:
-        return {
-          backgroundColor: CUC_COLORS.navy,
-        };
+        return "bg-primary";
     }
   };
 
-  const getTextColor = () => {
+  const getTextClassName = () => {
     switch (variant) {
       case "secondary":
       case "tertiary":
-        return CUC_COLORS.navy;
+        return "text-foreground";
       default:
-        return CUC_COLORS.cream;
+        return "text-primary-foreground";
+    }
+  };
+
+  const getActivityIndicatorColor = () => {
+    switch (variant) {
+      case "secondary":
+      case "tertiary":
+        return foreground;
+      default:
+        return primaryForeground;
     }
   };
 
   return (
     <Pressable
+      className={getClassName()}
       disabled={isLoading}
       onPress={onPress}
       style={{
-        ...getStyles(),
         borderRadius: 12,
         paddingVertical: 16,
         alignItems: "center",
         opacity: isLoading ? 0.7 : 1,
+        borderWidth: variant === "secondary" ? 1 : 0,
       }}
     >
       {isLoading ? (
-        <ActivityIndicator color={getTextColor()} size="small" />
+        <ActivityIndicator color={getActivityIndicatorColor()} size="small" />
       ) : (
         <Text
+          className={getTextClassName()}
           style={{
-            color: getTextColor(),
             fontSize: 16,
             fontWeight: "600",
           }}
@@ -224,5 +231,3 @@ export function StyledButton({
     </Pressable>
   );
 }
-
-export { CUC_COLORS };

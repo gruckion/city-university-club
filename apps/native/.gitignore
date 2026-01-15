@@ -33,3 +33,6 @@ uniwind-types.d.ts
 
 expo-env.d.ts
 # @end expo-cli
+
+*storybook.log
+storybook-static

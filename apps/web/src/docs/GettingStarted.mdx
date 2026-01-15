@@ -1,0 +1,182 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Documentation/Getting Started" />
+
+# Getting Started
+
+This guide will help you get up and running with the component library.
+
+## Prerequisites
+
+- Node.js 18+
+- Bun package manager
+- Git
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone <repository-url>
+cd convoexpo-and-nextjs-web-bun-better-auth
+bun install
+```
+
+## Running the Development Environment
+
+### Start All Apps
+
+```bash
+bun run dev
+```
+
+This starts:
+- Web app at `http://localhost:3001`
+- Native app via Expo
+- Convex backend
+
+### Start Storybook Only
+
+```bash
+cd apps/web
+bun run storybook
+```
+
+Storybook runs at `http://localhost:6006`.
+
+## Project Structure
+
+```
+├── apps/
+│   ├── web/              # Next.js web application
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── ui/   # Primitive components
+│   │   │   │   └── ...   # Feature components
+│   │   │   └── docs/     # MDX documentation
+│   │   └── .storybook/   # Storybook configuration
+│   └── native/           # Expo React Native app
+├── packages/
+│   ├── backend/          # Convex backend
+│   └── env/              # Environment variables
+└── package.json
+```
+
+## Creating a New Component
+
+### 1. Create the Component
+
+```tsx
+// apps/web/src/components/ui/my-component.tsx
+import { cn } from "@/lib/utils";
+
+interface MyComponentProps {
+  children: React.ReactNode;
+  variant?: "default" | "outline";
+  className?: string;
+}
+
+export function MyComponent({
+  children,
+  variant = "default",
+  className,
+}: MyComponentProps) {
+  return (
+    <div
+      className={cn(
+        "rounded-md p-4",
+        variant === "outline" && "border",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+```
+
+### 2. Create the Story
+
+```tsx
+// apps/web/src/components/ui/my-component.stories.tsx
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { MyComponent } from "./my-component";
+
+const meta = {
+  title: "UI/MyComponent",
+  component: MyComponent,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+} satisfies Meta<typeof MyComponent>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    children: "Default content",
+  },
+};
+
+export const Outline: Story = {
+  args: {
+    variant: "outline",
+    children: "Outline variant",
+  },
+};
+```
+
+### 3. Validate
+
+```bash
+# Type check
+bun run check-types
+
+# Lint and format
+bun biome check --write .
+
+# Visual verification
+bun run storybook
+```
+
+## Code Style
+
+The project uses Biome for linting and formatting:
+
+- Tab indentation
+- Double quotes for strings
+- Sorted Tailwind classes
+
+Run formatting:
+
+```bash
+bun biome check --write .
+```
+
+## Testing
+
+### Interaction Tests
+
+Add play functions to stories for interaction testing:
+
+```tsx
+export const WithInteraction: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button"));
+    await expect(canvas.getByText("Clicked")).toBeVisible();
+  },
+};
+```
+
+### Accessibility
+
+The `@storybook/addon-a11y` addon is configured. Check the "Accessibility" panel in Storybook for each component.
+
+## Need Help?
+
+- Check existing component stories for examples
+- Review the documentation pages in Storybook
+- Ask in the team chat

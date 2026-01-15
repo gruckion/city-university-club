@@ -1,0 +1,97 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Documentation/Colors" />
+
+# Color System
+
+The application uses CSS custom properties for theming, supporting both light and dark modes.
+
+## Semantic Colors
+
+These colors are semantic and change based on the current theme:
+
+### Background Colors
+
+| Token | Usage |
+|-------|-------|
+| `--background` | Page background |
+| `--card` | Card backgrounds |
+| `--popover` | Dropdown/popover backgrounds |
+
+### Foreground Colors
+
+| Token | Usage |
+|-------|-------|
+| `--foreground` | Default text color |
+| `--card-foreground` | Text on cards |
+| `--muted-foreground` | Secondary/helper text |
+
+### Interactive Colors
+
+| Token | Usage |
+|-------|-------|
+| `--primary` | Primary actions (buttons, links) |
+| `--secondary` | Secondary actions |
+| `--accent` | Highlighted elements |
+| `--destructive` | Dangerous actions (delete, errors) |
+
+### State Colors
+
+| Token | Usage |
+|-------|-------|
+| `--muted` | Disabled/inactive states |
+| `--border` | Borders and dividers |
+| `--ring` | Focus rings |
+
+## Usage in Components
+
+### With Tailwind Classes
+
+```tsx
+// Background
+<div className="bg-background" />
+<div className="bg-card" />
+<div className="bg-muted" />
+
+// Text
+<p className="text-foreground" />
+<p className="text-muted-foreground" />
+<p className="text-destructive" />
+
+// Borders
+<div className="border-border" />
+<div className="ring-ring" />
+```
+
+### In CSS
+
+```css
+.custom-element {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+```
+
+## Dark Mode
+
+The color system automatically adapts to dark mode. Toggle between light and dark using the toolbar in Storybook.
+
+All semantic color tokens have both light and dark values defined, ensuring consistent contrast and readability across themes.
+
+## Color Swatches
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginTop: '2rem' }}>
+  <div style={{ padding: '1rem', backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem' }}>
+    <div style={{ fontSize: '0.75rem', color: 'hsl(var(--muted-foreground))' }}>background</div>
+  </div>
+  <div style={{ padding: '1rem', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem' }}>
+    <div style={{ fontSize: '0.75rem', color: 'hsl(var(--muted-foreground))' }}>card</div>
+  </div>
+  <div style={{ padding: '1rem', backgroundColor: 'hsl(var(--primary))', borderRadius: '0.5rem' }}>
+    <div style={{ fontSize: '0.75rem', color: 'hsl(var(--primary-foreground))' }}>primary</div>
+  </div>
+  <div style={{ padding: '1rem', backgroundColor: 'hsl(var(--destructive))', borderRadius: '0.5rem' }}>
+    <div style={{ fontSize: '0.75rem', color: 'hsl(var(--destructive-foreground))' }}>destructive</div>
+  </div>
+</div>

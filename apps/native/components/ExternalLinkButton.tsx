@@ -1,13 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, Text } from "react-native";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 interface ExternalLinkButtonProps {
   label: string;
@@ -20,6 +13,10 @@ export function ExternalLinkButton({
   url,
   variant = "primary",
 }: ExternalLinkButtonProps) {
+  const foreground = useThemeColor("foreground");
+  const primary = "#06273a";
+  const primaryForeground = "#fffef8";
+
   const handlePress = () => {
     Linking.openURL(url);
   };
@@ -38,15 +35,15 @@ export function ExternalLinkButton({
         })}
       >
         <Text
+          className="text-foreground"
           style={{
-            color: CUC_COLORS.navy,
             fontSize: 14,
             fontWeight: "500",
           }}
         >
           {label}
         </Text>
-        <Ionicons color={CUC_COLORS.navy} name="open-outline" size={16} />
+        <Ionicons color={foreground} name="open-outline" size={16} />
       </Pressable>
     );
   }
@@ -55,7 +52,7 @@ export function ExternalLinkButton({
     <Pressable
       onPress={handlePress}
       style={({ pressed }) => ({
-        backgroundColor: pressed ? `${CUC_COLORS.navy}dd` : CUC_COLORS.navy,
+        backgroundColor: primary,
         paddingVertical: 16,
         paddingHorizontal: 24,
         borderRadius: 8,
@@ -63,18 +60,19 @@ export function ExternalLinkButton({
         alignItems: "center",
         justifyContent: "center",
         gap: 8,
+        opacity: pressed ? 0.85 : 1,
       })}
     >
       <Text
+        className="text-primary-foreground"
         style={{
-          color: CUC_COLORS.cream,
           fontSize: 16,
           fontWeight: "500",
         }}
       >
         {label}
       </Text>
-      <Ionicons color={CUC_COLORS.cream} name="open-outline" size={18} />
+      <Ionicons color={primaryForeground} name="open-outline" size={18} />
     </Pressable>
   );
 }

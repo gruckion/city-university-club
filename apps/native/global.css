@@ -3,3 +3,60 @@
 @import "heroui-native/styles";
 
 @source "./node_modules/heroui-native/lib";
+
+/* ============================================
+   City University Club Brand Theme
+
+   Override HeroUI Native's default theme with
+   CUC brand colors using the correct structure.
+   ============================================ */
+
+@layer theme {
+  @variant light {
+    /* Page backgrounds - cream #fffef8 */
+    --background: oklch(99.6141% 0.007875 99.05);
+    /* Primary text - navy #06273a */
+    --foreground: oklch(25.9985% 0.051504 238.78);
+    /* Brand primary - navy #06273a (for buttons, headers) */
+    --primary: oklch(25.9985% 0.051504 238.78);
+    --primary-foreground: oklch(99.6141% 0.007875 99.05);
+    /* Brand accent - sage #85b09a */
+    --accent: oklch(71.9703% 0.056261 162.39);
+    --accent-foreground: oklch(25.9985% 0.051504 238.78);
+    /* Cards, inputs - white #ffffff */
+    --surface: oklch(100% 0 0);
+    --surface-foreground: oklch(25.9985% 0.051504 238.78);
+    /* Secondary text - gray #666666 */
+    --muted: oklch(51.0278% 0 0);
+    /* Borders - #e5e5e5 */
+    --border: oklch(92.1906% 0 0);
+    --divider: oklch(92.1906% 0 0);
+  }
+
+  @variant dark {
+    /* Page backgrounds - very dark navy #030d14 (much darker than primary) */
+    --background: oklch(15.1835% 0.023239 235.72);
+    /* Primary text - cream #fffef8 */
+    --foreground: oklch(99.6141% 0.007875 99.05);
+    /* Brand primary - navy #06273a (stands out against dark background) */
+    --primary: oklch(25.9985% 0.051504 238.78);
+    --primary-foreground: oklch(99.6141% 0.007875 99.05);
+    /* Brand accent - sage #85b09a (same) */
+    --accent: oklch(71.9703% 0.056261 162.39);
+    --accent-foreground: oklch(25.9985% 0.051504 238.78);
+    /* Cards - dark navy #0a1822 (between background and primary) */
+    --surface: oklch(20.1713% 0.028043 241.13);
+    --surface-foreground: oklch(99.6141% 0.007875 99.05);
+    /* Secondary text - sage in dark mode */
+    --muted: oklch(71.9703% 0.056261 162.39);
+    /* Borders - subtle dark #162530 */
+    --border: oklch(23.5% 0.035 235);
+    --divider: oklch(23.5% 0.035 235);
+  }
+}
+
+/* Register custom colors with Tailwind */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+}

@@ -2,17 +2,10 @@ import { api } from "@convoexpo-and-nextjs-web-bun-better-auth/backend/convex/_g
 import { Ionicons } from "@expo/vector-icons";
 import { useConvexAuth, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MembershipCard } from "@/components/MembershipCard";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 export default function MembershipScreen() {
   const router = useRouter();
@@ -20,16 +13,21 @@ export default function MembershipScreen() {
   const { isAuthenticated } = useConvexAuth();
   const user = useQuery(api.auth.getCurrentUser, isAuthenticated ? {} : "skip");
 
+  // Theme colors for icons
+  const foreground = useThemeColor("foreground");
+  const accent = useThemeColor("accent");
+  const primaryForeground = "#fffef8";
+
   const handleSignIn = () => {
     router.push("/(auth)/landing");
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top + 8,
           paddingBottom: 20,
           paddingHorizontal: 16,
@@ -47,11 +45,11 @@ export default function MembershipScreen() {
               justifyContent: "center",
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={24} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={24} />
           </Pressable>
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 24,
               fontWeight: "300",
               fontFamily: "serif",
@@ -86,9 +84,9 @@ export default function MembershipScreen() {
 
             {/* Card info */}
             <View
+              className="bg-surface"
               style={{
                 marginTop: 32,
-                backgroundColor: CUC_COLORS.white,
                 borderRadius: 12,
                 padding: 16,
                 width: "100%",
@@ -111,21 +109,21 @@ export default function MembershipScreen() {
                     width: 44,
                     height: 44,
                     borderRadius: 22,
-                    backgroundColor: `${CUC_COLORS.sage}20`,
+                    backgroundColor: `${accent}20`,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
                   <Ionicons
-                    color={CUC_COLORS.sage}
+                    color={accent}
                     name="information-circle"
                     size={24}
                   />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text
+                    className="text-foreground"
                     style={{
-                      color: CUC_COLORS.navy,
                       fontSize: 15,
                       fontWeight: "500",
                       marginBottom: 2,
@@ -133,7 +131,7 @@ export default function MembershipScreen() {
                   >
                     Show at entry
                   </Text>
-                  <Text style={{ color: "#888", fontSize: 13 }}>
+                  <Text className="text-muted" style={{ fontSize: 13 }}>
                     Present this card when visiting the club or reciprocal clubs
                   </Text>
                 </View>
@@ -144,22 +142,22 @@ export default function MembershipScreen() {
           // Not logged in state
           <View style={{ alignItems: "center", paddingHorizontal: 16 }}>
             <View
+              className="bg-primary/10"
               style={{
                 width: 100,
                 height: 100,
                 borderRadius: 50,
-                backgroundColor: `${CUC_COLORS.navy}10`,
                 alignItems: "center",
                 justifyContent: "center",
                 marginBottom: 24,
               }}
             >
-              <Ionicons color={CUC_COLORS.navy} name="card" size={48} />
+              <Ionicons color={foreground} name="card" size={48} />
             </View>
 
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 24,
                 fontWeight: "300",
                 fontFamily: "serif",
@@ -171,8 +169,8 @@ export default function MembershipScreen() {
             </Text>
 
             <Text
+              className="text-muted"
               style={{
-                color: "#666",
                 fontSize: 16,
                 textAlign: "center",
                 lineHeight: 24,
@@ -184,17 +182,17 @@ export default function MembershipScreen() {
             </Text>
 
             <Pressable
+              className="bg-primary"
               onPress={handleSignIn}
               style={{
-                backgroundColor: CUC_COLORS.navy,
                 paddingVertical: 16,
                 paddingHorizontal: 48,
                 borderRadius: 8,
               }}
             >
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 16,
                   fontWeight: "500",
                 }}

@@ -1,17 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 // Local assets for instant loading
 const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
@@ -21,15 +14,17 @@ export default function About() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  // Theme colors for Ionicons
+  const foreground = useThemeColor("foreground");
+  const primaryForeground = "#fffef8";
+
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary px-4 pb-4"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top,
-          paddingBottom: 16,
-          paddingHorizontal: 16,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -44,15 +39,14 @@ export default function About() {
               justifyContent: "center",
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={22} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={22} />
           </Pressable>
           <Text
+            className="flex-1 text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 20,
               fontWeight: "300",
               fontFamily: "serif",
-              flex: 1,
             }}
           >
             About the Club
@@ -83,11 +77,11 @@ export default function About() {
             }}
           >
             <View
+              className="bg-surface"
               style={{
                 width: 80,
                 height: 80,
                 borderRadius: 40,
-                backgroundColor: CUC_COLORS.white,
                 alignItems: "center",
                 justifyContent: "center",
                 shadowColor: "#000",
@@ -118,22 +112,20 @@ export default function About() {
           }}
         >
           <Text
+            className="text-center text-foreground"
             style={{
-              color: CUC_COLORS.navy,
               fontSize: 26,
               fontWeight: "300",
               fontFamily: "serif",
-              textAlign: "center",
             }}
           >
             City University Club
           </Text>
           <Text
+            className="text-center text-accent"
             style={{
-              color: CUC_COLORS.sage,
               fontSize: 16,
               marginTop: 4,
-              textAlign: "center",
             }}
           >
             Established 1895
@@ -142,12 +134,10 @@ export default function About() {
 
         {/* History Section */}
         <View
+          className="mx-4 mb-4 bg-surface"
           style={{
-            backgroundColor: CUC_COLORS.white,
-            marginHorizontal: 16,
             borderRadius: 12,
             padding: 20,
-            marginBottom: 16,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.08,
@@ -163,21 +153,21 @@ export default function About() {
             }}
           >
             <View
+              className="bg-primary/10"
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: `${CUC_COLORS.navy}10`,
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
               }}
             >
-              <Ionicons color={CUC_COLORS.navy} name="book-outline" size={18} />
+              <Ionicons color={foreground} name="book-outline" size={18} />
             </View>
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
               }}
@@ -186,8 +176,8 @@ export default function About() {
             </Text>
           </View>
           <Text
+            className="text-muted"
             style={{
-              color: "#444",
               fontSize: 15,
               lineHeight: 24,
             }}
@@ -198,8 +188,8 @@ export default function About() {
             professions.
           </Text>
           <Text
+            className="text-muted"
             style={{
-              color: "#444",
               fontSize: 15,
               lineHeight: 24,
               marginTop: 12,
@@ -213,12 +203,10 @@ export default function About() {
 
         {/* About Section */}
         <View
+          className="mx-4 mb-4 bg-surface"
           style={{
-            backgroundColor: CUC_COLORS.white,
-            marginHorizontal: 16,
             borderRadius: 12,
             padding: 20,
-            marginBottom: 16,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.08,
@@ -234,25 +222,25 @@ export default function About() {
             }}
           >
             <View
+              className="bg-primary/10"
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: `${CUC_COLORS.navy}10`,
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
               }}
             >
               <Ionicons
-                color={CUC_COLORS.navy}
+                color={foreground}
                 name="restaurant-outline"
                 size={18}
               />
             </View>
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
               }}
@@ -261,8 +249,8 @@ export default function About() {
             </Text>
           </View>
           <Text
+            className="text-muted"
             style={{
-              color: "#444",
               fontSize: 15,
               lineHeight: 24,
             }}
@@ -273,8 +261,8 @@ export default function About() {
             circumstances for a modest price.
           </Text>
           <Text
+            className="text-muted"
             style={{
-              color: "#444",
               fontSize: 15,
               lineHeight: 24,
               marginTop: 12,
@@ -289,12 +277,10 @@ export default function About() {
 
         {/* Key Features */}
         <View
+          className="mx-4 mb-4 bg-surface"
           style={{
-            backgroundColor: CUC_COLORS.white,
-            marginHorizontal: 16,
             borderRadius: 12,
             padding: 20,
-            marginBottom: 16,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.08,
@@ -310,21 +296,21 @@ export default function About() {
             }}
           >
             <View
+              className="bg-primary/10"
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: `${CUC_COLORS.navy}10`,
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
               }}
             >
-              <Ionicons color={CUC_COLORS.navy} name="star-outline" size={18} />
+              <Ionicons color={foreground} name="star-outline" size={18} />
             </View>
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
               }}
@@ -367,26 +353,22 @@ export default function About() {
               }}
             >
               <View
+                className="bg-accent"
                 style={{
                   width: 32,
                   height: 32,
                   borderRadius: 16,
-                  backgroundColor: CUC_COLORS.sage,
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: 12,
                 }}
               >
-                <Ionicons
-                  color={CUC_COLORS.navy}
-                  name={feature.icon}
-                  size={16}
-                />
+                <Ionicons color={foreground} name={feature.icon} size={16} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text
+                  className="text-foreground"
                   style={{
-                    color: CUC_COLORS.navy,
                     fontSize: 15,
                     fontWeight: "600",
                   }}
@@ -394,8 +376,8 @@ export default function About() {
                   {feature.title}
                 </Text>
                 <Text
+                  className="text-muted"
                   style={{
-                    color: "#666",
                     fontSize: 14,
                     marginTop: 2,
                   }}
@@ -409,12 +391,10 @@ export default function About() {
 
         {/* Location Section */}
         <View
+          className="mx-4 mb-4 bg-primary"
           style={{
-            backgroundColor: CUC_COLORS.navy,
-            marginHorizontal: 16,
             borderRadius: 12,
             padding: 20,
-            marginBottom: 16,
           }}
         >
           <View
@@ -436,14 +416,14 @@ export default function About() {
               }}
             >
               <Ionicons
-                color={CUC_COLORS.cream}
+                color={primaryForeground}
                 name="location-outline"
                 size={18}
               />
             </View>
             <Text
+              className="text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 18,
                 fontWeight: "600",
               }}
@@ -453,8 +433,8 @@ export default function About() {
           </View>
 
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 16,
               fontWeight: "500",
             }}
@@ -462,8 +442,8 @@ export default function About() {
             42 Crutched Friars
           </Text>
           <Text
+            className="text-accent"
             style={{
-              color: CUC_COLORS.sage,
               fontSize: 15,
               marginTop: 4,
             }}
@@ -481,22 +461,21 @@ export default function About() {
 
           <View style={{ flexDirection: "row", gap: 12 }}>
             <Pressable
+              className="flex-1 bg-accent"
               onPress={() => Linking.openURL("tel:02071676682")}
               style={{
-                flex: 1,
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: CUC_COLORS.sage,
                 paddingVertical: 12,
                 borderRadius: 8,
                 gap: 8,
               }}
             >
-              <Ionicons color={CUC_COLORS.navy} name="call" size={18} />
+              <Ionicons color={foreground} name="call" size={18} />
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 15,
                   fontWeight: "500",
                 }}
@@ -520,10 +499,10 @@ export default function About() {
                 gap: 8,
               }}
             >
-              <Ionicons color={CUC_COLORS.cream} name="mail" size={18} />
+              <Ionicons color={primaryForeground} name="mail" size={18} />
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 15,
                   fontWeight: "500",
                 }}
@@ -536,12 +515,10 @@ export default function About() {
 
         {/* Dress Code */}
         <View
+          className="mx-4 mb-4 bg-surface"
           style={{
-            backgroundColor: CUC_COLORS.white,
-            marginHorizontal: 16,
             borderRadius: 12,
             padding: 20,
-            marginBottom: 16,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.08,
@@ -557,25 +534,21 @@ export default function About() {
             }}
           >
             <View
+              className="bg-primary/10"
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: `${CUC_COLORS.navy}10`,
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
               }}
             >
-              <Ionicons
-                color={CUC_COLORS.navy}
-                name="shirt-outline"
-                size={18}
-              />
+              <Ionicons color={foreground} name="shirt-outline" size={18} />
             </View>
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
               }}
@@ -584,8 +557,8 @@ export default function About() {
             </Text>
           </View>
           <Text
+            className="text-muted"
             style={{
-              color: "#444",
               fontSize: 15,
               lineHeight: 24,
             }}
@@ -598,12 +571,10 @@ export default function About() {
 
         {/* Opening Hours */}
         <View
+          className="mx-4 mb-4 bg-surface"
           style={{
-            backgroundColor: CUC_COLORS.white,
-            marginHorizontal: 16,
             borderRadius: 12,
             padding: 20,
-            marginBottom: 16,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.08,
@@ -619,21 +590,21 @@ export default function About() {
             }}
           >
             <View
+              className="bg-primary/10"
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: `${CUC_COLORS.navy}10`,
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
               }}
             >
-              <Ionicons color={CUC_COLORS.navy} name="time-outline" size={18} />
+              <Ionicons color={foreground} name="time-outline" size={18} />
             </View>
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
               }}
@@ -645,12 +616,12 @@ export default function About() {
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              <Text style={{ color: "#444", fontSize: 15 }}>
+              <Text className="text-muted" style={{ fontSize: 15 }}>
                 Monday - Friday
               </Text>
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 15,
                   fontWeight: "500",
                 }}
@@ -661,10 +632,12 @@ export default function About() {
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              <Text style={{ color: "#444", fontSize: 15 }}>Lunch Service</Text>
+              <Text className="text-muted" style={{ fontSize: 15 }}>
+                Lunch Service
+              </Text>
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 15,
                   fontWeight: "500",
                 }}
@@ -674,8 +647,8 @@ export default function About() {
             </View>
           </View>
           <Text
+            className="text-muted"
             style={{
-              color: "#888",
               fontSize: 13,
               marginTop: 12,
               fontStyle: "italic",

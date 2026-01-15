@@ -26,6 +26,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       dark: "./assets/images/icons/ios-dark.png",
       tinted: "./assets/images/icons/ios-tinted.png",
     },
+    // Allow React Native to control status bar style per-screen
+    // Without this, iOS ignores StatusBar.setBarStyle() calls
+    infoPlist: {
+      UIViewControllerBasedStatusBarAppearance: true,
+    },
   },
 
   // Android-specific configuration
@@ -107,6 +112,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 
   // EAS Build configuration
   extra: {
+    storybookEnabled: process.env.STORYBOOK === "true",
     eas: {
       projectId: "d6c04369-dbfe-449a-91e6-41aa260b8178",
     },

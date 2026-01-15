@@ -7,7 +7,8 @@
       "!**/.next",
       "!**/.expo",
       "!**/node_modules",
-      "!**/convex/tsconfig.json"
+      "!**/convex/tsconfig.json",
+      "!**/.rnstorybook/storybook.requires.ts"
     ]
   },
   "json": {

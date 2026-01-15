@@ -43,6 +43,10 @@ lerna-debug.log*
 coverage
 .nyc_output
 
+# Storybook
+storybook-static
+**/storybook.requires.ts
+
 # Misc
 *.tgz
 .cache

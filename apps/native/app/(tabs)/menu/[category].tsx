@@ -8,14 +8,6 @@ import { MENU_DATA } from "./index";
 // Generic food blurhash placeholder (warm brown/beige tones)
 const FOOD_BLURHASH = "LKJRyV~qIU-;_3M{ofRj9Fxut7WB";
 
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 const CATEGORY_TITLES: Record<string, string> = {
   starters: "Starters",
   mains: "Main Courses",
@@ -28,19 +20,18 @@ export default function MenuCategory() {
   const insets = useSafeAreaInsets();
   const { category } = useLocalSearchParams<{ category: string }>();
 
+  // Theme colors for Ionicons
+  const primaryForeground = "#fffef8";
+
   const categoryTitle = CATEGORY_TITLES[category || ""] || "Menu";
   const items = MENU_DATA[category as keyof typeof MENU_DATA] || [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
-        style={{
-          backgroundColor: CUC_COLORS.navy,
-          paddingTop: insets.top + 8,
-          paddingBottom: 20,
-          paddingHorizontal: 16,
-        }}
+        className="bg-primary px-4 pb-5"
+        style={{ paddingTop: insets.top + 8 }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
           <Pressable
@@ -54,26 +45,16 @@ export default function MenuCategory() {
               justifyContent: "center",
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={24} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={24} />
           </Pressable>
           <View>
             <Text
-              style={{
-                color: CUC_COLORS.cream,
-                fontSize: 24,
-                fontWeight: "300",
-                fontFamily: "serif",
-              }}
+              className="font-light text-2xl text-primary-foreground"
+              style={{ fontFamily: "serif" }}
             >
               {categoryTitle}
             </Text>
-            <Text
-              style={{
-                color: CUC_COLORS.sage,
-                fontSize: 13,
-                marginTop: 2,
-              }}
-            >
+            <Text className="mt-0.5 text-accent text-sm">
               {items.length} items
             </Text>
           </View>
@@ -99,11 +80,9 @@ function MenuItem({
 }) {
   return (
     <View
+      className="mb-4 overflow-hidden bg-surface"
       style={{
-        backgroundColor: CUC_COLORS.white,
         borderRadius: 12,
-        marginBottom: 16,
-        overflow: "hidden",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
@@ -123,23 +102,15 @@ function MenuItem({
       )}
       <View style={{ padding: 16 }}>
         <Text
-          style={{
-            color: CUC_COLORS.navy,
-            fontSize: 17,
-            fontWeight: "600",
-            lineHeight: 22,
-          }}
+          className="font-semibold text-foreground"
+          style={{ fontSize: 17, lineHeight: 22 }}
         >
           {item.name}
         </Text>
         {item.description && (
           <Text
-            style={{
-              color: "#666",
-              fontSize: 14,
-              marginTop: 6,
-              lineHeight: 20,
-            }}
+            className="mt-1.5 text-muted text-sm"
+            style={{ lineHeight: 20 }}
           >
             {item.description}
           </Text>

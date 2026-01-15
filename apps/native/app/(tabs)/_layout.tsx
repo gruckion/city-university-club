@@ -2,27 +2,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
 import { useThemeColor } from "heroui-native";
 
-// CUC brand colors from design.md
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a", // rgb(133, 176, 154) from user input
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 export default function TabLayout() {
   const _router = useRouter();
-  const _themeColorForeground = useThemeColor("foreground");
-  const _themeColorBackground = useThemeColor("background");
+  const accent = useThemeColor("accent");
+  const primary = "#06273a";
+  const primaryForeground = "#fffef8";
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: CUC_COLORS.cream,
-        tabBarInactiveTintColor: CUC_COLORS.sage,
+        tabBarActiveTintColor: primaryForeground,
+        tabBarInactiveTintColor: accent,
         tabBarStyle: {
-          backgroundColor: CUC_COLORS.navy,
+          backgroundColor: primary,
           borderTopWidth: 0,
           height: 85,
           paddingTop: 8,

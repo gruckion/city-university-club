@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -34,15 +36,29 @@
     "streamdown": "^1.6.10"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.0.0",
+    "@cloudflare/workers-types": "catalog:",
+    "@convoexpo-and-nextjs-web-bun-better-auth/config": "workspace:*",
+    "@storybook/addon-a11y": "^10.1.11",
+    "@storybook/addon-docs": "^10.1.11",
+    "@storybook/addon-onboarding": "^10.1.11",
+    "@storybook/addon-themes": "^10.1.11",
+    "@storybook/addon-vitest": "^10.1.11",
+    "@storybook/nextjs-vite": "^10.1.11",
+    "@storybook/test": "^8.6.15",
     "@tailwindcss/postcss": "^4.1.10",
     "@types/node": "^20",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@vitest/browser-playwright": "^4.0.17",
+    "@vitest/coverage-v8": "^4.0.17",
+    "alchemy": "catalog:",
+    "playwright": "^1.57.0",
+    "storybook": "^10.1.11",
     "tailwindcss": "^4.1.10",
     "typescript": "catalog:",
-    "@convoexpo-and-nextjs-web-bun-better-auth/config": "workspace:*",
-    "alchemy": "catalog:",
-    "wrangler": "^4.54.0",
-    "@cloudflare/workers-types": "catalog:"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.17",
+    "wrangler": "^4.54.0"
   }
 }

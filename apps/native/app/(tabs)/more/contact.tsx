@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { useState } from "react";
 import {
   Alert,
@@ -15,14 +16,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authClient } from "@/lib/auth-client";
 
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -37,6 +30,10 @@ interface FormData {
 export default function Contact() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
+  // Theme colors for Ionicons
+  const accent = useThemeColor("accent");
+  const primaryForeground = "#fffef8";
 
   // Get session - authenticated users don't need to enter name/email/phone
   const { data: session } = authClient.useSession();
@@ -129,14 +126,12 @@ export default function Contact() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary px-4 pb-4"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top + 8,
-          paddingBottom: 16,
-          paddingHorizontal: 16,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -146,17 +141,17 @@ export default function Contact() {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: `${CUC_COLORS.white}15`,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
               alignItems: "center",
               justifyContent: "center",
               marginRight: 12,
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={22} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={22} />
           </Pressable>
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 20,
               fontWeight: "300",
               fontFamily: "serif",
@@ -179,8 +174,8 @@ export default function Contact() {
         >
           {/* Contact Info Card */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 16,
               marginBottom: 20,
@@ -192,8 +187,8 @@ export default function Contact() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 16,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -209,12 +204,11 @@ export default function Contact() {
                 marginBottom: 10,
               }}
             >
-              <Ionicons
-                color={CUC_COLORS.sage}
-                name="location-outline"
-                size={18}
-              />
-              <Text style={{ color: "#666", fontSize: 14, marginLeft: 10 }}>
+              <Ionicons color={accent} name="location-outline" size={18} />
+              <Text
+                className="text-muted"
+                style={{ fontSize: 14, marginLeft: 10 }}
+              >
                 42 Crutched Friars, London EC3N 2AP
               </Text>
             </View>
@@ -227,9 +221,10 @@ export default function Contact() {
                 marginBottom: 10,
               }}
             >
-              <Ionicons color={CUC_COLORS.sage} name="call-outline" size={18} />
+              <Ionicons color={accent} name="call-outline" size={18} />
               <Text
-                style={{ color: CUC_COLORS.navy, fontSize: 14, marginLeft: 10 }}
+                className="text-foreground"
+                style={{ fontSize: 14, marginLeft: 10 }}
               >
                 020 7167 6682
               </Text>
@@ -241,9 +236,10 @@ export default function Contact() {
               }
               style={{ flexDirection: "row", alignItems: "center" }}
             >
-              <Ionicons color={CUC_COLORS.sage} name="mail-outline" size={18} />
+              <Ionicons color={accent} name="mail-outline" size={18} />
               <Text
-                style={{ color: CUC_COLORS.navy, fontSize: 14, marginLeft: 10 }}
+                className="text-foreground"
+                style={{ fontSize: 14, marginLeft: 10 }}
               >
                 info@cityuniversityclub.co.uk
               </Text>
@@ -252,8 +248,8 @@ export default function Contact() {
 
           {/* Contact Form */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 16,
               shadowColor: "#000",
@@ -264,8 +260,8 @@ export default function Contact() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 16,
                 fontWeight: "600",
                 marginBottom: 16,
@@ -277,8 +273,8 @@ export default function Contact() {
             {/* Authenticated User Info */}
             {isAuthenticated && (
               <View
+                className="bg-accent/15"
                 style={{
-                  backgroundColor: `${CUC_COLORS.sage}15`,
                   borderRadius: 8,
                   padding: 12,
                   marginBottom: 16,
@@ -287,21 +283,21 @@ export default function Contact() {
                 }}
               >
                 <Ionicons
-                  color={CUC_COLORS.sage}
+                  color={accent}
                   name="person-circle-outline"
                   size={20}
                 />
                 <View style={{ marginLeft: 10, flex: 1 }}>
                   <Text
+                    className="text-foreground"
                     style={{
-                      color: CUC_COLORS.navy,
                       fontSize: 14,
                       fontWeight: "500",
                     }}
                   >
                     {session.user.name || "Member"}
                   </Text>
-                  <Text style={{ color: "#666", fontSize: 13 }}>
+                  <Text className="text-muted" style={{ fontSize: 13 }}>
                     {session.user.email}
                   </Text>
                 </View>
@@ -314,8 +310,8 @@ export default function Contact() {
                 {/* Name Field */}
                 <View style={{ marginBottom: 16 }}>
                   <Text
+                    className="text-foreground"
                     style={{
-                      color: CUC_COLORS.navy,
                       fontSize: 14,
                       fontWeight: "500",
                       marginBottom: 6,
@@ -324,17 +320,15 @@ export default function Contact() {
                     Name <Text style={{ color: "#dc2626" }}>*</Text>
                   </Text>
                   <TextInput
+                    className="border-border bg-surface text-foreground"
                     onChangeText={(value) => updateField("name", value)}
                     placeholder="Your full name"
                     placeholderTextColor="#999"
                     style={{
-                      backgroundColor: CUC_COLORS.white,
                       borderWidth: 1,
-                      borderColor: "#e5e5e5",
                       borderRadius: 8,
                       padding: 14,
                       fontSize: 15,
-                      color: CUC_COLORS.navy,
                     }}
                     value={formData.name}
                   />
@@ -347,8 +341,8 @@ export default function Contact() {
                   {/* Email Field */}
                   <View style={{ flex: 1 }}>
                     <Text
+                      className="text-foreground"
                       style={{
-                        color: CUC_COLORS.navy,
                         fontSize: 14,
                         fontWeight: "500",
                         marginBottom: 6,
@@ -359,18 +353,16 @@ export default function Contact() {
                     <TextInput
                       autoCapitalize="none"
                       autoCorrect={false}
+                      className="border-border bg-surface text-foreground"
                       keyboardType="email-address"
                       onChangeText={(value) => updateField("email", value)}
                       placeholder="Email address"
                       placeholderTextColor="#999"
                       style={{
-                        backgroundColor: CUC_COLORS.white,
                         borderWidth: 1,
-                        borderColor: "#e5e5e5",
                         borderRadius: 8,
                         padding: 14,
                         fontSize: 15,
-                        color: CUC_COLORS.navy,
                       }}
                       value={formData.email}
                     />
@@ -379,8 +371,8 @@ export default function Contact() {
                   {/* Phone Field */}
                   <View style={{ flex: 1 }}>
                     <Text
+                      className="text-foreground"
                       style={{
-                        color: CUC_COLORS.navy,
                         fontSize: 14,
                         fontWeight: "500",
                         marginBottom: 6,
@@ -389,18 +381,16 @@ export default function Contact() {
                       Phone
                     </Text>
                     <TextInput
+                      className="border-border bg-surface text-foreground"
                       keyboardType="phone-pad"
                       onChangeText={(value) => updateField("phone", value)}
                       placeholder="Phone number"
                       placeholderTextColor="#999"
                       style={{
-                        backgroundColor: CUC_COLORS.white,
                         borderWidth: 1,
-                        borderColor: "#e5e5e5",
                         borderRadius: 8,
                         padding: 14,
                         fontSize: 15,
-                        color: CUC_COLORS.navy,
                       }}
                       value={formData.phone}
                     />
@@ -412,8 +402,8 @@ export default function Contact() {
             {/* Subject Field */}
             <View style={{ marginBottom: 16 }}>
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 14,
                   fontWeight: "500",
                   marginBottom: 6,
@@ -422,17 +412,15 @@ export default function Contact() {
                 Subject
               </Text>
               <TextInput
+                className="border-border bg-surface text-foreground"
                 onChangeText={(value) => updateField("subject", value)}
                 placeholder="What is this regarding?"
                 placeholderTextColor="#999"
                 style={{
-                  backgroundColor: CUC_COLORS.white,
                   borderWidth: 1,
-                  borderColor: "#e5e5e5",
                   borderRadius: 8,
                   padding: 14,
                   fontSize: 15,
-                  color: CUC_COLORS.navy,
                 }}
                 value={formData.subject}
               />
@@ -441,8 +429,8 @@ export default function Contact() {
             {/* Message Field */}
             <View style={{ marginBottom: 20 }}>
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 14,
                   fontWeight: "500",
                   marginBottom: 6,
@@ -451,19 +439,17 @@ export default function Contact() {
                 Message
               </Text>
               <TextInput
+                className="border-border bg-surface text-foreground"
                 multiline
                 numberOfLines={5}
                 onChangeText={(value) => updateField("message", value)}
                 placeholder="Your message..."
                 placeholderTextColor="#999"
                 style={{
-                  backgroundColor: CUC_COLORS.white,
                   borderWidth: 1,
-                  borderColor: "#e5e5e5",
                   borderRadius: 8,
                   padding: 14,
                   fontSize: 15,
-                  color: CUC_COLORS.navy,
                   height: 120,
                 }}
                 textAlignVertical="top"
@@ -473,23 +459,20 @@ export default function Contact() {
 
             {/* Submit Button */}
             <Pressable
+              className="bg-primary"
               disabled={isSubmitting}
               onPress={handleSubmit}
               style={({ pressed }) => ({
-                backgroundColor:
-                  pressed || isSubmitting
-                    ? `${CUC_COLORS.navy}cc`
-                    : CUC_COLORS.navy,
+                opacity: pressed || isSubmitting ? 0.8 : 1,
                 borderRadius: 8,
                 padding: 16,
                 alignItems: "center",
                 justifyContent: "center",
-                opacity: isSubmitting ? 0.7 : 1,
               })}
             >
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 16,
                   fontWeight: "600",
                 }}
@@ -501,16 +484,16 @@ export default function Contact() {
 
           {/* Opening Hours */}
           <View
+            className="bg-primary"
             style={{
-              backgroundColor: CUC_COLORS.navy,
               borderRadius: 12,
               padding: 20,
               marginTop: 20,
             }}
           >
             <Text
+              className="text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 16,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -519,13 +502,15 @@ export default function Contact() {
               Opening Hours
             </Text>
             <Text
-              style={{ color: CUC_COLORS.cream, fontSize: 14, lineHeight: 22 }}
+              className="text-primary-foreground"
+              style={{ fontSize: 14, lineHeight: 22 }}
             >
               Monday to Friday{"\n"}
               9:00 AM - 5:00 PM
             </Text>
             <Text
-              style={{ color: CUC_COLORS.sage, fontSize: 13, marginTop: 8 }}
+              className="text-accent"
+              style={{ fontSize: 13, marginTop: 8 }}
             >
               Lunch: 12:00 PM - Last orders 2:30 PM
             </Text>

@@ -1,16 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 // Dining room image from the CUC website
 const DINING_ROOM_IMAGE =
@@ -19,6 +12,11 @@ const DINING_ROOM_IMAGE =
 export default function DiningRoom() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
+  // Theme colors for Ionicons
+  const foreground = useThemeColor("foreground");
+  const accent = useThemeColor("accent");
+  const primaryForeground = "#fffef8";
 
   const handleCall = () => {
     Linking.openURL("tel:02071676682");
@@ -29,14 +27,12 @@ export default function DiningRoom() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary px-5 pb-5"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top + 8,
-          paddingBottom: 20,
-          paddingHorizontal: 20,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -46,17 +42,17 @@ export default function DiningRoom() {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: `${CUC_COLORS.white}15`,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={22} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={22} />
           </Pressable>
           <View style={{ flex: 1 }}>
             <Text
+              className="text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 24,
                 fontWeight: "300",
                 fontFamily: "serif",
@@ -65,8 +61,8 @@ export default function DiningRoom() {
               Dining Room
             </Text>
             <Text
+              className="text-accent"
               style={{
-                color: CUC_COLORS.sage,
                 fontSize: 13,
                 marginTop: 2,
               }}
@@ -92,8 +88,8 @@ export default function DiningRoom() {
         {/* Description Section */}
         <View style={{ padding: 16 }}>
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -105,8 +101,8 @@ export default function DiningRoom() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -115,8 +111,8 @@ export default function DiningRoom() {
               About Our Dining Rooms
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#444",
                 fontSize: 15,
                 lineHeight: 24,
               }}
@@ -126,8 +122,8 @@ export default function DiningRoom() {
               superb service.
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#444",
                 fontSize: 15,
                 lineHeight: 24,
                 marginTop: 12,
@@ -141,8 +137,8 @@ export default function DiningRoom() {
 
           {/* Opening Hours */}
           <View
+            className="bg-primary"
             style={{
-              backgroundColor: CUC_COLORS.navy,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -156,10 +152,10 @@ export default function DiningRoom() {
                 marginBottom: 16,
               }}
             >
-              <Ionicons color={CUC_COLORS.sage} name="time-outline" size={22} />
+              <Ionicons color={accent} name="time-outline" size={22} />
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 18,
                   fontWeight: "600",
                 }}
@@ -176,10 +172,13 @@ export default function DiningRoom() {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ color: CUC_COLORS.cream, fontSize: 15 }}>
+                <Text
+                  className="text-primary-foreground"
+                  style={{ fontSize: 15 }}
+                >
                   Lunch Service
                 </Text>
-                <Text style={{ color: CUC_COLORS.sage, fontSize: 15 }}>
+                <Text className="text-accent" style={{ fontSize: 15 }}>
                   12:00 noon onwards
                 </Text>
               </View>
@@ -190,23 +189,26 @@ export default function DiningRoom() {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ color: CUC_COLORS.cream, fontSize: 15 }}>
+                <Text
+                  className="text-primary-foreground"
+                  style={{ fontSize: 15 }}
+                >
                   Last Orders
                 </Text>
-                <Text style={{ color: CUC_COLORS.sage, fontSize: 15 }}>
+                <Text className="text-accent" style={{ fontSize: 15 }}>
                   2:30 PM
                 </Text>
               </View>
               <View
                 style={{
                   height: 1,
-                  backgroundColor: `${CUC_COLORS.cream}20`,
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
                   marginVertical: 4,
                 }}
               />
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 13,
                   opacity: 0.8,
                   fontStyle: "italic",
@@ -219,8 +221,8 @@ export default function DiningRoom() {
 
           {/* Services */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -232,8 +234,8 @@ export default function DiningRoom() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
                 marginBottom: 16,
@@ -245,31 +247,37 @@ export default function DiningRoom() {
             <View style={{ gap: 16 }}>
               <ServiceItem
                 description="Start your day at the Club"
+                foreground={foreground}
                 icon="cafe-outline"
                 title="Breakfast"
               />
               <ServiceItem
                 description="Daily lunch service with seasonal menus"
+                foreground={foreground}
                 icon="restaurant-outline"
                 title="Lunch"
               />
               <ServiceItem
                 description="Pre-lunch and post-lunch drinks available"
+                foreground={foreground}
                 icon="wine-outline"
                 title="Bar"
               />
               <ServiceItem
                 description="Evening dining for special occasions"
+                foreground={foreground}
                 icon="moon-outline"
                 title="Private Dinners"
               />
               <ServiceItem
                 description="Available 7 days a week for breakfast, lunch and dinner"
+                foreground={foreground}
                 icon="business-outline"
                 title="Private Rooms"
               />
               <ServiceItem
                 description="Professional spaces for private hire"
+                foreground={foreground}
                 icon="people-outline"
                 title="Meeting Rooms"
               />
@@ -278,8 +286,8 @@ export default function DiningRoom() {
 
           {/* Booking Information */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -291,8 +299,8 @@ export default function DiningRoom() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 18,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -301,8 +309,8 @@ export default function DiningRoom() {
               Make a Reservation
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#444",
                 fontSize: 15,
                 lineHeight: 24,
                 marginBottom: 16,
@@ -314,10 +322,9 @@ export default function DiningRoom() {
 
             <View style={{ flexDirection: "row", gap: 12 }}>
               <Pressable
+                className="flex-1 bg-accent"
                 onPress={handleCall}
                 style={{
-                  flex: 1,
-                  backgroundColor: CUC_COLORS.sage,
                   borderRadius: 8,
                   padding: 14,
                   flexDirection: "row",
@@ -326,10 +333,10 @@ export default function DiningRoom() {
                   gap: 8,
                 }}
               >
-                <Ionicons color={CUC_COLORS.navy} name="call" size={18} />
+                <Ionicons color={foreground} name="call" size={18} />
                 <Text
+                  className="text-foreground"
                   style={{
-                    color: CUC_COLORS.navy,
                     fontSize: 14,
                     fontWeight: "600",
                   }}
@@ -338,10 +345,9 @@ export default function DiningRoom() {
                 </Text>
               </Pressable>
               <Pressable
+                className="flex-1 bg-primary"
                 onPress={handleEmail}
                 style={{
-                  flex: 1,
-                  backgroundColor: CUC_COLORS.navy,
                   borderRadius: 8,
                   padding: 14,
                   flexDirection: "row",
@@ -350,10 +356,10 @@ export default function DiningRoom() {
                   gap: 8,
                 }}
               >
-                <Ionicons color={CUC_COLORS.cream} name="mail" size={18} />
+                <Ionicons color={primaryForeground} name="mail" size={18} />
                 <Text
+                  className="text-primary-foreground"
                   style={{
-                    color: CUC_COLORS.cream,
                     fontSize: 14,
                     fontWeight: "600",
                   }}
@@ -366,8 +372,8 @@ export default function DiningRoom() {
 
           {/* Location Note */}
           <View
+            className="bg-accent/15"
             style={{
-              backgroundColor: `${CUC_COLORS.sage}15`,
               borderRadius: 12,
               padding: 16,
               flexDirection: "row",
@@ -375,11 +381,11 @@ export default function DiningRoom() {
               gap: 12,
             }}
           >
-            <Ionicons color={CUC_COLORS.sage} name="location" size={22} />
+            <Ionicons color={accent} name="location" size={22} />
             <View style={{ flex: 1 }}>
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 14,
                   fontWeight: "500",
                 }}
@@ -387,8 +393,8 @@ export default function DiningRoom() {
                 42 Crutched Friars
               </Text>
               <Text
+                className="text-muted"
                 style={{
-                  color: "#666",
                   fontSize: 13,
                   marginTop: 2,
                 }}
@@ -407,29 +413,31 @@ function ServiceItem({
   icon,
   title,
   description,
+  foreground,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
   description: string;
+  foreground: string;
 }) {
   return (
     <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
       <View
+        className="bg-primary/10"
         style={{
           width: 40,
           height: 40,
           borderRadius: 20,
-          backgroundColor: `${CUC_COLORS.navy}10`,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Ionicons color={CUC_COLORS.navy} name={icon} size={20} />
+        <Ionicons color={foreground} name={icon} size={20} />
       </View>
       <View style={{ flex: 1 }}>
         <Text
+          className="text-foreground"
           style={{
-            color: CUC_COLORS.navy,
             fontSize: 15,
             fontWeight: "500",
           }}
@@ -437,8 +445,8 @@ function ServiceItem({
           {title}
         </Text>
         <Text
+          className="text-muted"
           style={{
-            color: "#666",
             fontSize: 13,
             marginTop: 2,
           }}

@@ -1,9 +1,9 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { InputOTP } from "heroui-native";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { InputOTP, useThemeColor } from "heroui-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Alert, Pressable, Text, View, type ViewStyle } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
-import FormHeader, { CUC_COLORS, StyledButton } from "@/components/form";
+import FormHeader, { StyledButton } from "@/components/form";
 import { KeyboardAwareForm } from "@/components/keyboard";
 import { authClient } from "@/lib/auth-client";
 
@@ -16,6 +16,25 @@ export default function VerifyResetCodeRoute() {
 
   const [otp, setOtp] = useState(prefilledOtp || "");
   const [isResending, setIsResending] = useState(false);
+
+  // Theme colors
+  const foreground = useThemeColor("foreground");
+  const surface = useThemeColor("surface");
+
+  // OTP slot style using theme colors
+  const otpSlotStyle: ViewStyle = useMemo(
+    () => ({
+      width: 48,
+      height: 56,
+      borderWidth: 2,
+      borderColor: foreground,
+      borderRadius: 12,
+      backgroundColor: surface,
+      alignItems: "center",
+      justifyContent: "center",
+    }),
+    [foreground, surface]
+  );
 
   // Auto-navigate if OTP was pre-filled from deep link
   const hasAutoNavigated = useRef(false);
@@ -100,31 +119,29 @@ export default function VerifyResetCodeRoute() {
   if (!email) {
     return (
       <View
+        className="bg-background"
         style={{
           flex: 1,
-          backgroundColor: CUC_COLORS.cream,
           justifyContent: "center",
           paddingHorizontal: 24,
         }}
       >
         <View style={{ alignItems: "center", marginBottom: 32 }}>
           <Text
+            className="text-center text-foreground"
             style={{
               fontSize: 28,
               fontWeight: "300",
               fontFamily: "serif",
-              color: CUC_COLORS.navy,
               marginBottom: 12,
-              textAlign: "center",
             }}
           >
             Something Went Wrong
           </Text>
           <Text
+            className="text-center text-muted"
             style={{
               fontSize: 15,
-              color: "#666",
-              textAlign: "center",
               lineHeight: 22,
             }}
           >
@@ -133,19 +150,19 @@ export default function VerifyResetCodeRoute() {
           </Text>
         </View>
         <Pressable
+          className="bg-primary"
           onPress={() =>
             router.replace("/(auth)/email/(reset)/request-password-reset")
           }
           style={{
-            backgroundColor: CUC_COLORS.navy,
             borderRadius: 12,
             paddingVertical: 16,
             alignItems: "center",
           }}
         >
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 16,
               fontWeight: "600",
             }}
@@ -166,10 +183,10 @@ export default function VerifyResetCodeRoute() {
 
       <View style={{ alignItems: "center", marginBottom: 8 }}>
         <Text
+          className="text-foreground"
           style={{
             fontSize: 14,
             fontWeight: "500",
-            color: CUC_COLORS.navy,
             marginBottom: 12,
           }}
         >
@@ -186,110 +203,26 @@ export default function VerifyResetCodeRoute() {
           }}
           value={otp}
         >
-          <InputOTP.Group
-            className="gap-2"
-            style={{
-              flexDirection: "row",
-              gap: 8,
-            }}
-          >
-            <InputOTP.Slot
-              index={0}
-              style={{
-                width: 48,
-                height: 56,
-                borderWidth: 2,
-                borderColor: CUC_COLORS.navy,
-                borderRadius: 12,
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-            <InputOTP.Slot
-              index={1}
-              style={{
-                width: 48,
-                height: 56,
-                borderWidth: 2,
-                borderColor: CUC_COLORS.navy,
-                borderRadius: 12,
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-            <InputOTP.Slot
-              index={2}
-              style={{
-                width: 48,
-                height: 56,
-                borderWidth: 2,
-                borderColor: CUC_COLORS.navy,
-                borderRadius: 12,
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
+          <InputOTP.Group style={{ flexDirection: "row", gap: 8 }}>
+            {[0, 1, 2].map((index) => (
+              <InputOTP.Slot index={index} key={index} style={otpSlotStyle} />
+            ))}
           </InputOTP.Group>
           <InputOTP.Separator>
             <Text
+              className="text-foreground"
               style={{
                 fontSize: 24,
-                color: CUC_COLORS.navy,
                 paddingHorizontal: 8,
               }}
             >
               -
             </Text>
           </InputOTP.Separator>
-          <InputOTP.Group
-            className="gap-2"
-            style={{
-              flexDirection: "row",
-              gap: 8,
-            }}
-          >
-            <InputOTP.Slot
-              index={3}
-              style={{
-                width: 48,
-                height: 56,
-                borderWidth: 2,
-                borderColor: CUC_COLORS.navy,
-                borderRadius: 12,
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-            <InputOTP.Slot
-              index={4}
-              style={{
-                width: 48,
-                height: 56,
-                borderWidth: 2,
-                borderColor: CUC_COLORS.navy,
-                borderRadius: 12,
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-            <InputOTP.Slot
-              index={5}
-              style={{
-                width: 48,
-                height: 56,
-                borderWidth: 2,
-                borderColor: CUC_COLORS.navy,
-                borderRadius: 12,
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
+          <InputOTP.Group style={{ flexDirection: "row", gap: 8 }}>
+            {[3, 4, 5].map((index) => (
+              <InputOTP.Slot index={index} key={index} style={otpSlotStyle} />
+            ))}
           </InputOTP.Group>
         </InputOTP>
       </View>
@@ -306,7 +239,7 @@ export default function VerifyResetCodeRoute() {
       </View>
 
       <View style={{ marginTop: 16, alignItems: "center" }}>
-        <Text style={{ color: "#666", fontSize: 14 }}>
+        <Text className="text-muted" style={{ fontSize: 14 }}>
           Code expires in 5 minutes
         </Text>
       </View>

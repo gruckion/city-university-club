@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -31,7 +32,7 @@ import {
   parseEventDateTime,
   useAddToCalendar,
 } from "../../../lib/useAddToCalendar";
-import { CUC_COLORS, EVENTS } from "./index";
+import { EVENTS } from "./index";
 
 // Blurhash for event images
 const EVENT_BLURHASH = "LKJRyV~qIU-;_3M{ofRj9Fxut7WB";
@@ -40,6 +41,7 @@ export default function EventDetail() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const primaryForeground = "#fffef8";
 
   // Auth state
   const { isAuthenticated } = useConvexAuth();
@@ -196,14 +198,13 @@ export default function EventDetail() {
   if (!event) {
     return (
       <View
+        className="flex-1 bg-background"
         style={{
-          flex: 1,
-          backgroundColor: CUC_COLORS.cream,
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Text style={{ color: CUC_COLORS.navy, fontSize: 18 }}>
+        <Text className="text-foreground" style={{ fontSize: 18 }}>
           Event not found
         </Text>
       </View>
@@ -211,7 +212,7 @@ export default function EventDetail() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -253,14 +254,14 @@ export default function EventDetail() {
               zIndex: 10,
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={24} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={24} />
           </Pressable>
 
           {/* Content Container */}
           <Animated.View
+            className="bg-background"
             entering={FadeInUp.delay(200).springify()}
             style={{
-              backgroundColor: CUC_COLORS.cream,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
               marginTop: -24,
@@ -279,8 +280,8 @@ export default function EventDetail() {
             >
               <View style={{ flex: 1 }}>
                 <Text
+                  className="text-foreground"
                   style={{
-                    color: CUC_COLORS.navy,
                     fontSize: 28,
                     fontWeight: "300",
                     fontFamily: "serif",
@@ -292,9 +293,9 @@ export default function EventDetail() {
               </View>
               {event.type === "special" && (
                 <Animated.View
+                  className="bg-accent"
                   entering={SlideInRight.delay(400)}
                   style={{
-                    backgroundColor: CUC_COLORS.sage,
                     paddingHorizontal: 12,
                     paddingVertical: 6,
                     borderRadius: 16,
@@ -302,8 +303,8 @@ export default function EventDetail() {
                   }}
                 >
                   <Text
+                    className="text-foreground"
                     style={{
-                      color: CUC_COLORS.navy,
                       fontSize: 12,
                       fontWeight: "600",
                     }}
@@ -316,9 +317,9 @@ export default function EventDetail() {
 
             {/* Event Info Grid */}
             <Animated.View
+              className="bg-surface"
               entering={FadeInDown.delay(300).springify()}
               style={{
-                backgroundColor: CUC_COLORS.white,
                 borderRadius: 16,
                 padding: 16,
                 marginBottom: 20,
@@ -346,8 +347,8 @@ export default function EventDetail() {
             {/* Description */}
             <Animated.View entering={FadeInDown.delay(400).springify()}>
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 18,
                   fontWeight: "600",
                   marginBottom: 12,
@@ -356,8 +357,8 @@ export default function EventDetail() {
                 About This Event
               </Text>
               <Text
+                className="text-muted"
                 style={{
-                  color: "#444",
                   fontSize: 15,
                   lineHeight: 24,
                   marginBottom: 24,
@@ -369,9 +370,9 @@ export default function EventDetail() {
 
             {/* RSVP Section */}
             <Animated.View
+              className="bg-primary"
               entering={FadeInDown.delay(500).springify()}
               style={{
-                backgroundColor: CUC_COLORS.navy,
                 borderRadius: 20,
                 padding: 20,
               }}
@@ -426,6 +427,7 @@ function RsvpConfirmation({
   onCancelRsvp: () => void;
   onAddToCalendar: () => void;
 }) {
+  const foreground = useThemeColor("foreground");
   const totalPrice = Number.parseInt(event.price, 10) * existingRsvp.guests;
 
   return (
@@ -438,22 +440,22 @@ function RsvpConfirmation({
         }}
       >
         <View
+          className="bg-accent"
           style={{
             width: 48,
             height: 48,
             borderRadius: 24,
-            backgroundColor: CUC_COLORS.sage,
             alignItems: "center",
             justifyContent: "center",
             marginRight: 12,
           }}
         >
-          <Ionicons color={CUC_COLORS.navy} name="checkmark-circle" size={28} />
+          <Ionicons color={foreground} name="checkmark-circle" size={28} />
         </View>
         <View style={{ flex: 1 }}>
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 20,
               fontWeight: "600",
             }}
@@ -461,8 +463,8 @@ function RsvpConfirmation({
             You're Going!
           </Text>
           <Text
+            className="text-accent"
             style={{
-              color: CUC_COLORS.sage,
               fontSize: 14,
             }}
           >
@@ -488,7 +490,10 @@ function RsvpConfirmation({
           }}
         >
           <Text style={{ color: "rgba(255, 255, 255, 0.7)" }}>Guests</Text>
-          <Text style={{ color: CUC_COLORS.cream, fontWeight: "500" }}>
+          <Text
+            className="text-primary-foreground"
+            style={{ fontWeight: "500" }}
+          >
             {existingRsvp.guests}
           </Text>
         </View>
@@ -499,7 +504,10 @@ function RsvpConfirmation({
           }}
         >
           <Text style={{ color: "rgba(255, 255, 255, 0.7)" }}>Total</Text>
-          <Text style={{ color: CUC_COLORS.cream, fontWeight: "500" }}>
+          <Text
+            className="text-primary-foreground"
+            style={{ fontWeight: "500" }}
+          >
             £{totalPrice}
           </Text>
         </View>
@@ -513,7 +521,7 @@ function RsvpConfirmation({
             >
               Notes
             </Text>
-            <Text style={{ color: CUC_COLORS.cream }}>
+            <Text className="text-primary-foreground">
               {existingRsvp.notes}
             </Text>
           </View>
@@ -562,11 +570,14 @@ function RsvpForm({
   isSubmitting: boolean;
   onSubmit: () => void;
 }) {
+  const accent = useThemeColor("accent");
+  const primaryForeground = "#fffef8";
+
   return (
     <>
       <Text
+        className="text-primary-foreground"
         style={{
-          color: CUC_COLORS.cream,
           fontSize: 22,
           fontWeight: "300",
           fontFamily: "serif",
@@ -576,8 +587,8 @@ function RsvpForm({
         Reserve Your Spot
       </Text>
       <Text
+        className="text-accent"
         style={{
-          color: CUC_COLORS.sage,
           fontSize: 14,
           marginBottom: 20,
         }}
@@ -602,14 +613,14 @@ function RsvpForm({
           }}
         >
           <Ionicons
-            color={CUC_COLORS.sage}
+            color={accent}
             name="person-circle-outline"
             size={20}
             style={{ marginRight: 10 }}
           />
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 16,
               fontWeight: "500",
             }}
@@ -619,7 +630,7 @@ function RsvpForm({
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Ionicons
-            color={CUC_COLORS.sage}
+            color={accent}
             name="mail-outline"
             size={18}
             style={{ marginRight: 10 }}
@@ -638,8 +649,8 @@ function RsvpForm({
       {/* Number of Guests */}
       <View style={{ marginBottom: 16 }}>
         <Text
+          className="text-accent"
           style={{
-            color: CUC_COLORS.sage,
             fontSize: 13,
             marginBottom: 8,
             fontWeight: "500",
@@ -662,8 +673,8 @@ function RsvpForm({
       {/* Special Requirements */}
       <View style={{ marginBottom: 20 }}>
         <Text
+          className="text-accent"
           style={{
-            color: CUC_COLORS.sage,
             fontSize: 13,
             marginBottom: 8,
             fontWeight: "500",
@@ -683,7 +694,7 @@ function RsvpForm({
             borderRadius: 12,
             paddingHorizontal: 16,
             paddingVertical: 14,
-            color: CUC_COLORS.cream,
+            color: primaryForeground,
             fontSize: 16,
             minHeight: 80,
             textAlignVertical: "top",
@@ -708,8 +719,8 @@ function SignInPrompt({ onSignIn }: { onSignIn: () => void }) {
   return (
     <>
       <Text
+        className="text-primary-foreground"
         style={{
-          color: CUC_COLORS.cream,
           fontSize: 22,
           fontWeight: "300",
           fontFamily: "serif",
@@ -719,8 +730,8 @@ function SignInPrompt({ onSignIn }: { onSignIn: () => void }) {
         Reserve Your Spot
       </Text>
       <Text
+        className="text-accent"
         style={{
-          color: CUC_COLORS.sage,
           fontSize: 14,
           marginBottom: 20,
         }}
@@ -728,17 +739,17 @@ function SignInPrompt({ onSignIn }: { onSignIn: () => void }) {
         Sign in to reserve your spot at this event
       </Text>
       <Pressable
+        className="bg-primary-foreground"
         onPress={onSignIn}
         style={{
-          backgroundColor: CUC_COLORS.cream,
           borderRadius: 14,
           paddingVertical: 16,
           alignItems: "center",
         }}
       >
         <Text
+          className="text-foreground"
           style={{
-            color: CUC_COLORS.navy,
             fontSize: 17,
             fontWeight: "600",
           }}
@@ -761,6 +772,8 @@ function InfoRow({
   value: string;
   isLast?: boolean;
 }) {
+  const accent = useThemeColor("accent");
+
   return (
     <View
       style={{
@@ -776,21 +789,21 @@ function InfoRow({
           width: 36,
           height: 36,
           borderRadius: 10,
-          backgroundColor: `${CUC_COLORS.sage}20`,
+          backgroundColor: `${accent}20`,
           alignItems: "center",
           justifyContent: "center",
           marginRight: 12,
         }}
       >
-        <Ionicons color={CUC_COLORS.sage} name={icon} size={18} />
+        <Ionicons color={accent} name={icon} size={18} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ color: "#888", fontSize: 12, marginBottom: 2 }}>
+        <Text className="text-muted" style={{ fontSize: 12, marginBottom: 2 }}>
           {label}
         </Text>
         <Text
+          className="text-foreground"
           style={{
-            color: CUC_COLORS.navy,
             fontSize: 15,
             fontWeight: "500",
           }}
@@ -812,6 +825,10 @@ function GuestButton({
   onPress: () => void;
 }) {
   const scale = useSharedValue(1);
+  // Add fallbacks to handle timing issue where useThemeColor may return "invalid" before theme loads
+  const accent = useThemeColor("accent") || "#85b09a";
+  const foreground = useThemeColor("foreground") || "#06273a";
+  const primaryForeground = "#fffef8";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -834,9 +851,7 @@ function GuestButton({
             width: 48,
             height: 48,
             borderRadius: 12,
-            backgroundColor: selected
-              ? CUC_COLORS.sage
-              : "rgba(255, 255, 255, 0.1)",
+            backgroundColor: selected ? accent : "rgba(255, 255, 255, 0.1)",
             alignItems: "center",
             justifyContent: "center",
           },
@@ -844,7 +859,7 @@ function GuestButton({
       >
         <Text
           style={{
-            color: selected ? CUC_COLORS.navy : CUC_COLORS.cream,
+            color: selected ? foreground : primaryForeground,
             fontSize: 16,
             fontWeight: selected ? "600" : "400",
           }}
@@ -868,6 +883,9 @@ function SubmitButton({
   guests: string;
 }) {
   const scale = useSharedValue(1);
+  // Add fallbacks to handle timing issue where useThemeColor may return "invalid" before theme loads
+  const foreground = useThemeColor("foreground") || "#06273a";
+  const accent = useThemeColor("accent") || "#85b09a";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -888,10 +906,10 @@ function SubmitButton({
       }}
     >
       <Animated.View
+        className="bg-primary-foreground"
         style={[
           animatedStyle,
           {
-            backgroundColor: CUC_COLORS.cream,
             borderRadius: 14,
             paddingVertical: 16,
             alignItems: "center",
@@ -901,7 +919,7 @@ function SubmitButton({
       >
         <Text
           style={{
-            color: CUC_COLORS.navy,
+            color: foreground,
             fontSize: 17,
             fontWeight: "600",
           }}
@@ -910,7 +928,7 @@ function SubmitButton({
         </Text>
         <Text
           style={{
-            color: CUC_COLORS.sage,
+            color: accent,
             fontSize: 13,
             marginTop: 2,
           }}
@@ -941,6 +959,10 @@ function ActionButton({
   style?: object;
 }) {
   const scale = useSharedValue(1);
+  // Add fallbacks to handle timing issue where useThemeColor may return "invalid" before theme loads
+  const accent = useThemeColor("accent") || "#85b09a";
+  const foreground = useThemeColor("foreground") || "#06273a";
+  const primaryForeground = "#fffef8";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -964,7 +986,7 @@ function ActionButton({
         style={[
           animatedStyle,
           {
-            backgroundColor: isPrimary ? CUC_COLORS.sage : "transparent",
+            backgroundColor: isPrimary ? accent : "transparent",
             borderRadius: 14,
             paddingVertical: 14,
             flexDirection: "row",
@@ -979,19 +1001,19 @@ function ActionButton({
       >
         {isLoading ? (
           <ActivityIndicator
-            color={isPrimary ? CUC_COLORS.navy : CUC_COLORS.cream}
+            color={isPrimary ? foreground : primaryForeground}
             size="small"
           />
         ) : (
           <>
             <Ionicons
-              color={isPrimary ? CUC_COLORS.navy : CUC_COLORS.cream}
+              color={isPrimary ? foreground : primaryForeground}
               name={icon}
               size={20}
             />
             <Text
               style={{
-                color: isPrimary ? CUC_COLORS.navy : CUC_COLORS.cream,
+                color: isPrimary ? foreground : primaryForeground,
                 fontSize: 16,
                 fontWeight: "600",
               }}

@@ -2,11 +2,7 @@ import { Link } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Pressable, Text, type TextInput, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
-import FormHeader, {
-  CUC_COLORS,
-  StyledButton,
-  StyledTextInput,
-} from "@/components/form";
+import FormHeader, { StyledButton, StyledTextInput } from "@/components/form";
 import { KeyboardAwareForm } from "@/components/keyboard";
 import { authClient } from "@/lib/auth-client";
 
@@ -142,8 +138,8 @@ export default function SignInRoute() {
       <Link asChild href="/(auth)/email/(reset)/request-password-reset">
         <Pressable style={{ alignSelf: "center", paddingVertical: 8 }}>
           <Text
+            className="text-accent"
             style={{
-              color: CUC_COLORS.sage,
               fontSize: 14,
               fontWeight: "500",
             }}
@@ -162,14 +158,14 @@ export default function SignInRoute() {
           gap: 4,
         }}
       >
-        <Text style={{ color: "#666", fontSize: 14 }}>
+        <Text className="text-muted" style={{ fontSize: 14 }}>
           Don't have an account?
         </Text>
         <Link asChild href="/(auth)/email/signup" replace>
           <Pressable>
             <Text
+              className="text-accent"
               style={{
-                color: CUC_COLORS.sage,
                 fontSize: 14,
                 fontWeight: "600",
               }}

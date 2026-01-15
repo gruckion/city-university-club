@@ -2,11 +2,7 @@ import { Link } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Pressable, Text, type TextInput, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
-import FormHeader, {
-  CUC_COLORS,
-  StyledButton,
-  StyledTextInput,
-} from "@/components/form";
+import FormHeader, { StyledButton, StyledTextInput } from "@/components/form";
 import { KeyboardAwareForm } from "@/components/keyboard";
 import { authClient } from "@/lib/auth-client";
 
@@ -178,9 +174,8 @@ export default function SignUpRoute() {
       </View>
 
       <Text
+        className="text-center text-muted"
         style={{
-          textAlign: "center",
-          color: "#666",
           fontSize: 13,
           lineHeight: 20,
           paddingHorizontal: 20,
@@ -189,7 +184,8 @@ export default function SignUpRoute() {
         By signing up, you agree to our{" "}
         <Link asChild href="https://cityuniversityclub.co.uk/terms">
           <Text
-            style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}
+            className="text-foreground"
+            style={{ textDecorationLine: "underline" }}
           >
             Terms of Service
           </Text>
@@ -197,7 +193,8 @@ export default function SignUpRoute() {
         and{" "}
         <Link asChild href="https://cityuniversityclub.co.uk/privacy">
           <Text
-            style={{ color: CUC_COLORS.navy, textDecorationLine: "underline" }}
+            className="text-foreground"
+            style={{ textDecorationLine: "underline" }}
           >
             Privacy Policy
           </Text>
@@ -213,14 +210,14 @@ export default function SignUpRoute() {
           gap: 4,
         }}
       >
-        <Text style={{ color: "#666", fontSize: 14 }}>
+        <Text className="text-muted" style={{ fontSize: 14 }}>
           Already have an account?
         </Text>
         <Link asChild href="/(auth)/email/signin" replace>
           <Pressable>
             <Text
+              className="text-accent"
               style={{
-                color: CUC_COLORS.sage,
                 fontSize: 14,
                 fontWeight: "600",
               }}

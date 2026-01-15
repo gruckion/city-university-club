@@ -3,6 +3,9 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { FileStore } = require("metro-cache");
 const { withUniwindConfig } = require("uniwind/metro");
+const {
+  withStorybook,
+} = require("@storybook/react-native/metro/withStorybook");
 const path = require("node:path");
 
 /** @type {import('expo/metro-config').MetroConfig} */
@@ -15,13 +18,19 @@ const uniwindConfig = withUniwindConfig(defaultConfig, {
 });
 
 // Apply monorepo and turborepo config
-const config = withTurborepoManagedCache(withMonorepoPaths(uniwindConfig));
+let config = withTurborepoManagedCache(withMonorepoPaths(uniwindConfig));
 
 // Enable package exports for proper module resolution
 config.resolver.unstable_enablePackageExports = true;
 
 // Disable hierarchical lookup for monorepo compatibility
 config.resolver.disableHierarchicalLookup = true;
+
+// Apply Storybook configuration
+config = withStorybook(config, {
+  enabled: process.env.STORYBOOK === "true",
+  configPath: path.resolve(__dirname, ".rnstorybook"),
+});
 
 module.exports = config;
 

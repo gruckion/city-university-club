@@ -1,27 +1,23 @@
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { Link, Stack } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { Pressable } from "react-native";
 
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
-
 export default function EmailLayout() {
+  const background = useThemeColor("background");
+  const foreground = useThemeColor("foreground");
+
   return (
     <Stack
       screenOptions={{
         gestureEnabled: false,
         headerTransparent: true,
         headerStyle: {
-          backgroundColor: CUC_COLORS.cream,
+          backgroundColor: background,
         },
-        headerTintColor: CUC_COLORS.navy,
+        headerTintColor: foreground,
         contentStyle: {
-          backgroundColor: CUC_COLORS.cream,
+          backgroundColor: background,
         },
       }}
     >
@@ -65,19 +61,21 @@ export default function EmailLayout() {
 }
 
 const CloseButton = () => {
+  const foreground = useThemeColor("foreground");
+
   return (
     <Link asChild href="..">
       <Pressable
+        className="bg-foreground/10"
         style={{
           width: 36,
           height: 36,
           borderRadius: 18,
-          backgroundColor: `${CUC_COLORS.navy}10`,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Ionicons color={CUC_COLORS.navy} name="close" size={20} />
+        <Ionicons color={foreground} name="close" size={20} />
       </Pressable>
     </Link>
   );

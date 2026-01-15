@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useThemeColor } from "heroui-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -16,12 +17,6 @@ interface CategoryFilterProps {
   categories: Category[];
   selectedCategory: string | null;
   onSelectCategory: (categoryId: string | null) => void;
-  colors: {
-    navy: string;
-    sage: string;
-    cream: string;
-    white: string;
-  };
 }
 
 /**
@@ -35,7 +30,6 @@ interface CategoryFilterProps {
  *   categories={CATEGORIES}
  *   selectedCategory={selectedCategory}
  *   onSelectCategory={setSelectedCategory}
- *   colors={CUC_COLORS}
  * />
  * ```
  */
@@ -43,12 +37,11 @@ export function CategoryFilter({
   categories,
   selectedCategory,
   onSelectCategory,
-  colors,
 }: CategoryFilterProps) {
   return (
     <View
+      className="bg-background"
       style={{
-        backgroundColor: colors.cream,
         paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: "rgba(0, 0, 0, 0.06)",
@@ -65,7 +58,6 @@ export function CategoryFilter({
         {categories.map((category) => (
           <CategoryChip
             category={category}
-            colors={colors}
             isSelected={selectedCategory === category.id}
             key={category.id ?? "all"}
             onPress={() => onSelectCategory(category.id)}
@@ -80,14 +72,15 @@ function CategoryChip({
   category,
   isSelected,
   onPress,
-  colors,
 }: {
   category: Category;
   isSelected: boolean;
   onPress: () => void;
-  colors: CategoryFilterProps["colors"];
 }) {
   const scale = useSharedValue(1);
+  // useThemeColor only for Ionicons (which don't support className)
+  const accent = useThemeColor("accent") || "#85b09a";
+  const foreground = useThemeColor("foreground") || "#06273a";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -103,41 +96,45 @@ function CategoryChip({
         scale.value = withSpring(1, { damping: 15, stiffness: 400 });
       }}
     >
-      <Animated.View
-        style={[
-          animatedStyle,
-          {
+      <Animated.View style={animatedStyle}>
+        <View
+          className={
+            isSelected
+              ? "border-primary bg-primary"
+              : "border-border bg-surface"
+          }
+          style={{
             flexDirection: "row",
             alignItems: "center",
             gap: 6,
             paddingHorizontal: 14,
             paddingVertical: 10,
             borderRadius: 20,
-            backgroundColor: isSelected ? colors.navy : colors.white,
             borderWidth: 1,
-            borderColor: isSelected ? colors.navy : "rgba(0, 0, 0, 0.08)",
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: isSelected ? 0.1 : 0.05,
             shadowRadius: 2,
             elevation: isSelected ? 2 : 1,
-          },
-        ]}
-      >
-        <Ionicons
-          color={isSelected ? colors.sage : colors.navy}
-          name={category.icon}
-          size={16}
-        />
-        <Text
-          style={{
-            color: isSelected ? colors.cream : colors.navy,
-            fontSize: 14,
-            fontWeight: isSelected ? "600" : "500",
           }}
         >
-          {category.label}
-        </Text>
+          <Ionicons
+            color={isSelected ? accent : foreground}
+            name={category.icon}
+            size={16}
+          />
+          <Text
+            className={
+              isSelected ? "text-primary-foreground" : "text-foreground"
+            }
+            style={{
+              fontSize: 14,
+              fontWeight: isSelected ? "600" : "500",
+            }}
+          >
+            {category.label}
+          </Text>
+        </View>
       </Animated.View>
     </Pressable>
   );

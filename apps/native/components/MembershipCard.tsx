@@ -1,3 +1,4 @@
+import { useThemeColor } from "heroui-native";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Extrapolation,
@@ -7,14 +8,6 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-
-// CUC brand colors matching the card design
-const CUC_COLORS = {
-  navy: "#1a3a5c", // Navy blue for text
-  navyDark: "#0d2840",
-  cream: "#f8f6f0", // Cream background
-  border: "#2c4a6e", // Border blue
-};
 
 // Card background image (without name, date, secretary)
 const MEMBERSHIP_CARD_BG = require("@/assets/images/membership-card.png");
@@ -46,6 +39,11 @@ export function MembershipCard({
   secretaryName = "H. Senanayake",
   disableAnimation = false,
 }: MembershipCardProps) {
+  // Theme colors with fallbacks to handle timing issue where useThemeColor may return "invalid"
+  const foreground = useThemeColor("foreground") || "#06273a";
+  const background = useThemeColor("background") || "#fffef8";
+  const border = useThemeColor("border") || "#e5e5e5";
+
   // Format member since date to "Month Year" format
   const formattedDate = memberSince
     ? new Date(memberSince).toLocaleDateString("en-GB", {
@@ -149,8 +147,13 @@ export function MembershipCard({
     <Animated.View style={[styles.cardContainer, animatedShadowStyle]}>
       <Animated.View style={[styles.cardWrapper, animatedCardStyle]}>
         {/* Double border effect */}
-        <View style={styles.outerBorder}>
-          <View style={styles.innerBorder}>
+        <View
+          style={[
+            styles.outerBorder,
+            { borderColor: border, backgroundColor: background },
+          ]}
+        >
+          <View style={[styles.innerBorder, { borderColor: border }]}>
             {/* Card background image */}
             <View style={styles.cardContent}>
               <Image
@@ -163,7 +166,7 @@ export function MembershipCard({
               <View style={styles.textOverlay}>
                 {/* Member name - positioned below "This is to introduce" */}
                 <View style={styles.nameContainer}>
-                  <Text style={styles.memberName}>
+                  <Text style={[styles.memberName, { color: foreground }]}>
                     {memberName.toUpperCase()}
                   </Text>
                 </View>
@@ -171,16 +174,29 @@ export function MembershipCard({
                 {/* Bottom row: Date and Secretary signature */}
                 <View style={styles.bottomRow}>
                   {/* Date - bottom left, cursive style */}
-                  <Text style={styles.dateText}>{formattedDate}</Text>
+                  <Text style={[styles.dateText, { color: foreground }]}>
+                    {formattedDate}
+                  </Text>
 
                   {/* Secretary signature - bottom right */}
                   <View style={styles.signatureContainer}>
                     {/* Name above the line in cursive */}
-                    <Text style={styles.secretaryName}>{secretaryName}</Text>
+                    <Text style={[styles.secretaryName, { color: foreground }]}>
+                      {secretaryName}
+                    </Text>
                     {/* Line */}
-                    <View style={styles.signatureLine} />
+                    <View
+                      style={[
+                        styles.signatureLine,
+                        { backgroundColor: foreground },
+                      ]}
+                    />
                     {/* "Secretary" below the line */}
-                    <Text style={styles.secretaryTitle}>Secretary</Text>
+                    <Text
+                      style={[styles.secretaryTitle, { color: foreground }]}
+                    >
+                      Secretary
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -211,8 +227,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 12,
     borderWidth: 3,
-    borderColor: CUC_COLORS.border,
-    backgroundColor: CUC_COLORS.cream,
     overflow: "hidden",
   },
   innerBorder: {
@@ -220,7 +234,6 @@ const styles = StyleSheet.create({
     margin: 3,
     borderRadius: 8,
     borderWidth: 1.5,
-    borderColor: CUC_COLORS.border,
     overflow: "hidden",
   },
   cardContent: {
@@ -243,7 +256,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   memberName: {
-    color: CUC_COLORS.navy,
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 2,
@@ -256,7 +268,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   dateText: {
-    color: CUC_COLORS.navy,
     fontSize: 16,
     fontFamily: "DancingScript-Regular",
   },
@@ -264,7 +275,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   secretaryName: {
-    color: CUC_COLORS.navy,
     fontSize: 14,
     fontFamily: "DancingScript-Regular",
     marginBottom: 2,
@@ -272,10 +282,8 @@ const styles = StyleSheet.create({
   signatureLine: {
     width: 80,
     height: 1,
-    backgroundColor: CUC_COLORS.navy,
   },
   secretaryTitle: {
-    color: CUC_COLORS.navy,
     fontSize: 10,
     fontFamily: "serif",
     marginTop: 2,

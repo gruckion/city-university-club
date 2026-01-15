@@ -1,17 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
-
-// CUC brand colors
-const CUC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
-};
 
 // Image from the Fabric Fund page
 const FABRIC_FUND_IMAGE =
@@ -20,6 +13,11 @@ const FABRIC_FUND_IMAGE =
 export default function FabricFund() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
+  // Theme colors for Ionicons
+  const foreground = useThemeColor("foreground");
+  const accent = useThemeColor("accent");
+  const primaryForeground = "#fffef8";
 
   const handleDonate = () => {
     Linking.openURL(
@@ -32,14 +30,12 @@ export default function FabricFund() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: CUC_COLORS.cream }}>
+    <View className="flex-1 bg-background">
       {/* Header */}
       <View
+        className="bg-primary px-4 pb-4"
         style={{
-          backgroundColor: CUC_COLORS.navy,
           paddingTop: insets.top + 8,
-          paddingBottom: 16,
-          paddingHorizontal: 16,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -49,17 +45,17 @@ export default function FabricFund() {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: `${CUC_COLORS.white}15`,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
               alignItems: "center",
               justifyContent: "center",
               marginRight: 12,
             }}
           >
-            <Ionicons color={CUC_COLORS.cream} name="arrow-back" size={22} />
+            <Ionicons color={primaryForeground} name="arrow-back" size={22} />
           </Pressable>
           <Text
+            className="text-primary-foreground"
             style={{
-              color: CUC_COLORS.cream,
               fontSize: 20,
               fontWeight: "300",
               fontFamily: "serif",
@@ -89,8 +85,8 @@ export default function FabricFund() {
         <View style={{ padding: 16 }}>
           {/* Title Card */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -102,8 +98,8 @@ export default function FabricFund() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 24,
                 fontWeight: "300",
                 fontFamily: "serif",
@@ -113,8 +109,8 @@ export default function FabricFund() {
               The City University Club Fabric Fund
             </Text>
             <Text
+              className="text-accent"
               style={{
-                color: CUC_COLORS.sage,
                 fontSize: 16,
                 fontStyle: "italic",
               }}
@@ -125,8 +121,8 @@ export default function FabricFund() {
 
           {/* About Section */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -138,8 +134,8 @@ export default function FabricFund() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 16,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -148,8 +144,8 @@ export default function FabricFund() {
               About the Fund
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#444",
                 fontSize: 15,
                 lineHeight: 24,
                 marginBottom: 12,
@@ -160,8 +156,8 @@ export default function FabricFund() {
               at 50 Cornhill.
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#444",
                 fontSize: 15,
                 lineHeight: 24,
                 marginBottom: 12,
@@ -172,8 +168,8 @@ export default function FabricFund() {
               overhaul the interior of the facilities.
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#444",
                 fontSize: 15,
                 lineHeight: 24,
               }}
@@ -187,8 +183,8 @@ export default function FabricFund() {
 
           {/* Honours Board Section */}
           <View
+            className="bg-primary"
             style={{
-              backgroundColor: CUC_COLORS.navy,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -201,14 +197,10 @@ export default function FabricFund() {
                 marginBottom: 12,
               }}
             >
-              <Ionicons
-                color={CUC_COLORS.sage}
-                name="ribbon-outline"
-                size={24}
-              />
+              <Ionicons color={accent} name="ribbon-outline" size={24} />
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 18,
                   fontWeight: "600",
                   marginLeft: 10,
@@ -218,8 +210,8 @@ export default function FabricFund() {
               </Text>
             </View>
             <Text
+              className="text-primary-foreground"
               style={{
-                color: CUC_COLORS.cream,
                 fontSize: 15,
                 lineHeight: 24,
                 marginBottom: 16,
@@ -231,15 +223,15 @@ export default function FabricFund() {
             </Text>
             <View
               style={{
-                backgroundColor: `${CUC_COLORS.white}15`,
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
                 borderRadius: 8,
                 padding: 16,
                 alignItems: "center",
               }}
             >
               <Text
+                className="text-accent"
                 style={{
-                  color: CUC_COLORS.sage,
                   fontSize: 14,
                   fontWeight: "500",
                   marginBottom: 4,
@@ -248,8 +240,8 @@ export default function FabricFund() {
                 Contribution Amount
               </Text>
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 32,
                   fontWeight: "300",
                   fontFamily: "serif",
@@ -258,8 +250,8 @@ export default function FabricFund() {
                 £125.00
               </Text>
               <Text
+                className="text-primary-foreground"
                 style={{
-                  color: CUC_COLORS.cream,
                   fontSize: 13,
                   marginTop: 4,
                   opacity: 0.8,
@@ -272,8 +264,8 @@ export default function FabricFund() {
 
           {/* How to Contribute */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 16,
@@ -285,8 +277,8 @@ export default function FabricFund() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 16,
                 fontWeight: "600",
                 marginBottom: 16,
@@ -296,16 +288,19 @@ export default function FabricFund() {
             </Text>
 
             <ContributionItem
+              accent={accent}
               description="Donate £125 to have your name displayed"
               icon="heart-outline"
               title="Join the Honour Board"
             />
             <ContributionItem
+              accent={accent}
               description="Support fundraising celebrations"
               icon="calendar-outline"
               title="Attend Club Events"
             />
             <ContributionItem
+              accent={accent}
               description="Encourage fellow members to contribute"
               icon="megaphone-outline"
               isLast
@@ -315,8 +310,8 @@ export default function FabricFund() {
 
           {/* Contact Card */}
           <View
+            className="bg-surface"
             style={{
-              backgroundColor: CUC_COLORS.white,
               borderRadius: 12,
               padding: 20,
               marginBottom: 20,
@@ -328,8 +323,8 @@ export default function FabricFund() {
             }}
           >
             <Text
+              className="text-foreground"
               style={{
-                color: CUC_COLORS.navy,
                 fontSize: 16,
                 fontWeight: "600",
                 marginBottom: 12,
@@ -338,8 +333,8 @@ export default function FabricFund() {
               Get in Touch
             </Text>
             <Text
+              className="text-muted"
               style={{
-                color: "#666",
                 fontSize: 14,
                 lineHeight: 22,
                 marginBottom: 16,
@@ -357,9 +352,10 @@ export default function FabricFund() {
                 marginBottom: 12,
               }}
             >
-              <Ionicons color={CUC_COLORS.sage} name="call-outline" size={18} />
+              <Ionicons color={accent} name="call-outline" size={18} />
               <Text
-                style={{ color: CUC_COLORS.navy, fontSize: 14, marginLeft: 10 }}
+                className="text-foreground"
+                style={{ fontSize: 14, marginLeft: 10 }}
               >
                 020 7863 6681
               </Text>
@@ -369,9 +365,10 @@ export default function FabricFund() {
               onPress={handleDonate}
               style={{ flexDirection: "row", alignItems: "center" }}
             >
-              <Ionicons color={CUC_COLORS.sage} name="mail-outline" size={18} />
+              <Ionicons color={accent} name="mail-outline" size={18} />
               <Text
-                style={{ color: CUC_COLORS.navy, fontSize: 14, marginLeft: 10 }}
+                className="text-foreground"
+                style={{ fontSize: 14, marginLeft: 10 }}
               >
                 secretary@cityuniversityclub.co.uk
               </Text>
@@ -381,11 +378,10 @@ export default function FabricFund() {
           {/* Action Buttons */}
           <View style={{ gap: 12 }}>
             <Pressable
+              className="bg-accent"
               onPress={handleDonate}
               style={({ pressed }) => ({
-                backgroundColor: pressed
-                  ? `${CUC_COLORS.sage}dd`
-                  : CUC_COLORS.sage,
+                opacity: pressed ? 0.9 : 1,
                 borderRadius: 12,
                 padding: 18,
                 alignItems: "center",
@@ -393,10 +389,10 @@ export default function FabricFund() {
                 justifyContent: "center",
               })}
             >
-              <Ionicons color={CUC_COLORS.navy} name="heart" size={22} />
+              <Ionicons color={foreground} name="heart" size={22} />
               <Text
+                className="text-foreground"
                 style={{
-                  color: CUC_COLORS.navy,
                   fontSize: 16,
                   fontWeight: "600",
                   marginLeft: 10,
@@ -423,39 +419,41 @@ function ContributionItem({
   title,
   description,
   isLast = false,
+  accent,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
   description: string;
   isLast?: boolean;
+  accent: string;
 }) {
   return (
     <View
+      className="border-border"
       style={{
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 12,
         borderBottomWidth: isLast ? 0 : 1,
-        borderBottomColor: "#f0f0f0",
       }}
     >
       <View
+        className="bg-accent/20"
         style={{
           width: 40,
           height: 40,
           borderRadius: 20,
-          backgroundColor: `${CUC_COLORS.sage}20`,
           alignItems: "center",
           justifyContent: "center",
           marginRight: 14,
         }}
       >
-        <Ionicons color={CUC_COLORS.sage} name={icon} size={20} />
+        <Ionicons color={accent} name={icon} size={20} />
       </View>
       <View style={{ flex: 1 }}>
         <Text
+          className="text-foreground"
           style={{
-            color: CUC_COLORS.navy,
             fontSize: 15,
             fontWeight: "500",
           }}
@@ -463,8 +461,8 @@ function ContributionItem({
           {title}
         </Text>
         <Text
+          className="text-muted"
           style={{
-            color: "#666",
             fontSize: 13,
             marginTop: 2,
           }}

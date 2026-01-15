@@ -1,0 +1,96 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Documentation/Introduction" />
+
+# City University Club - Component Library
+
+Welcome to the component library documentation for the City University Club web application.
+
+## Overview
+
+This Storybook documents the UI components used across the web admin portal. The components are built with:
+
+- **React 19** - Latest React with hooks and server components
+- **Tailwind CSS v4** - Utility-first CSS framework
+- **base-ui** - Unstyled accessible React primitives
+- **TypeScript** - Full type safety throughout
+
+## Getting Started
+
+### Running Storybook
+
+```bash
+cd apps/web
+bun run storybook
+```
+
+Storybook will be available at `http://localhost:6006`.
+
+### Using Components
+
+Import components from the UI directory:
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+```
+
+## Design Principles
+
+### Accessibility First
+
+All components are built with accessibility in mind:
+
+- Proper ARIA attributes
+- Keyboard navigation support
+- Screen reader friendly
+- Focus management
+
+### Dark Mode Support
+
+Every component supports both light and dark themes automatically via Tailwind's dark mode classes.
+
+### Composition
+
+Components are designed to be composable. Combine primitive components to build complex UI:
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Sign In</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <Input type="email" placeholder="Email" />
+    <Input type="password" placeholder="Password" />
+  </CardContent>
+  <CardFooter>
+    <Button>Sign In</Button>
+  </CardFooter>
+</Card>
+```
+
+## Project Structure
+
+```
+apps/web/src/
+├── components/
+│   ├── ui/           # Primitive UI components
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   ├── card.tsx
+│   │   └── ...
+│   └── ...           # Feature components
+├── docs/             # Documentation (MDX)
+└── ...
+```
+
+## Contributing
+
+When adding new components:
+
+1. Create the component in `components/ui/`
+2. Add a story file with `.stories.tsx` extension
+3. Include all variants and states
+4. Add interaction tests where appropriate
+5. Ensure accessibility compliance
